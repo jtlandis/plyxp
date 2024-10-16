@@ -49,7 +49,7 @@ you_have_loaded <- function(pkg1, pkg2, .class = NULL) {
   # check if `tidySummarizedExperiment` is already loaded
   conflict <- grep("tidySummarizedExperiment", search(), value = TRUE)
   if (length(conflict)) {
-    you_have_loaded("biocmask","tidySummarizedExperiment",
+    you_have_loaded("plyxp","tidySummarizedExperiment",
                     .class = c("packageStartupMessage", "message"))
   }
   # set hook for if `tidySummarizedExperiment` gets attached latter
@@ -57,12 +57,12 @@ you_have_loaded <- function(pkg1, pkg2, .class = NULL) {
     packageEvent(pkgname = "tidySummarizedExperiment",
                  event = "attach"),
     function(...) {
-      you_have_loaded("tidySummarizedExperiment","biocmask",
+      you_have_loaded("tidySummarizedExperiment","plyxp",
                       .class = c("packageStartupMessage", "message"))
     }
     
   )
-  # hook for when tidySummarizedExperiment:: is used after biocmask is attached
+  # hook for when tidySummarizedExperiment:: is used after plyxp is attached
   setHook(
     packageEvent(pkgname = "tidySummarizedExperiment",
                  event = "onLoad"),
@@ -71,19 +71,19 @@ you_have_loaded <- function(pkg1, pkg2, .class = NULL) {
       called_via_library <- vapply(calls, attaching_tidySE, logical(1))
       if (!any(called_via_library)) {
         # if this callback was not executed via library(tidySummarizedExperiment)
-        # then warn that biocmask dplyr methods have likely been overwritten!
+        # then warn that plyxp dplyr methods have likely been overwritten!
         # otherwise, let the .onAttach method warn the user
         cli::cli_inform(
           .frequency = "regularly", 
-          .frequency_id = "tidySummarizedExperiment_loaded_after_biocmask_attach",
-          class = "biocmask_loaded_conflict",
+          .frequency_id = "tidySummarizedExperiment_loaded_after_plyxp_attach",
+          class = "plyxp_loaded_conflict",
           message = c(
             "!" = paste0(
               "You have likely loaded {.pkg tidySummarizedExperiment} after ",
-              "{.pkg biocmask} via {.code tidySummarizedExperiment::...}"
+              "{.pkg plyxp} via {.code tidySummarizedExperiment::...}"
             ),
             "*" = paste(conflict_info, collapse = ""),
-            "!" = "This has likely caused {.pkg dplyr} methods from {.pkg biocmask} to be over-written!",
+            "!" = "This has likely caused {.pkg dplyr} methods from {.pkg plyxp} to be over-written!",
             "i" = "If this wasn't your intention, consider restarting your R session"))
       }
       
@@ -92,7 +92,7 @@ you_have_loaded <- function(pkg1, pkg2, .class = NULL) {
 }
 
 .onDetach <- function(libpath) {
-  # remove verbose message when `biocmask` is removed from attach list
+  # remove verbose message when `plyxp` is removed from attach list
   setHook(packageEvent("tidySummarizedExperiment", "attach"), NULL, "replace")
   setHook(packageEvent("tidySummarizedExperiment", "onLoad"), NULL, "replace")
 }
@@ -102,9 +102,9 @@ you_have_loaded <- function(pkg1, pkg2, .class = NULL) {
 #   res <- tbl[[method]]
 #   if (!is.null(res) && is.function(res)) {
 #     env_name <- environmentName(environment(res))
-#     if (env_name != "biocmask") {
+#     if (env_name != "plyxp") {
 #       rlang::warn(
-#         paste0(c("`biocmask` shows that `", env_name, "` is already loaded")))
+#         paste0(c("`plyxp` shows that `", env_name, "` is already loaded")))
 #     }
 #   }
 #   res

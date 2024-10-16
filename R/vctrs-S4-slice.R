@@ -16,7 +16,7 @@
 #' slice up an S4 class, but will work. 
 #' 
 #' With this implementation, the `x@mcol` data is expected to be retained after
-#' a call to `biocmask::vec_slice(x, i)`.
+#' a call to `plyxp::vec_slice(x, i)`.
 #' 
 #' ### `S4Vectors::DataFrame` Implementation
 #' 
@@ -39,14 +39,14 @@
 #' 
 #' Unfortunately, there is a massive performance hit in attempting to construct 
 #' 250,000 `GRanges`. Unless you do not mind waiting over an hour for each 
-#' `dplyr` verb in which `exons` gets evaluated, consider `biocmask_s4_proxy_vec()`.
+#' `dplyr` verb in which `exons` gets evaluated, consider `plyxp_s4_proxy_vec()`.
 #' This attempts to reconstruct certain standard `S4Vectors::Vectors` as 
 #' standard vectors or tibbles. The equivalent `exons` object would require 
 #' much more memory use, but at the advantage of only taking several seconds to
 #' construct.When you are done, you can attempt to restore the original S4 
-#' Vector with `biocmask_restore_s4_proxy()`.
+#' Vector with `plyxp_restore_s4_proxy()`.
 #' 
-#' `biocmask_s4_proxy_vec()` is faster to work with because there are less 
+#' `plyxp_s4_proxy_vec()` is faster to work with because there are less 
 #' checks on the object validity and all `@elementMetadata` and `@metadata` are
 #' dropped from the objects.
 #'

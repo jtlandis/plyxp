@@ -4,7 +4,7 @@
 
 #' @name reexports
 #' @returns 
-#' exported functions available from `biocmask`
+#' exported functions available from `plyxp`
 NULL
 
 #' @export

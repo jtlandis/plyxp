@@ -52,12 +52,12 @@ summarise.SummarizedExperiment <- function(.data, ...,
                     auto = !is.null(.groups),
                     ungrouped = TRUE,
                     none = FALSE)
-  mask <- new_biocmask_manager.SummarizedExperiment(obj = .data)
-  poke_ctx_local("biocmask:::caller_env", .env)
-  poke_ctx_local("biocmask:::manager", mask)
-  poke_ctx_local("biocmask:::dplyr_verb", "summarise")
-  quos <- biocmask_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "biocmask:::ctx")
+  mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
+  poke_ctx_local("plyxp:::caller_env", .env)
+  poke_ctx_local("plyxp:::manager", mask)
+  poke_ctx_local("plyxp:::dplyr_verb", "summarise")
+  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (! "assays" %in% ctxs) {
     abort(
       message = c(
@@ -69,7 +69,7 @@ summarise.SummarizedExperiment <- function(.data, ...,
   }
 
   nms  <- names(quos)
-  mask <- biocmask_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   assay_chops <- mask_pull_chops(mask$masks[["assays"]])
   group_vars_ <- group_vars(.data)
   row_data <- col_data <- NULL
@@ -156,7 +156,7 @@ summarise.SummarizedExperiment <- function(.data, ...,
 
   new_metadata <- metadata(.data)
   if (group_type(.groups) != "none") {
-    new_metadata$group_data <- biocmask_groups(
+    new_metadata$group_data <- plyxp_groups(
       row_data[group_vars_$row_groups],
       col_data[group_vars_$col_groups])
   }

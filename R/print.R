@@ -13,7 +13,7 @@ sep_ <- function(n) {
 
 class_vec_phantom <- S7::new_S3_class("vec_phantom")
 
-#' @rdname biocmask-printing
+#' @rdname plyxp-printing
 #' @export
 vec_phantom <- function(x) {
   vctrs::new_vctr(
@@ -41,7 +41,7 @@ vec_ptype_abbr.vec_phantom <- function(x, ...) {
 
 #' @export
 pillar_shaft.vec_phantom <- function(x, ...) {
-  fmt <- biocmask_pillar_format(attr(x, "phantomData"), ...)
+  fmt <- plyxp_pillar_format(attr(x, "phantomData"), ...)
   cur_width <- max(nchar(fmt), 2, na.rm = TRUE)
   min_width <- min(10, cur_width)
   pillar::new_pillar_shaft_simple(
@@ -53,26 +53,26 @@ pillar_shaft.vec_phantom <- function(x, ...) {
   )
 }
 
-#' @name biocmask-printing
+#' @name plyxp-printing
 #' @title Printing within tibble with S4 objects
 #' @description
-#' `biocmask` uses [pillar][pillar::pillar-package] for its printing.
+#' `plyxp` uses [pillar][pillar::pillar-package] for its printing.
 #' If you want to change how your S4 object is printed within
-#' `biocmask`'s print method, consider writing a method for 
+#' `plyxp`'s print method, consider writing a method for 
 #' this function.
 #'
-#' To print S4 objects in a tibble, `biocmask` hacks a custom
+#' To print S4 objects in a tibble, `plyxp` hacks a custom
 #' integer vector built from [`vctrs`][vctrs::new_vctr] where 
 #' the S4 object lives in an attribute named "phantomData". 
 #' You can create your own S4 phantom vector with `vec_phantom()`.
-#' This function is not used outside of printing for `biocmask`
+#' This function is not used outside of printing for `plyxp`
 #' 
 #' The default method for formatting a `vec_phantom()` is to call
 #' [`showAsCell()`][S4Vectors::showAsCell].
 #' 
 #' @section tidy printing: 
 #' 
-#' By default, `biocmask` will not affect the show method for 
+#' By default, `plyxp` will not affect the show method for 
 #' `SummarizedExperiment` objects. In order to use a tibble abstraction, use
 #' `use_show_tidy()` to enable or `use_show_default()` to disable this feature.
 #' These functions are called for their side effects, modifying the global
@@ -91,16 +91,16 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #'   phantom <- vec_phantom(ilist)
 #'   pillar::pillar_shaft(phantom)
 #'   
-#'   biocmask_pillar_format.CompressedIntegerList <- function(x) {
+#'   plyxp_pillar_format.CompressedIntegerList <- function(x) {
 #'    sprintf("Int: [%i]", lengths(x))
 #'   }
 #'   pillar::pillar_shaft(phantom)
-#'   rm(biocmask_pillar_format.CompressedIntegerList)
+#'   rm(plyxp_pillar_format.CompressedIntegerList)
 #' }
 #' 
 #' # default printing
 #' se_simple
-#' # use `biocmask` tibble abstraction
+#' # use `plyxp` tibble abstraction
 #' use_show_tidy()
 #' se_simple
 #' # restore default print
@@ -110,15 +110,15 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #' show_tidy(se_simple)
 #' 
 #' @returns 
-#' `biocmask_pillar_format` -> formatted version of your S4 vector
+#' `plyxp_pillar_format` -> formatted version of your S4 vector
 #' `vec_phantom` -> integer vector with arbitrary object in `phatomData` attribute.
 #' @export
-biocmask_pillar_format <- function(x, ...) {
-  UseMethod("biocmask_pillar_format")
+plyxp_pillar_format <- function(x, ...) {
+  UseMethod("plyxp_pillar_format")
 }
 
 #' @export
-biocmask_pillar_format.default <- function(x, ...) {
+plyxp_pillar_format.default <- function(x, ...) {
   S4Vectors::showAsCell(x)
 }
 
@@ -132,7 +132,7 @@ length.vec_phantom <- function(x, ...) {
   length(attr(x, "phantomData"))
 }
 
-#' @rdname biocmask-printing
+#' @rdname plyxp-printing
 #' @export
 show_tidy <- function(x, ...) {
   UseMethod("show_tidy")
@@ -201,11 +201,11 @@ show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
   out_sub <- out[sub_seq,]
   
   if (nrow(out_sub)==nn) {
-    attr(out_sub, "biocmask:::has_break_at") <- 0L
+    attr(out_sub, "plyxp:::has_break_at") <- 0L
   } else {
-    attr(out_sub, "biocmask:::has_break_at") <- max(top_n)
+    attr(out_sub, "plyxp:::has_break_at") <- max(top_n)
   }
-  attr(out_sub, "biocmask:::data") <- x
+  attr(out_sub, "plyxp:::data") <- x
   print(out_sub, n = n, ...)
   invisible(x)
 }
@@ -215,12 +215,12 @@ collapse <- function(x) {
 }
 
 #' @export
-format.biocmask_pillar_rid_type <- function(x, width= NULL, ...) {
+format.plyxp_pillar_rid_type <- function(x, width= NULL, ...) {
   ""
 }
 
 #' @export
-format.biocmask_pillar_rid_shaft <- function(x, width, ...) {
+format.plyxp_pillar_rid_shaft <- function(x, width, ...) {
   new_ornament(
     style_subtle(
       align(x$row_ids, width = width, align = "right")
@@ -234,7 +234,7 @@ ctl_new_rowid_pillar.SE_abstraction <- function(controller,
                                                 x, width, ...,
                                                 title = NULL, type = NULL) {
   
-  if (val <- attr(controller, "biocmask:::has_break_at")) {
+  if (val <- attr(controller, "plyxp:::has_break_at")) {
     # browser()
     template <- names(ctl_new_pillar(controller, vector(), width, 
                                      title = title))
@@ -258,7 +258,7 @@ ctl_new_rowid_pillar.SE_abstraction <- function(controller,
     if ("type" %in% template) {
       out$type <- pillar_component(
         structure(
-          list(), class = "biocmask_pillar_rid_type",
+          list(), class = "plyxp_pillar_rid_type",
           width = 1L
         )
       )
@@ -266,7 +266,7 @@ ctl_new_rowid_pillar.SE_abstraction <- function(controller,
     data <- new_pillar_shaft(
       list(row_ids = data),
       width = max(nchar(data)),
-      class = "biocmask_pillar_rid_shaft"
+      class = "plyxp_pillar_rid_shaft"
     )
     if ("data" %in% template) {
       out$data <- pillar_component(data)
@@ -288,7 +288,7 @@ ctl_new_rowid_pillar.SE_abstraction <- function(controller,
 
 #' @export
 tbl_sum.SE_abstraction <- function(x) {
-  se <- attr(x, "biocmask:::data")
+  se <- attr(x, "plyxp:::data")
   out <- dim_desc(se)
   out <- sprintf("A %s-tibble Abstraction: %s", class(se), out)
   # names(out) <- sprintf("A %s-tibble Abstraction", class(se))
@@ -309,8 +309,8 @@ tbl_format_setup.SE_abstraction <- function(x, width, ...,
                              max_footer_lines, focus) {
   
   setup <- NextMethod()
-  setup$rows_total <- prod(dim(attr(x, "biocmask:::data")))
-  if (val <- attr(x, "biocmask:::has_break_at")) {
+  setup$rows_total <- prod(dim(attr(x, "plyxp:::data")))
+  if (val <- attr(x, "plyxp:::has_break_at")) {
     body_idx <- val + 2L
     prev_line <- cli::ansi_strip(setup$body[body_idx])
     position <- gregexec("[^ |]+", prev_line)[[1]]
@@ -346,7 +346,7 @@ ctl_new_pillar.SE_abstraction <- function(controller, x, width, ..., title = NUL
 tbl_format_footer.SE_abstraction <-function(x, setup, ...) {
   
   out <- NextMethod()
-  if (attr(x, "biocmask:::has_break_at")) {
+  if (attr(x, "plyxp:::has_break_at")) {
     out <- c(
       style_subtle(sprintf("# %s n = %s",
                            cli::symbol$info,
@@ -384,13 +384,13 @@ setMethod(
   }
 )
 
-#' @rdname biocmask-printing
+#' @rdname plyxp-printing
 #' @export
 use_show_tidy <- function() {
   options(show_SummarizedExperiment_as_tibble_abstraction = TRUE)
 }
 
-#' @rdname biocmask-printing
+#' @rdname plyxp-printing
 #' @export
 use_show_default <- function() {
   options(show_SummarizedExperiment_as_tibble_abstraction = FALSE)

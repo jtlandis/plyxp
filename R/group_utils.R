@@ -96,20 +96,20 @@ group_vars.SummarizedExperiment <- function(x) {
 
 vec_chop_assays <- function(.data, .indices) {
   map2(
-    attr(.indices, "biocmask:::row_chop_ind"),
-    attr(.indices, "biocmask:::col_chop_ind"),
+    attr(.indices, "plyxp:::row_chop_ind"),
+    attr(.indices, "plyxp:::col_chop_ind"),
     function(.x, .y, .data) .data[.x, .y, drop = FALSE], .data = .data
   )
 }
 
 vec_chop_assays_row <- function(.data, .indices) {
-  map(attr(.indices, "biocmask:::row_chop_ind"),
+  map(attr(.indices, "plyxp:::row_chop_ind"),
       function(.i, .data) .data[.i,,drop = FALSE],
       .data = .data)
 }
 
 vec_chop_assays_col <- function(.data, .indices) {
-  map(attr(.indices, "biocmask:::col_chop_ind"),
+  map(attr(.indices, "plyxp:::col_chop_ind"),
       function(.i, .data) .data[,.i,drop = FALSE],
       .data = .data)
 }
@@ -134,7 +134,7 @@ create_groups <- function(.data, .rename = ".indices") {
     mutate("{.rename}_group_id" := seq_len(n()))
 }
 
-biocmask_groups <- function(row_groups = NULL, col_groups = NULL) {
+plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
   out <- list(
     row_groups = create_groups(row_groups),
     col_groups = create_groups(col_groups)
@@ -146,7 +146,7 @@ biocmask_groups <- function(row_groups = NULL, col_groups = NULL) {
   if (!is.null(out$col_groups)) {
     type <- paste0(type, "col")
   }
-  class(out) <- "biocmask_groups"
+  class(out) <- "plyxp_groups"
   attr(out, "type") <- type
   if (type=="") return(NULL)
   out
@@ -168,8 +168,8 @@ get_group_indices <- function(
         .f = function(row, col, n) {
           mat_index(row, col, nrows = n)
         }, n = attr(.groups, "obj_dim")[1])
-      attr(out, "biocmask:::row_chop_ind") <- .details[[".rows::.indices"]]
-      attr(out, "biocmask:::col_chop_ind") <- .details[[".cols::.indices"]]
+      attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
+      attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
       attr(out, "type") <- attr(.groups, "type")
       out},
     rowData = .groups$row_groups$.indices,
