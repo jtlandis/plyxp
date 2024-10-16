@@ -1,4 +1,4 @@
 library("testthat")
-library("biocmask")
+library("plyxp")
 
-test_check("biocmask")
+test_check("plyxp")

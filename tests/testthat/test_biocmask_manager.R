@@ -1,14 +1,14 @@
 
 
-bm <- new_biocmask_manager(se_simple)
+bm <- new_plyxp_manager(se_simple)
 gbm <- group_by(se_simple, rows(direction), cols(condition)) |>
-  new_biocmask_manager()
+  new_plyxp_manager()
 
-test_that("`new_biocmask_manager` returns an R6 `biocmask_manager`", {
+test_that("`new_plyxp_manager` returns an R6 `plyxp_manager`", {
   expect_s3_class(bm, "R6")
-  expect_s3_class(bm, "biocmask_manager")
+  expect_s3_class(bm, "plyxp_manager")
   expect_s3_class(gbm, "R6")
-  expect_s3_class(gbm, "biocmask_manager")
+  expect_s3_class(gbm, "plyxp_manager")
 })
 
 test_that("default context is `assays` for SummarizedExperiment", {

@@ -1,4 +1,4 @@
-quos <- biocmask_quos(
+quos <- plyxp_quos(
   foo,
   ctx2(foo),
   ctx3(foo),
@@ -7,7 +7,7 @@ quos <- biocmask_quos(
 )
 foo_sym <- quote(foo)
 
-test_that("`biocmask_quos` returns list of quosures", {
+test_that("`plyxp_quos` returns list of quosures", {
   expect_type(quos, "list")
   expect_s3_class(quos[[1]], "quosure")
   expect_s3_class(quos[[2]], "quosure")
@@ -36,7 +36,7 @@ test_that("quosures contain correct context attribute", {
     )
     invisible(act$val)
   }
-  expect_attr_val(quos[[1]], "biocmask:::ctx", "ctx1")
-  expect_attr_val(quos[[2]], "biocmask:::ctx", "ctx2")
-  expect_attr_val(quos[[3]], "biocmask:::ctx", "ctx3")
+  expect_attr_val(quos[[1]], "plyxp:::ctx", "ctx1")
+  expect_attr_val(quos[[2]], "plyxp:::ctx", "ctx2")
+  expect_attr_val(quos[[3]], "plyxp:::ctx", "ctx3")
 })

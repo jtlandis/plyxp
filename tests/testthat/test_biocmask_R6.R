@@ -1,16 +1,16 @@
 
 
 # gbm <- group_by(se_simple, rows(direction), cols(condition)) |>
-#   new_biocmask_manager()
+#   new_plyxp_manager()
 # 
 # assays_mask <- bm$masks[["assays"]]
 # rows_mask <- bm$masks[["cols"]]
 # cols_mask <- bm$masks[["rows"]]
 
 test_that("evaluation works", {
-  bm <- new_biocmask_manager(se_simple)
+  bm <- new_plyxp_manager(se_simple)
   expect_error(bm$eval(rlang::quo("foo")), "requires quosure from")
-  quo  <- biocmask_quos(foo = rep(1L, n()), 
+  quo  <- plyxp_quos(foo = rep(1L, n()), 
                         rows(foo = rep(1L, n())),
                         cols(foo = rep(1L, n())),
                         .ctx_default = "assays",
