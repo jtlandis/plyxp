@@ -1,4 +1,4 @@
-Package: biocmask
+Package: plyxp
 Title: Data masks for SummarizedExperiment enabling dplyr-like manipulation
 Version: 0.99.18
 Authors@R: c(
@@ -6,7 +6,7 @@ Authors@R: c(
     comment = c(ORCID = "0000-0001-5501-4934")),
     person("Michael", "Love", email = "michaelisaiahlove@gmail.com", role = "aut",
     comment = c(ORCID = "0000-0001-8401-0545")))
-Description: The package provides `rlang` data masks for the SummarizedExperiment class. The enables the evaluation of unquoted expression in different contexts of the SummarizedExperiment object with optional access to other contexts. The goal for `biocmask` is for evaluation to feel like a data.frame object without ever needing to unwind to a rectangular data.frame.
+Description: The package provides `rlang` data masks for the SummarizedExperiment class. The enables the evaluation of unquoted expression in different contexts of the SummarizedExperiment object with optional access to other contexts. The goal for `plyxp` is for evaluation to feel like a data.frame object without ever needing to unwind to a rectangular data.frame.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -39,7 +39,7 @@ Suggests:
     IRanges,
     here
 LazyData: true
-URL: https://github.com/jtlandis/biocmask, https://jtlandis.github.io/biocmask
-BugReports: https://www.github.com/jtlandis/biocmask/issues
+URL: https://github.com/jtlandis/plyxp, https://jtlandis.github.io/plyxp
+BugReports: https://www.github.com/jtlandis/plyxp/issues
 biocViews: Annotation, GenomeAnnotation, Transcriptomics
 Config/testthat/edition: 3
