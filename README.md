@@ -1,10 +1,10 @@
-# `biocmask`
+# `plyxp`
 
-`biocmask` provides efficient abstractions to the *SummarizedExperiment* such
+`plyxp` provides efficient abstractions to the *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
-*data.frame* or *tibble*. `biocmask` was built as an alternative to the 
+*data.frame* or *tibble*. `plyxp` was built as an alternative to the 
 `tidySummarizedExperiment` package but there may be a future in which their
-conflicts are reconciled. `biocmask` uses 
+conflicts are reconciled. `plyxp` uses 
 [data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html) 
 from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and avoiding
@@ -18,16 +18,16 @@ ambiguity in outcomes.
 The `SummarizedExperiment` object contains three main components/"contexts" that we mask, 
 the `assays()`, `rowData()`[^1] and `colData()`.
 
-[^1]: At this moment `rowRanges()` is not supported in `biocmask` but may become
+[^1]: At this moment `rowRanges()` is not supported in `plyxp` but may become
 its own pronoun in the future.
 
 ![Simplified view of data masking structure. Figure made with [Biorender](https://biorender.com)](man/figures/Overview-bindings.png)
 
 \
-`biocmask` provides variables as-is to data **within their current contexts** enabling you 
+`plyxp` provides variables as-is to data **within their current contexts** enabling you 
 to call S4 methods on S4 objects with `dplyr` verbs. If you require access to
 variables _outside the context_, you may use 
-pronouns made available through `biocmask` to specify where to find those 
+pronouns made available through `plyxp` to specify where to find those 
 variables.
 
 ![Simplified view of reshaping pronouns. Arrows indicates to where the pronoun provides access. For each pronoun listed, there is an `_asis` variant that returns underlying data without reshaping it to fit the context. Figure made with [Biorender](https://biorender.com)](man/figures/Overview-pronouns.png)
@@ -52,11 +52,11 @@ or the
 `#tidiness_in_bioc` Slack channel on community-bioc
 for software usage help, 
 or post an 
-[Issue on GitHub](https://github.com/jtlandis/biocmask/issues),
+[Issue on GitHub](https://github.com/jtlandis/plyxp/issues),
 for software development questions.
 
 # Funding
 
-`biocmask` was supported by a EOSS cycle 6 grant from The Wellcome Trust.
+`plyxp` was supported by a EOSS cycle 6 grant from The Wellcome Trust.
 
 

@@ -1,5 +1,5 @@
 ---
-title: "biocmask Usage Guide"
+title: "plyxp Usage Guide"
 author:
     - name: Justin Landis
       orcid: 0000-0001-5501-4934
@@ -9,16 +9,16 @@ date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: rmarkdown::html_document
 bibliography: library.bib
 vignette: |
-  %\VignetteIndexEntry{biocmask Usage Guide}
+  %\VignetteIndexEntry{plyxp Usage Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 # Quick start
 
-`biocmask` provides efficient abstractions to the *SummarizedExperiment* such
+`plyxp` provides efficient abstractions to the *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
-*data.frame* or *tibble*. `biocmask` uses
+*data.frame* or *tibble*. `plyxp` uses
 [data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html)
 from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and avoiding
@@ -26,7 +26,7 @@ ambiguity in outcomes.
 
 ## Supported data types and operations
 
-`biocmask` works on *SummarizedExperiment* objects, as well as most
+`plyxp` works on *SummarizedExperiment* objects, as well as most
 classes derived from this, including *DESeqDataSet*,
 *SingleCellExperiment*, etc.
 
@@ -54,7 +54,7 @@ rowData(airway) <- rowData(airway)[,c(1:2,4)]
 ```
 
 ```{r message=FALSE}
-library(biocmask)
+library(plyxp)
 # add data (mutate) to any of the three tables,
 # assay, colData, rowData,
 # ...using contextual helpers cols() and rows()
@@ -91,7 +91,7 @@ airway |>
 
 See below for details on how objects are made available across contexts.
 
-`biocmask` also enables common grouping and summarization routines:
+`plyxp` also enables common grouping and summarization routines:
 
 
 ```{r}
@@ -114,7 +114,7 @@ summary |>
 
 ## Related work
 
-We note that `biocmask` is highly related to other *tidyomics* projects including:
+We note that `plyxp` is highly related to other *tidyomics* projects including:
 
 * tidySummarizedExperiment
 * plyranges
@@ -129,21 +129,21 @@ which may have improved computational performance.
 
 ### A Note on `tidySummarizedExperiment`
 
-At the moment, `biocmask` and `tidySummarizedExperiment` export conflicting 
+At the moment, `plyxp` and `tidySummarizedExperiment` export conflicting 
 functions as they both define `dplyr` methods for manipulating the 
-`SummarizedExperiment` class. `biocmask` exists as an alternative to 
+`SummarizedExperiment` class. `plyxp` exists as an alternative to 
 `tidySummarizedExperiment` and enables a unique approach to working with the
 `SummarizedExperiment` class. We advise limiting your analysis to one package 
 or another, as which methods that are available in your search path depends on
 the order in which the packages are attached leading to unexpected behaviors.
 
-# Manipulating *SummarizedExperiment* with `biocmask`
+# Manipulating *SummarizedExperiment* with `plyxp`
 <!-- copied from README -->
 <!-- unsure if it is better here or in README -->
 The `SummarizedExperiment` object contains three main components/"contexts" that we mask, 
 the `assays()`, `rowData()`[^1] and `colData()`.
 
-[^1]: At this moment `rowRanges()` is not supported in `biocmask` but may become
+[^1]: At this moment `rowRanges()` is not supported in `plyxp` but may become
 its own pronoun in the future.
 
 ```{r}
@@ -152,10 +152,10 @@ its own pronoun in the future.
 knitr::include_graphics("../man/figures/Overview-bindings.png")
 ```
 
-`biocmask` provides variables as-is to data **within their current contexts** enabling you 
+`plyxp` provides variables as-is to data **within their current contexts** enabling you 
 to call S4 methods on S4 objects with `dplyr` verbs. If you require access to
 variables _outside the context_, you may use 
-pronouns made available through `biocmask` to specify where to find those 
+pronouns made available through `plyxp` to specify where to find those 
 variables.
 
 ```{r}
@@ -202,7 +202,7 @@ or `nrows(colData())` respectively.
 * `.cols_asis` $\to$ pronoun to direct bindings in `colData()`
 * `col_ctx(expr, asis = FALSE)` $\to$ shorthand to bind the colData context in front of the current context
 
-## Multiple expressions enabled via `biocmask`
+## Multiple expressions enabled via `plyxp`
 
 We can compare two ways of dividing out a vector from `colData` along the
 columns of `assay` data:
@@ -223,8 +223,8 @@ airway |>
 
 ## Object integrity
 
-`biocmask` provides an opinionated framework for how `dplyr` verbs should interact
-with `SummarizedExperiment` objects. In general, `biocmask` will not allow any
+`plyxp` provides an opinionated framework for how `dplyr` verbs should interact
+with `SummarizedExperiment` objects. In general, `plyxp` will not allow any
 operations that it could not guarantee a valid return object.
 
 It is for this reason that `arrange()`,  `filter()` and `group_by()` do not 
@@ -233,9 +233,9 @@ assumed structure of a `SummarizedExperiment` object.
 
 ## `group_by()`
 
-`biocmask` also supports `group_by` operations allowing users to query information
+`plyxp` also supports `group_by` operations allowing users to query information
 with `dplyr::n()` or `dplyr::cur_group_id()`. However due to the linked structure
-of a `SummarizedExperiment` object and `biocmask` providing multiple evaluation 
+of a `SummarizedExperiment` object and `plyxp` providing multiple evaluation 
 contexts, grouping operations would be complex and return values would be 
 potentionally ambiguous.
 
@@ -288,7 +288,7 @@ groupings in `rowData()`, and similarly for the `colData()` context.
 ## Printing
 
 Motivated by the `show`/`print` function in *tidySummarizedExperiment*, we
-visualize the data as if it was tabular. `biocmask` offers the option to opt-in
+visualize the data as if it was tabular. `plyxp` offers the option to opt-in
 on this behavior by setting the associated global option:
 
 ```{r eval=FALSE}
@@ -298,27 +298,27 @@ options("show_SummarizedExperiment_as_tibble_abstraction" = TRUE)
 Alternatively, you may use helper functions `use_show_tidy()` and 
 `use_show_default()` to enable and disable this alternative printing respectively.
 
-Since `biocmask` aims to leave the input data as-is when possible, we have considered
+Since `plyxp` aims to leave the input data as-is when possible, we have considered
 providing support for printing `S4Vectors` within a `tibble()`. To be clear, 
-`biocmask` **will not** allow you to put `S4Vectors` inside a `tibble()`, but 
+`plyxp` **will not** allow you to put `S4Vectors` inside a `tibble()`, but 
 will allow for `S4Vectors` to be printed with `pillar()`, the formatting engine
 behind `tibble()` pretty printing.
 
 To enable this behavior, before any data is reported to the user, we proxy any
-`S4Vector` with a custom `vctrs_vctr` object with `biocmask::vec_phantom()`. In
+`S4Vector` with a custom `vctrs_vctr` object with `plyxp::vec_phantom()`. In
 truth, the `vec_phantom` object is a simple integer vector with a "phantomData"
 attribute. This allows us to carry along `S4Vector` through `pillar()`'s printing
 pipeline until it is time to print the column.
 
 The `pillar_shaft()` method for `vec_phantom` will format the S4 data with
-`biocmask_pillar_format()` generic, which by default calls
+`plyxp_pillar_format()` generic, which by default calls
 `S4Vectors::showAsCell()`. Users are free to create their own methods for S4
 vectors that differ from `S4Vectors::showAsCell()` if they like, as seen in
-``?`biocmask-printing` ``
+``?`plyxp-printing` ``
 
 ## renaming rows or columns
 
-Inspired by `tidySummarizedExperiment`, `biocmask` provides access to the 
+Inspired by `tidySummarizedExperiment`, `plyxp` provides access to the 
 rownames and colnames of a `SummarizedExperiment` object by installing `.features`
 and `.samples` into the `rowData()` and `colData()` contexts respectively.
 These are special in that assigning a value to `.features` in the `rowData()` 
@@ -348,7 +348,7 @@ se_simple |>
 
 # Troubleshooting and best practices
 
-while `biocmask` takes inspiration from the data masks used in `dplyr`, they 
+while `plyxp` takes inspiration from the data masks used in `dplyr`, they 
 are unfortunately more complex. This means there is some overhead in creating
 the evaluation mask per dplyr verb. Try to reduce the number of `dplyr` verb calls
 and instead increase the content of each verb. For example instead of doing:
@@ -371,10 +371,10 @@ do the following
 
 # Community and support
 
-Please feel free to post questions about `biocmask` to:
+Please feel free to post questions about `plyxp` to:
 
 * the [Bioconductor support site](https://support.bioconductor.org/)
-* as an [Issue](https://github.com/jtlandis/biocmask/issues) on GitHub
+* as an [Issue](https://github.com/jtlandis/plyxp/issues) on GitHub
 * in the `#tidiness_in_bioc` channel on the *community-bioc* Slack
 
 For code contributions:
@@ -383,7 +383,7 @@ For code contributions:
 * For larger structural changes to the package code, please reach out to the
   development team first through one of the above channels.
 
-Thanks for your interest in `biocmask`!
+Thanks for your interest in `plyxp`!
 
 # Session info
 
