@@ -45,7 +45,7 @@ enforce_named <- function(exprs) {
 #' attr(quos[[2]], "plyxp:::ctx")
 #' attr(quos[[3]], "plyxp:::ctx")
 #' 
-#' @export
+#' @noRd
 plyxp_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NULL) {
   # browser()
   dots <- quos(...) |>

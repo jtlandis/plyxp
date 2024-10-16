@@ -7,6 +7,8 @@
 #' @param ... Not used
 #' @return a plyxp_manager R6 class object
 #' @seealso [plyxp::PlyxpMaskManager]
+#' @keywords internal
+#' @noRd
 #' @examples
 #'  
 #' manager <- new_plyxp_manager(se_simple)
@@ -24,13 +26,10 @@
 #' manager$eval(q[[2]])
 #' manager$results()
 #' 
-#' @export
 new_plyxp_manager <- function(obj, ...) {
   UseMethod("new_plyxp_manager")
 }
 
-#' @rdname new_plyxp_manager
-#' @export
 new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   groups <- group_details(obj)
   expanded <- expand_groups2(groups$row_groups, groups$col_groups)

@@ -122,7 +122,7 @@ add_bind <- function(.expr, .env_expr,
 #' mask$eval(quote(Sepal.Width))
 #' 
 #' 
-#' 
+#' @noRd
 plyxp <- R6::R6Class(
   "plyxp",
   cloneable = FALSE,
