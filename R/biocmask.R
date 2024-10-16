@@ -1,17 +1,17 @@
 
 #' @title New Biocmask
-#' @name new_biocmask_manager
+#' @name new_plyxp_manager
 #' @description
-#' Create a biocmask for an object
+#' Create a plyxp for an object
 #' @param obj Dispatch Object
 #' @param ... Not used
-#' @return a biocmask_manager R6 class object
-#' @seealso [biocmask::BiocmaskManager]
+#' @return a plyxp_manager R6 class object
+#' @seealso [plyxp::PlyxpMaskManager]
 #' @examples
 #'  
-#' manager <- new_biocmask_manager(se_simple)
+#' manager <- new_plyxp_manager(se_simple)
 #' manager$ctx
-#' q <- biocmask_quos(counts_1 = counts + 1,
+#' q <- plyxp_quos(counts_1 = counts + 1,
 #'                    cols(is_drug = condition=="drug"),
 #'                    .ctx_default = "assays",
 #'                    .ctx_opt = c("rows", "cols"))
@@ -25,30 +25,30 @@
 #' manager$results()
 #' 
 #' @export
-new_biocmask_manager <- function(obj, ...) {
-  UseMethod("new_biocmask_manager")
+new_plyxp_manager <- function(obj, ...) {
+  UseMethod("new_plyxp_manager")
 }
 
-#' @rdname new_biocmask_manager
+#' @rdname new_plyxp_manager
 #' @export
-new_biocmask_manager.SummarizedExperiment <- function(obj, ...) {
+new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   groups <- group_details(obj)
   expanded <- expand_groups2(groups$row_groups, groups$col_groups)
   nr <- nrow(obj)
   nc <- ncol(obj)
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
   
-  mask_assay <- biocmask_assay$new(assays(obj),
+  mask_assay <- plyxp_assay$new(assays(obj),
                                    get_group_indices(groups, expanded, "assay"),
                                    .nrow = nr,
                                    .ncol = nc,
                                    .env_bot = shared_ctx_env,
                                    .env_top = top_env)
-  mask_rows <- biocmask$new(prepend_rownames(rowData(obj), column = ".features"),
+  mask_rows <- plyxp$new(prepend_rownames(rowData(obj), column = ".features"),
                             get_group_indices(groups, expanded, "rowData"),
                             .env_bot = shared_ctx_env,
                             .env_top = top_env)
-  mask_cols <- biocmask$new(prepend_rownames(colData(obj), column = ".samples"),
+  mask_cols <- plyxp$new(prepend_rownames(colData(obj), column = ".samples"),
                             get_group_indices(groups, expanded, "colData"),
                             .env_bot = shared_ctx_env,
                             .env_top = top_env)
@@ -57,7 +57,7 @@ new_biocmask_manager.SummarizedExperiment <- function(obj, ...) {
                                          mask_rows = mask_rows,
                                          mask_cols = mask_cols)
   
-  biocmask_manager$new(.data = obj,
+  plyxp_manager$new(.data = obj,
                        .masks = list(assays = mask_assay,
                                      rows = mask_rows,
                                      cols = mask_cols),
@@ -65,7 +65,7 @@ new_biocmask_manager.SummarizedExperiment <- function(obj, ...) {
                        .extended_env = extended_environments)
 }
 
-biocmask_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
+plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
   .call <- caller_call()
   if (.matrix) {
     quos <- enforce_matrix(quos, ctxs)
@@ -87,7 +87,7 @@ biocmask_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
         message = "an error occured in group {current_gid} of `{current_ctx}` context",
         parent = cnd,
         call = .call,
-        class = "biocmask_dplyr_eval_error"
+        class = "plyxp_dplyr_eval_error"
       )
     }
   )

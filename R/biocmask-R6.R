@@ -1,7 +1,7 @@
 
 
 #' @export
-.AtNames.biocmask_envs <- function(x, pattern = "") {
+.AtNames.plyxp_envs <- function(x, pattern = "") {
   options <- setdiff(names(attributes(x)), c("class", "names"))
   if (identical(pattern, "")) {
     options
@@ -11,12 +11,12 @@
 }
 
 #' @export
-`@.biocmask_envs` <- function(obj, name) {
+`@.plyxp_envs` <- function(obj, name) {
   attr(obj, name, exact = TRUE)
 }
 
 #' @export
-`@<-.biocmask_envs` <- function(obj, name, value) {
+`@<-.plyxp_envs` <- function(obj, name, value) {
   attr(obj, name) <- value
   invisible(obj)
 }
@@ -85,8 +85,8 @@ add_bind <- function(.expr, .env_expr,
 ## due to challenges in passing BiocCheck, no longer documenting non-exported
 ## objects
 
-#' @title `biocmask` Data Mask Object
-#' @name biocmask
+#' @title `plyxp` Data Mask Object
+#' @name plyxp
 #' @description
 #' An R6 Object that tracks bindings of a list-like object.
 #' This includes DFrame objects. There are several inherited
@@ -113,22 +113,22 @@ add_bind <- function(.expr, .env_expr,
 #'                 the curr_group. I have plans to remove the curr_group
 #'                 environment.
 #'
-#' @return an R6 object of class `biocmask`
+#' @return an R6 object of class `plyxp`
 #' @examples
 #' # note: this R6 class is not exported at this moment
 #' 
-#' mask <- getNamespace("biocmask")$biocmask$new(iris,
-#'                      .env_bot = rlang::env(`biocmask:::ctx:::group_id` = 1L))
+#' mask <- getNamespace("plyxp")$plyxp$new(iris,
+#'                      .env_bot = rlang::env(`plyxp:::ctx:::group_id` = 1L))
 #' mask$eval(quote(Sepal.Width))
 #' 
 #' 
 #' 
-biocmask <- R6::R6Class(
-  "biocmask",
+plyxp <- R6::R6Class(
+  "plyxp",
   cloneable = FALSE,
   public = list(
     #' @description
-    #' Create a biocmask from `.data`. `.data` is chopped by
+    #' Create a plyxp from `.data`. `.data` is chopped by
     #' `.indices`, and environments are built from `.env`
     #' 
     #' @param .data a named list like object to create a mask
@@ -279,7 +279,7 @@ biocmask <- R6::R6Class(
                      name <- sym(name)
                      new_function(
                        args = pairlist(),
-                       body = expr(.subset2(!!name, `biocmask:::ctx:::group_id`)),
+                       body = expr(.subset2(!!name, `plyxp:::ctx:::group_id`)),
                        env = env
                      )
                    },
@@ -291,7 +291,7 @@ biocmask <- R6::R6Class(
         list(private$env_mask_bind),
         env_parents(private$env_mask_bind, private$.shared_env)
       )
-      class(out) <- c("biocmask_envs", "rlang_envs")
+      class(out) <- c("plyxp_envs", "rlang_envs")
       attr(out, "env_mask_bind") <- private$env_mask_bind
       attr(out, "env_data_chop") <- private$env_data_chop
       attr(out, "env_data_lazy") <- private$env_data_lazy
@@ -333,7 +333,7 @@ biocmask <- R6::R6Class(
       name_sym <- sym(name)
       fun <- new_function(
         args = pairlist(),
-        body = expr(.subset2(!!name_sym, `biocmask:::ctx:::group_id`)),
+        body = expr(.subset2(!!name_sym, `plyxp:::ctx:::group_id`)),
         env = private$env_data_chop
       )
       env_bind_active(
@@ -389,21 +389,21 @@ biocmask <- R6::R6Class(
 )
 
 
-#' @title `biocmask` for SummarizedExperiment `assays()`
+#' @title `plyxp` for SummarizedExperiment `assays()`
 #' @name BiocDataMask-assays
 #' @description
-#' A more specialized version of the biocmask R6 object for the 
+#' A more specialized version of the plyxp R6 object for the 
 #' assays list object. This includes chopping and unchopping 
 #' of matrix like objects.
-#' @return an object inheriting [`biocmask`][biocmask::BiocDataMask].
+#' @return an object inheriting [`plyxp`][plyxp::BiocDataMask].
 #' @noRd
-biocmask_assay <- R6::R6Class(
-  "biocmask_assay",
-  inherit = biocmask, 
+plyxp_assay <- R6::R6Class(
+  "plyxp_assay",
+  inherit = plyxp, 
   cloneable = FALSE,
   public = list(
     #' @description
-    #' Create a biocmask from `.data`. `.data` is chopped by
+    #' Create a plyxp from `.data`. `.data` is chopped by
     #' `.indices`, and environments are built from `.env`
     #' 
     #' @param .data a named list like object to create a mask

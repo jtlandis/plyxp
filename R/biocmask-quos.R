@@ -1,7 +1,7 @@
 
 ctx_quo <- function(expr, env, ctx) {
   quo <- new_quosure(expr = expr, env = env)
-  attr(quo, "biocmask:::ctx") <- ctx
+  attr(quo, "plyxp:::ctx") <- ctx
   quo
 }
 
@@ -19,34 +19,34 @@ enforce_named <- function(exprs) {
   exprs
 }
 
-#' @title biocmask quosures
+#' @title plyxp quosures
 #' @description
 #' a consistent way to handle `...` for dplyr extensions.
 #' This returns a list of quosures where each quosure 
-#' contains an attribute `biocmask:::ctx` indicating which
+#' contains an attribute `plyxp:::ctx` indicating which
 #' mask context it should be evaluate in.
 #' @param ... rlang dots, supports splicing an quoting
 #' @param .named should resulting expressions be named?
 #' @param .ctx_default default context to eval within
 #' @param .ctx_opt optional contexts to eval within
-#' @return a quosure with attribute `biocmask:::ctx`.
+#' @return a quosure with attribute `plyxp:::ctx`.
 #' @examples
 #' 
-#' # in biocmask the default context is "assays"
+#' # in plyxp the default context is "assays"
 #' # and optional contexts are "rows" and "cols"
-#' quos <- biocmask_quos(
+#' quos <- plyxp_quos(
 #'   foo = bar,
 #'   ctx2(foo = bar),
 #'   ctx3(foo = bar),
 #'   .ctx_default = "ctx1",
 #'   .ctx_opt = c("ctx2", "ctx3")
 #' )
-#' attr(quos[[1]], "biocmask:::ctx")
-#' attr(quos[[2]], "biocmask:::ctx")
-#' attr(quos[[3]], "biocmask:::ctx")
+#' attr(quos[[1]], "plyxp:::ctx")
+#' attr(quos[[2]], "plyxp:::ctx")
+#' attr(quos[[3]], "plyxp:::ctx")
 #' 
 #' @export
-biocmask_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NULL) {
+plyxp_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NULL) {
   # browser()
   dots <- quos(...) |>
     as.list()
@@ -68,14 +68,14 @@ biocmask_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NU
         list(ctx_exprs,
              name = ctx_nms,
              is_named = ctx_is_named),
-        biocmask_quo,
+        plyxp_quo,
         env = .env,
         ctx = ctx)
       dots[[i]] <- splice(ctx_quos)
       next
     }
     
-    dots[[i]] <- biocmask_quo(.expr, env = .env,
+    dots[[i]] <- plyxp_quo(.expr, env = .env,
                               ctx = .ctx_default,
                               is_named = is_nms[i], 
                               name = nms[i])
@@ -90,10 +90,10 @@ biocmask_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NU
   out
 }
 
-biocmask_quo <- function(expr, env, ctx, ...) {
+plyxp_quo <- function(expr, env, ctx, ...) {
   quo <- new_quosure(expr = expr, env = env)
-  attr(quo, "biocmask:::ctx") <- ctx
-  attr(quo, "biocmask:::data") <- list2(...)
+  attr(quo, "plyxp:::ctx") <- ctx
+  attr(quo, "plyxp:::data") <- list2(...)
   quo
 }
 
@@ -107,8 +107,8 @@ enforce_matrix <- function(quos, ctxs) {
       else
         quo_set_expr(quo,
                      expr(matrix(!!quo,
-                                 nrow = `biocmask:::ctx:::nrow`,
-                                 ncol = `biocmask:::ctx:::ncol`)))
+                                 nrow = `plyxp:::ctx:::nrow`,
+                                 ncol = `plyxp:::ctx:::ncol`)))
       }
     )
   quos
