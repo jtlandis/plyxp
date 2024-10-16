@@ -1,0 +1,9 @@
+pandoc: '3.2'
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  biocmask: biocmask.html
+last_built: 2024-10-16T15:37Z
+urls:
+  reference: https://jtlandis.github.io/biocmask/reference
+  article: https://jtlandis.github.io/biocmask/articles
