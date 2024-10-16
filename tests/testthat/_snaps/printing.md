@@ -12,7 +12,7 @@
       colnames(4): col_1 col_2 col_3 col_4
       colData names(2): sample condition
 
-# enabling `biocmask` printing
+# enabling `plyxp` printing
 
     Code
       use_show_tidy()
@@ -50,7 +50,7 @@
       colnames(4): col_1 col_2 col_3 col_4
       colData names(2): sample condition
 
-# force `biocmask` printing
+# force `plyxp` printing
 
     Code
       show_tidy(se_simple)

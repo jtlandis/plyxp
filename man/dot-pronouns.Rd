@@ -9,7 +9,7 @@
 \alias{.rows_asis}
 \alias{.cols}
 \alias{.cols_asis}
-\title{contextual biocmask pronouns}
+\title{contextual plyxp pronouns}
 \format{
 An object of class \code{NULL} of length 0.
 
@@ -40,13 +40,13 @@ An object of class \code{NULL} of length 0.
 access to specific values behind the rlang pronoun
 }
 \description{
-\code{biocmask} utilizes its own version of \code{rlang::.data} pronouns. These may be
+\code{plyxp} utilizes its own version of \code{rlang::.data} pronouns. These may be
 used to gain access to other evaluation contexts for a managed set of
 data-masks.
 
-Similar to \code{rlang::.data}, \code{biocmask::.assays} and other exported pronouns
-are exported to pass R CMD Checks. When using a \code{biocmask} within your package,
-import the associated pronoun from \code{biocmask} but only use the fully unqualified
+Similar to \code{rlang::.data}, \code{plyxp::.assays} and other exported pronouns
+are exported to pass R CMD Checks. When using a \code{plyxp} within your package,
+import the associated pronoun from \code{plyxp} but only use the fully unqualified
 name, \code{.assays}, \code{.assays_asis}, etc.
 }
 \examples{

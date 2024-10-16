@@ -2,8 +2,8 @@
 % Please edit documentation in R/print.R
 \name{vec_phantom}
 \alias{vec_phantom}
-\alias{biocmask-printing}
-\alias{biocmask_pillar_format}
+\alias{plyxp-printing}
+\alias{plyxp_pillar_format}
 \alias{show_tidy}
 \alias{use_show_tidy}
 \alias{use_show_default}
@@ -11,7 +11,7 @@
 \usage{
 vec_phantom(x)
 
-biocmask_pillar_format(x, ...)
+plyxp_pillar_format(x, ...)
 
 show_tidy(x, ...)
 
@@ -25,20 +25,20 @@ use_show_default()
 \item{...}{other arguments passed from \code{\link[pillar:pillar_shaft]{pillar_shaft}}}
 }
 \value{
-\code{biocmask_pillar_format} -> formatted version of your S4 vector
+\code{plyxp_pillar_format} -> formatted version of your S4 vector
 \code{vec_phantom} -> integer vector with arbitrary object in \code{phatomData} attribute.
 }
 \description{
-\code{biocmask} uses \link[pillar:pillar-package]{pillar} for its printing.
+\code{plyxp} uses \link[pillar:pillar-package]{pillar} for its printing.
 If you want to change how your S4 object is printed within
-\code{biocmask}'s print method, consider writing a method for
+\code{plyxp}'s print method, consider writing a method for
 this function.
 
-To print S4 objects in a tibble, \code{biocmask} hacks a custom
+To print S4 objects in a tibble, \code{plyxp} hacks a custom
 integer vector built from \code{\link[vctrs:new_vctr]{vctrs}} where
 the S4 object lives in an attribute named "phantomData".
 You can create your own S4 phantom vector with \code{vec_phantom()}.
-This function is not used outside of printing for \code{biocmask}
+This function is not used outside of printing for \code{plyxp}
 
 The default method for formatting a \code{vec_phantom()} is to call
 \code{\link[S4Vectors:show-utils]{showAsCell()}}.
@@ -46,7 +46,7 @@ The default method for formatting a \code{vec_phantom()} is to call
 \section{tidy printing}{
 
 
-By default, \code{biocmask} will not affect the show method for
+By default, \code{plyxp} will not affect the show method for
 \code{SummarizedExperiment} objects. In order to use a tibble abstraction, use
 \code{use_show_tidy()} to enable or \code{use_show_default()} to disable this feature.
 These functions are called for their side effects, modifying the global
@@ -63,16 +63,16 @@ if(require("IRanges")) {
   phantom <- vec_phantom(ilist)
   pillar::pillar_shaft(phantom)
   
-  biocmask_pillar_format.CompressedIntegerList <- function(x) {
+  plyxp_pillar_format.CompressedIntegerList <- function(x) {
    sprintf("Int: [\%i]", lengths(x))
   }
   pillar::pillar_shaft(phantom)
-  rm(biocmask_pillar_format.CompressedIntegerList)
+  rm(plyxp_pillar_format.CompressedIntegerList)
 }
 
 # default printing
 se_simple
-# use `biocmask` tibble abstraction
+# use `plyxp` tibble abstraction
 use_show_tidy()
 se_simple
 # restore default print

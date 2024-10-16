@@ -11,7 +11,7 @@
 
 \item{...}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> one or more selection
 expressions. Supports wrapping expressions within the
-<\code{\link[=biocmask-context]{biocmask-contexts}}>.}
+<\code{\link[=plyxp-context]{plyxp-contexts}}>.}
 }
 \value{
 an object inheriting SummarizedExperiment class
@@ -21,7 +21,7 @@ Select one or more values from each context. By default omitting an expression
 for a context is the same as selecting NOTHING from that context.
 
 The <\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> implementation within
-\code{biocmask} is almost similar to \code{dplyr} except when used within the
+\code{plyxp} is almost similar to \code{dplyr} except when used within the
 \code{across()} function. When used from \code{accross()}, the data provided to
 \link[tidyselect:eval_select]{eval_select} is a zero length slice of the data.
 This was an intentional choice to prevent the evaluation of potentionally

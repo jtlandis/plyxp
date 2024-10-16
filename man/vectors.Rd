@@ -27,7 +27,7 @@ S7 class union or base class
 \description{
 A set of S7 classes and Class unions that help establish S7 method dispatch.
 These classes were made to re-export several \code{vctrs} functions such that
-internals for \code{biocmask} were consistent with room for optimization.
+internals for \code{plyxp} were consistent with room for optimization.
 }
 \seealso{
 \code{\link[=vec_rep]{vec_rep()}},\code{\link[=vec_recycle]{vec_recycle()}},\code{\link[=vec_slice]{vec_slice()}}

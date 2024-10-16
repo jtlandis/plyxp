@@ -12,7 +12,7 @@
 \arguments{
 \item{.data}{a SummarizedExperiment object}
 
-\item{...}{\link[=biocmask-context]{contextual expressions} specifying
+\item{...}{\link[=plyxp-context]{contextual expressions} specifying
 which columns to ungroup. Omitting \code{...} ungroups the entire object.}
 
 \item{.add}{When \code{FALSE}, the default, \code{group_by()} will override
