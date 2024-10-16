@@ -2,7 +2,7 @@
 
 bm <- new_plyxp_manager(se_simple)
 gbm <- group_by(se_simple, rows(direction), cols(condition)) |>
-  new_plyxp_manager()
+  plyxp:::new_plyxp_manager()
 
 test_that("`new_plyxp_manager` returns an R6 `plyxp_manager`", {
   expect_s3_class(bm, "R6")

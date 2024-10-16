@@ -8,9 +8,9 @@
 # cols_mask <- bm$masks[["rows"]]
 
 test_that("evaluation works", {
-  bm <- new_plyxp_manager(se_simple)
+  bm <- plyxp:::new_plyxp_manager(se_simple)
   expect_error(bm$eval(rlang::quo("foo")), "requires quosure from")
-  quo  <- plyxp_quos(foo = rep(1L, n()), 
+  quo  <- plyxp:::plyxp_quos(foo = rep(1L, n()), 
                         rows(foo = rep(1L, n())),
                         cols(foo = rep(1L, n())),
                         .ctx_default = "assays",

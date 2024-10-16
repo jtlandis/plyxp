@@ -1,4 +1,4 @@
-quos <- plyxp_quos(
+quos <- plyxp:::plyxp_quos(
   foo,
   ctx2(foo),
   ctx3(foo),
