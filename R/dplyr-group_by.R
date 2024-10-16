@@ -39,12 +39,12 @@ group_by.SummarizedExperiment <- function(.data, ..., .add = FALSE) {
   # force any computations to occur on ungrouped data
   .groups <- metadata(.data)[["group_data"]]
   metadata(.data)[["group_data"]] <- NULL
-  mask <- new_biocmask_manager.SummarizedExperiment(obj = .data)
-  poke_ctx_local("biocmask:::caller_env", .env)
-  poke_ctx_local("biocmask:::manager", mask)
-  poke_ctx_local("biocmask:::dplyr_verb", "group_by")
-  quos <- biocmask_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "biocmask:::ctx")
+  mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
+  poke_ctx_local("plyxp:::caller_env", .env)
+  poke_ctx_local("plyxp:::manager", mask)
+  poke_ctx_local("plyxp:::dplyr_verb", "group_by")
+  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
     abort(
       message = c(
@@ -56,7 +56,7 @@ group_by.SummarizedExperiment <- function(.data, ..., .add = FALSE) {
     )
   }
   nms  <- names(quos)
-  mask <- biocmask_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   results <- mask$results()
   # nms <- names(results$assays)
   # for (i in seq_along(results$assays)) {
@@ -79,7 +79,7 @@ group_by.SummarizedExperiment <- function(.data, ..., .add = FALSE) {
       results$rows <- curr
     }
   }
-  groups <- biocmask_groups(
+  groups <- plyxp_groups(
     row_groups = results$rows,
     col_groups = results$cols
   )
@@ -124,11 +124,11 @@ group_by.SummarizedExperiment <- function(.data, ..., .add = FALSE) {
 #' @describeIn group_by.SummarizedExperiment Ungroup a SummarizedExperiment object
 #' 
 #' @param x A SummarizedExperiment object
-#' @param ... [contextual expressions][biocmask::biocmask-context] specifying 
+#' @param ... [contextual expressions][plyxp::plyxp-context] specifying 
 #' which columns to ungroup. Omitting `...` ungroups the entire object.
 #' @export
 ungroup.SummarizedExperiment <- function(x, ...) {
-  quos <- biocmask_quos(..., .named = FALSE, .ctx_default = "assays",
+  quos <- plyxp_quos(..., .named = FALSE, .ctx_default = "assays",
                         .ctx_opt = c("rows", "cols"))
   curr_groups <- metadata(x)[["group_data"]]
   if (is_empty(curr_groups)) return(x)
@@ -137,7 +137,7 @@ ungroup.SummarizedExperiment <- function(x, ...) {
     metadata(x)["group_data"] <- NULL
     return(x)
   }
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "biocmask:::ctx")
+  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
     abort(
       message = c(
@@ -193,7 +193,7 @@ groups.SummarizedExperiment <- function(x) {
   )
 }
 
-biocmask_curr_groups <- function(x) {
+plyxp_curr_groups <- function(x) {
   vars <- groups(x)
   row_v <- if (is_empty(vars$row_groups)) {
     NULL

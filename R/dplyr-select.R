@@ -6,7 +6,7 @@
 #' for a context is the same as selecting NOTHING from that context. 
 #' 
 #' The <[`tidy-select`][dplyr::dplyr_tidy_select]> implementation within 
-#' `biocmask` is almost similar to `dplyr` except when used within the
+#' `plyxp` is almost similar to `dplyr` except when used within the
 #' `across()` function. When used from `accross()`, the data provided to
 #' [eval_select][tidyselect::eval_select] is a zero length slice of the data.
 #' This was an intentional choice to prevent the evaluation of potentionally 
@@ -18,7 +18,7 @@
 #' @param .data a `SummarizedExperiment` object
 #' @param ... <[`tidy-select`][dplyr::dplyr_tidy_select]> one or more selection 
 #' expressions. Supports wrapping expressions within the 
-#' <[`biocmask-contexts`][biocmask::biocmask-context]>.
+#' <[`plyxp-contexts`][plyxp::plyxp-context]>.
 #' @return an object inheriting SummarizedExperiment class
 #' @examples
 #' 
@@ -50,14 +50,14 @@
 select.SummarizedExperiment <- function(.data, ...) {
   
   .env <- caller_env()
-  poke_ctx_local("biocmask:::caller_env", .env)
-  poke_ctx_local("biocmask:::dplyr_verb", "select")
-  quos <- biocmask_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "biocmask:::ctx")
+  poke_ctx_local("plyxp:::caller_env", .env)
+  poke_ctx_local("plyxp:::dplyr_verb", "select")
+  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   nms  <- names(quos)
   
   
-  selected <- biocmask_eval_select(
+  selected <- plyxp_eval_select(
     quos = quos, ctxs = ctxs, data = .data
   )
   
@@ -71,8 +71,8 @@ select.SummarizedExperiment <- function(.data, ...) {
 }
 
 # underlying selection function. This may need to be an S3 generic
-# for when `biocmask` extends to other classes
-biocmask_eval_select <- function(quos, ctxs, data) {
+# for when `plyxp` extends to other classes
+plyxp_eval_select <- function(quos, ctxs, data) {
   
   out <- vector("list", length(quos))
   .data <- list(

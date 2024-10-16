@@ -34,14 +34,14 @@
 #' @export
 arrange.SummarizedExperiment <- function(.data, ..., .by_group = FALSE) {
   .env <- caller_env()
-  quos <- biocmask_quos(..., .ctx_default = "assays",
+  quos <- plyxp_quos(..., .ctx_default = "assays",
                         .ctx_opt = c("rows", "cols"))
   if (.by_group) {
-    quos <- c(biocmask_quos(!!!biocmask_curr_groups(.data),
+    quos <- c(plyxp_quos(!!!plyxp_curr_groups(.data),
                             .ctx_default = "assays",
                             .ctx_opt = c("rows", "cols")), quos)
   }
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "biocmask:::ctx")
+  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
     abort(
       message = c(
@@ -56,11 +56,11 @@ arrange.SummarizedExperiment <- function(.data, ..., .by_group = FALSE) {
   # to make this function consistent
   groups <- group_data(.data)
   metadata(.data)[["group_data"]] <- NULL
-  mask <- new_biocmask_manager.SummarizedExperiment(obj = .data)
-  poke_ctx_local("biocmask:::caller_env", .env)
-  poke_ctx_local("biocmask:::manager", mask)
-  poke_ctx_local("biocmask:::dplyr_verb", "arrange")
-  mask <- biocmask_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
+  poke_ctx_local("plyxp:::caller_env", .env)
+  poke_ctx_local("plyxp:::manager", mask)
+  poke_ctx_local("plyxp:::dplyr_verb", "arrange")
+  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   results <- mask$results()
   type <- ""
   if (!is_empty(results$rows)) {

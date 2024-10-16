@@ -11,11 +11,11 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
     quote({
       #assumes !!name_sym is a matrix, if the user transforms a value in
       # assays to a non-matrix, and trys to access it, it may be incorrect
-      chops <- `biocmask:::assays:::current_chops`
+      chops <- `plyxp:::assays:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
       as_is <- do.call("cbind", data_chop)
       if (length(chops) > 1) {
-        col_ind <- attr(.indices, "biocmask:::col_chop_ind") |>
+        col_ind <- attr(.indices, "plyxp:::col_chop_ind") |>
           .subset(chops)
         tryCatch({
           as_is <- as_is[,order(list_unchop(col_ind)), drop = FALSE]
@@ -35,7 +35,7 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(lapply(seq_len(`biocmask:::ctx:::n`), function(i,x) x[i,,drop=TRUE], x = !!name_sym)),
+    quote(lapply(seq_len(`plyxp:::ctx:::n`), function(i,x) x[i,,drop=TRUE], x = !!name_sym)),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -63,11 +63,11 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
     quote({
       #assumes !!name_sym is a matrix, if the user transforms a value in
       # assays to a non-matrix, and trys to access it, it may be incorrect
-      chops <- `biocmask:::assays:::current_chops`
+      chops <- `plyxp:::assays:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
       as_is <- do.call("rbind", data_chop)
       if (length(chops) > 1) {
-        row_ind <- attr(.indices, "biocmask:::row_chop_ind") |>
+        row_ind <- attr(.indices, "plyxp:::row_chop_ind") |>
           .subset(chops)
         tryCatch({
           as_is <- as_is[order(list_unchop(row_ind)),, drop = FALSE]
@@ -87,7 +87,7 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(lapply(seq_len(`biocmask:::ctx:::n`), function(i,x) x[,i,drop=TRUE], x = !!name_sym)),
+    quote(lapply(seq_len(`plyxp:::ctx:::n`), function(i,x) x[,i,drop=TRUE], x = !!name_sym)),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -115,14 +115,14 @@ connect_rows_to_assays <- function(mask_rows, mask_assays) {
   # assays is always the "richer" grouping, we can guarantee
   # that the current_chops scope has a scalar value
   fun_asis <- add_bind(
-    quote(.subset2(!!name_sym, `biocmask:::rows:::current_chops`)),
+    quote(.subset2(!!name_sym, `plyxp:::rows:::current_chops`)),
     # should be evaluated within the chopped context, cannot guarantee groupings
     .env_expr = mask_rows$environments@env_data_chop,
     .env_bind = env_asis,
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(vec_rep(!!name_sym, times = `biocmask:::ctx:::ncol`)),
+    quote(vec_rep(!!name_sym, times = `plyxp:::ctx:::ncol`)),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -150,13 +150,13 @@ connect_cols_to_assays <- function(mask_cols, mask_assays) {
   # assays is always the "richer" grouping, we can guarantee
   # that the current_chops scope has a scalar value
   fun_asis <- add_bind(
-    quote(.subset2(!!name_sym, `biocmask:::cols:::current_chops`)),
+    quote(.subset2(!!name_sym, `plyxp:::cols:::current_chops`)),
     .env_expr = mask_cols$environments@env_data_chop,
     .env_bind = env_asis,
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(vec_rep_each(!!name_sym, times = `biocmask:::ctx:::nrow`)),
+    quote(vec_rep_each(!!name_sym, times = `plyxp:::ctx:::nrow`)),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -186,8 +186,8 @@ connect_rows_to_cols <- function(mask_rows, mask_cols) {
     # row data may be grouped. use vctrs::vec_c to concatenate vectors
     quote({
       
-      # browser();vec_c(splice(.subset(!!name_sym, `biocmask:::rows:::current_chops`)))
-      chops <- `biocmask:::rows:::current_chops`
+      # browser();vec_c(splice(.subset(!!name_sym, `plyxp:::rows:::current_chops`)))
+      chops <- `plyxp:::rows:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
       as_is <- vec_c(splice(data_chop))
       if (length(chops) > 1) {
@@ -201,7 +201,7 @@ connect_rows_to_cols <- function(mask_rows, mask_cols) {
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(vec_rep(list(!!name_sym), times = `biocmask:::ctx:::n`)),
+    quote(vec_rep(list(!!name_sym), times = `plyxp:::ctx:::n`)),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -231,8 +231,8 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
     # col data may be grouped. use vctrs::vec_c to concatenate vectors
     quote({
       
-      # browser();vec_c(splice(.subset(!!name_sym, `biocmask:::cols:::current_chops`))))
-      chops <- `biocmask:::cols:::current_chops`
+      # browser();vec_c(splice(.subset(!!name_sym, `plyxp:::cols:::current_chops`))))
+      chops <- `plyxp:::cols:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
       as_is <- vec_c(splice(data_chop))
       if (length(chops) > 1) {
@@ -246,7 +246,7 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(vec_rep(list(!!name_sym), times = `biocmask:::ctx:::n`)),
+    quote(vec_rep(list(!!name_sym), times = `plyxp:::ctx:::n`)),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"

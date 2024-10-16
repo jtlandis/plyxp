@@ -1,6 +1,6 @@
 
-#' @title biocmask contexts
-#' @name biocmask-context
+#' @title plyxp contexts
+#' @name plyxp-context
 #' @description
 #' Contextual user-facing helper function for dplyr verbs with SummarizedExperiment
 #' objects. These functions are intended to be used as the top level call to
@@ -22,7 +22,7 @@
 #' 
 NULL
 
-#' @rdname biocmask-context 
+#' @rdname plyxp-context 
 #' @description
 #' Specifies that the following expressions should be evaluated within the 
 #' colData context.
@@ -31,7 +31,7 @@ cols <- function(...) {
   abort("`cols()` is a sentinal function for SummarizedExperiment dplyr verbs")
 }
 
-#' @rdname biocmask-context 
+#' @rdname plyxp-context 
 #' @description
 #' Specifies that the following expressions should be evaluated within the 
 #' rowData context.
@@ -41,14 +41,14 @@ rows <- function(...) {
 }
 
 
-#' @rdname biocmask-context
+#' @rdname plyxp-context
 #' @description
 #' Specify a single expression to evaluate in another context
 #' 
 #' @export
 col_ctx <- function(x, asis = FALSE) {
-  env <- peek_ctx("biocmask:::caller_env")
-  biocmanager <- peek_ctx("biocmask:::manager")
+  env <- peek_ctx("plyxp:::caller_env")
+  biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
   if (ctx=="cols") abort("`col_ctx()` within cols(...) is redunant")
   quo <- new_quosure(enexpr(x), env = env)
@@ -60,14 +60,14 @@ col_ctx <- function(x, asis = FALSE) {
   eval_tidy(quo, data = mask, env = env)
 }
 
-#' @rdname biocmask-context
+#' @rdname plyxp-context
 #' @description
 #' Specify a single expression to evaluate in another context
 #' 
 #' @export
 row_ctx <- function(x, asis = FALSE) {
-  env <- peek_ctx("biocmask:::caller_env")
-  biocmanager <- peek_ctx("biocmask:::manager")
+  env <- peek_ctx("plyxp:::caller_env")
+  biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
   if (ctx=="rows") abort("`row_ctx()` within rows(...) is redunant")
   quo <- new_quosure(enexpr(x), env = env)
@@ -79,14 +79,14 @@ row_ctx <- function(x, asis = FALSE) {
   eval_tidy(quo, data = mask, env = env)
 }
 
-#' @rdname biocmask-context
+#' @rdname plyxp-context
 #' @description
 #' Specify a single expression to evaluate in another context
 #' 
 #' @export
 assay_ctx <- function(x, asis = FALSE) {
-  env <- peek_ctx("biocmask:::caller_env")
-  biocmanager <- peek_ctx("biocmask:::manager")
+  env <- peek_ctx("plyxp:::caller_env")
+  biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
   if (ctx=="assays") abort("`assay_ctx()` at top level ... is redundant")
   quo <- new_quosure(enexpr(x), env = env)
@@ -100,15 +100,15 @@ assay_ctx <- function(x, asis = FALSE) {
 
 
 #' @name dot-pronouns
-#' @title contextual biocmask pronouns
+#' @title contextual plyxp pronouns
 #' @description
-#' `biocmask` utilizes its own version of `rlang::.data` pronouns. These may be
+#' `plyxp` utilizes its own version of `rlang::.data` pronouns. These may be
 #' used to gain access to other evaluation contexts for a managed set of 
 #' data-masks.
 #' 
-#' Similar to `rlang::.data`, `biocmask::.assays` and other exported pronouns 
-#' are exported to pass R CMD Checks. When using a `biocmask` within your package,
-#' import the associated pronoun from `biocmask` but only use the fully unqualified 
+#' Similar to `rlang::.data`, `plyxp::.assays` and other exported pronouns 
+#' are exported to pass R CMD Checks. When using a `plyxp` within your package,
+#' import the associated pronoun from `plyxp` but only use the fully unqualified 
 #' name, `.assays`, `.assays_asis`, etc.
 #' @return access to specific values behind the rlang pronoun
 #' @examples

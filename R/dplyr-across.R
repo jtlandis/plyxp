@@ -9,7 +9,7 @@
 #' @param mask the R6 mask-manager of all `rlang` data mask contexts
 #' @param error_call function call to report there was an error if one is raised
 #' @noRd
-expand_across <- function(quo, ctx = attr(quo, "biocmask:::ctx"),
+expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
                           mask, error_call) {
   
   
@@ -41,7 +41,7 @@ expand_across <- function(quo, ctx = attr(quo, "biocmask:::ctx"),
     fns <- NULL
   }
   
-  setup <- biocmask_across_setup(!!cols, fns = fns, names = eval(expr$.names),
+  setup <- plyxp_across_setup(!!cols, fns = fns, names = eval(expr$.names),
                                  mask = mask$masks[[ctx]], manager = mask, 
                                  error_call = error_call, .caller_env = env,
                                  ctx = ctx)
@@ -64,7 +64,7 @@ expand_across <- function(quo, ctx = attr(quo, "biocmask:::ctx"),
       fn <- fns[[j]]
       fn_call <- as_across_expr(fn, var)
       name <- names[[k]]
-      expressions[[k]] <- biocmask_quo(fn_call, 
+      expressions[[k]] <- plyxp_quo(fn_call, 
                                        ctx = ctx, env = env,
                                        name = name, 
                                        is_named = TRUE, 
@@ -106,7 +106,7 @@ expand_across <- function(quo, ctx = attr(quo, "biocmask:::ctx"),
 #' @param .caller_env environment the original quosure sure be evaluated within
 #' @param error_call function call to report there was an error if one is raised
 #' @noRd
-biocmask_across_setup <- function(cols, fns, names, mask, ctx,
+plyxp_across_setup <- function(cols, fns, names, mask, ctx,
                                   manager, .caller_env, error_call) {
   cols <- enquo(cols)
   if (is.null(fns) && quo_is_call(cols, "~")) {
@@ -180,7 +180,7 @@ biocmask_across_setup <- function(cols, fns, names, mask, ctx,
 #' @name dplyr_across_internals
 #' @description
 #' the following functions were taken verbatim from the `dplyr` package such 
-#' that behaviors of `across()` were consistent between `dplyr` and `biocmask`
+#' that behaviors of `across()` were consistent between `dplyr` and `plyxp`
 #' @keywords internal 
 #' @noRd
 expr_substitute <- function(expr, old, new) 
