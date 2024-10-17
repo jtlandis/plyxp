@@ -32,7 +32,7 @@ exported functions available from \code{plyxp}
 \examples{
 
 arrange(se_simple, rows(direction)) |>
-  mutate(logp_counts = logp(counts)) |>
+  mutate(logp_counts = log1p(counts)) |>
   filter(cols(condition=="drug"))
 
 }
