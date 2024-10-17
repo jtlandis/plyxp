@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   plyxp: plyxp.html
-last_built: 2024-10-17T02:33Z
+last_built: 2024-10-17T02:48Z
 urls:
-  reference: https://jtlandis.github.io/biocmask/reference
-  article: https://jtlandis.github.io/biocmask/articles
+  reference: https://jtlandis.github.io/plyxp/reference
+  article: https://jtlandis.github.io/plyxp/articles
