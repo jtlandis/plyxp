@@ -5,6 +5,12 @@
 #' @name reexports
 #' @returns 
 #' exported functions available from `plyxp`
+#' @examples
+#' 
+#' arrange(se_simple, rows(direction)) |>
+#'   mutate(logp_counts = logp(counts)) |>
+#'   filter(cols(condition=="drug"))
+#' 
 NULL
 
 #' @export

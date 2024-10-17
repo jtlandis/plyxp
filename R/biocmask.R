@@ -1,3 +1,4 @@
+# @seealso [plyxp::PlyxpMaskManager]
 
 #' @title New Biocmask
 #' @name new_plyxp_manager
@@ -6,7 +7,6 @@
 #' @param obj Dispatch Object
 #' @param ... Not used
 #' @return a plyxp_manager R6 class object
-#' @seealso [plyxp::PlyxpMaskManager]
 #' @keywords internal
 #' @noRd
 #' @examples
@@ -30,6 +30,7 @@ new_plyxp_manager <- function(obj, ...) {
   UseMethod("new_plyxp_manager")
 }
 
+#' @export
 new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   groups <- group_details(obj)
   expanded <- expand_groups2(groups$row_groups, groups$col_groups)

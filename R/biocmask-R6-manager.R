@@ -4,19 +4,21 @@ abort_invalid_quo <- function() {
   )
 }
 
+# [`new_plyxp_manager()`][plyxp::new_plyxp_manager]
+
 #' @title `plyxp` Data Mask Manager
 #' @name PlyxpMaskManager
 #' @description
 #' This object organizes serveral plyxps, allowing
 #' expressions to be evaluated in different contexts. This object is the return
-#' value of [`new_plyxp_manager()`][plyxp::new_plyxp_manager]
+#' value of `new_plyxp_manager()`s
 #'
 #' The "connectedness" of each mask managed by this object is dependent on the
 #' developer. The plyxps passed to `.mask` argument may stem from the same
 #' shared environment, or may have cyclical relationships.
 #' @return An R6 object inheriting `plyxp_manager`
 #'
-#'
+#' @noRd
 plyxp_manager <- R6::R6Class(
   "plyxp_manager",
   public = list(

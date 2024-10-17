@@ -29,6 +29,13 @@
 \value{
 exported functions available from \code{plyxp}
 }
+\examples{
+
+arrange(se_simple, rows(direction)) |>
+  mutate(logp_counts = logp(counts)) |>
+  filter(cols(condition=="drug"))
+
+}
 \keyword{internal}
 \description{
 These objects are imported from other packages. Follow the links
