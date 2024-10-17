@@ -12,6 +12,12 @@ ambiguity in outcomes.
 
 ***Note:***  This package is still under active development as of Fall 2024.
 
+## installing `plyxp`
+
+```r
+BiocManager::install("plyxp")
+```
+
 # data masking `SummarizedExperiment`
 
 \
