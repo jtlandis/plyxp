@@ -11,7 +11,7 @@ SummarizedExperiment are valid."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">biocmask</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.18</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.19</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,11 +19,11 @@ SummarizedExperiment are valid."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/biocmask.html">Get started</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/plyxp.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jtlandis/biocmask/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jtlandis/plyxp/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -33,7 +33,7 @@ SummarizedExperiment are valid."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Mutate a SummarizedExperiment object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/jtlandis/biocmask/blob/HEAD/R/dplyr-mutate.R" class="external-link"><code>R/dplyr-mutate.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/main/R/dplyr-mutate.R" class="external-link"><code>R/dplyr-mutate.R</code></a></small>
       <div class="d-none name"><code>mutate.SummarizedExperiment.Rd</code></div>
     </div>
 
@@ -75,10 +75,10 @@ SummarizedExperiment are valid."></head><body>
 <span class="r-in"><span>    <span class="co"># access assays context with ".assays" pronoun,</span></span></span>
 <span class="r-in"><span>    <span class="co"># note that assays are sliced into a list to </span></span></span>
 <span class="r-in"><span>    <span class="co"># fit dimensions of cols context</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="biocmask-context.html">cols</a></span><span class="op">(</span>sum <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">.assays</span><span class="op">$</span><span class="va">counts</span>, <span class="va">sum</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="plyxp-context.html">cols</a></span><span class="op">(</span>sum <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">.assays</span><span class="op">$</span><span class="va">counts</span>, <span class="va">sum</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="co"># access assays context "asis" with the same pronoun</span></span></span>
 <span class="r-in"><span>    <span class="co"># but with a "_asis" suffix.</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="biocmask-context.html">rows</a></span><span class="op">(</span>sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">counts</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="plyxp-context.html">rows</a></span><span class="op">(</span>sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">counts</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class: SummarizedExperiment </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dim: 5 4 </span>

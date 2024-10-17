@@ -12,7 +12,7 @@ This method will naively call the [ method for any S4 class that inherits
 from the S4Vectors::Vector class. This may not be a very efficient way to
 slice up an S4 class, but will work.
 With this implementation, the x@mcol data is expected to be retained after
-a call to biocmask::vec_slice(x, i).
+a call to plyxp::vec_slice(x, i).
 
 
 
@@ -40,13 +40,13 @@ context would force the CompressedGRangesList object to be
 chopped element-wise.
 Unfortunately, there is a massive performance hit in attempting to construct
 250,000 GRanges. Unless you do not mind waiting over an hour for each
-dplyr verb in which exons gets evaluated, consider biocmask_s4_proxy_vec().
+dplyr verb in which exons gets evaluated, consider plyxp_s4_proxy_vec().
 This attempts to reconstruct certain standard S4Vectors::Vectors as
 standard vectors or tibbles. The equivalent exons object would require
 much more memory use, but at the advantage of only taking several seconds to
 construct.When you are done, you can attempt to restore the original S4
-Vector with biocmask_restore_s4_proxy().
-biocmask_s4_proxy_vec() is faster to work with because there are less
+Vector with plyxp_restore_s4_proxy().
+plyxp_s4_proxy_vec() is faster to work with because there are less
 checks on the object validity and all @elementMetadata and @metadata are
 dropped from the objects.
 
@@ -63,7 +63,7 @@ This method will naively call the [ method for any S4 class that inherits
 from the S4Vectors::Vector class. This may not be a very efficient way to
 slice up an S4 class, but will work.
 With this implementation, the x@mcol data is expected to be retained after
-a call to biocmask::vec_slice(x, i).
+a call to plyxp::vec_slice(x, i).
 
 
 
@@ -91,13 +91,13 @@ context would force the CompressedGRangesList object to be
 chopped element-wise.
 Unfortunately, there is a massive performance hit in attempting to construct
 250,000 GRanges. Unless you do not mind waiting over an hour for each
-dplyr verb in which exons gets evaluated, consider biocmask_s4_proxy_vec().
+dplyr verb in which exons gets evaluated, consider plyxp_s4_proxy_vec().
 This attempts to reconstruct certain standard S4Vectors::Vectors as
 standard vectors or tibbles. The equivalent exons object would require
 much more memory use, but at the advantage of only taking several seconds to
 construct.When you are done, you can attempt to restore the original S4
-Vector with biocmask_restore_s4_proxy().
-biocmask_s4_proxy_vec() is faster to work with because there are less
+Vector with plyxp_restore_s4_proxy().
+plyxp_s4_proxy_vec() is faster to work with because there are less
 checks on the object validity and all @elementMetadata and @metadata are
 dropped from the objects.
 
@@ -109,7 +109,7 @@ dropped from the objects.
 
     <a class="navbar-brand me-2" href="../index.html">biocmask</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.18</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.19</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,11 +117,11 @@ dropped from the objects.
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/biocmask.html">Get started</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/plyxp.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jtlandis/biocmask/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jtlandis/plyxp/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -131,7 +131,7 @@ dropped from the objects.
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get observations of a vector</h1>
-      <small class="dont-index">Source: <a href="https://github.com/jtlandis/biocmask/blob/HEAD/R/vctrs-S4-slice.R" class="external-link"><code>R/vctrs-S4-slice.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/main/R/vctrs-S4-slice.R" class="external-link"><code>R/vctrs-S4-slice.R</code></a></small>
       <div class="d-none name"><code>vctrs_slice.Rd</code></div>
     </div>
 
@@ -149,7 +149,7 @@ framework for working with base R vectors and <code>S4Vectors</code>.</p><div cl
 from the <code><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">S4Vectors::Vector</a></code> class. This may not be a very efficient way to
 slice up an S4 class, but will work.</p>
 <p>With this implementation, the <code>x@mcol</code> data is expected to be retained after
-a call to <code>biocmask::vec_slice(x, i)</code>.</p>
+a call to <code>plyxp::vec_slice(x, i)</code>.</p>
 </div>
 
 <div class="section">
@@ -177,13 +177,13 @@ context would force the <code>CompressedGRangesList</code> object to be
 chopped element-wise.</p>
 <p>Unfortunately, there is a massive performance hit in attempting to construct
 250,000 <code>GRanges</code>. Unless you do not mind waiting over an hour for each
-<code>dplyr</code> verb in which <code>exons</code> gets evaluated, consider <code>biocmask_s4_proxy_vec()</code>.
+<code>dplyr</code> verb in which <code>exons</code> gets evaluated, consider <code>plyxp_s4_proxy_vec()</code>.
 This attempts to reconstruct certain standard <code>S4Vectors::Vectors</code> as
 standard vectors or tibbles. The equivalent <code>exons</code> object would require
 much more memory use, but at the advantage of only taking several seconds to
 construct.When you are done, you can attempt to restore the original S4
-Vector with <code>biocmask_restore_s4_proxy()</code>.</p>
-<p><code>biocmask_s4_proxy_vec()</code> is faster to work with because there are less
+Vector with <code>plyxp_restore_s4_proxy()</code>.</p>
+<p><code>plyxp_s4_proxy_vec()</code> is faster to work with because there are less
 checks on the object validity and all <code>@elementMetadata</code> and <code>@metadata</code> are
 dropped from the objects.</p>
 </div>
