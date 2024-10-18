@@ -3,7 +3,7 @@
 \docType{data}
 \name{se_simple}
 \alias{se_simple}
-\title{Biocmask Simple Example Summarized Experiment}
+\title{Plyxp Simple Example Summarized Experiment}
 \format{
 \subsection{\code{se_simple}}{
 

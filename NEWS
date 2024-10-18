@@ -2,29 +2,29 @@
 
 * Package renamed to `plyxp` to be more specific about its functionality
 
-## biocmask 0.99.18
+## plyxp 0.99.18
 
 * messages checking for conflicts use `cli::` methods for pretty printing
 * Vignette typo correction
 
-## biocmask 0.99.13
+## plyxp 0.99.13
 
 * `print.SummarizedExperiment` has been renamed to 
   `show_tidy.SummarizedExperiment` and `show_tidy` is exported as an S3 generic.
 * Adjust show function display original show method by default. using 
   `show_tidy()` is now opt-in via options or `use_show_tidy()`.
 * Verbose messages checking if `tidySummarizedExperiment` is already attached or
-  ever becomes loaded with `biocmask`.
+  ever becomes loaded with `plyxp`.
 * change README and Vignette explaining this package provides an alternative 
   approach to `tidySummarizedExperiment` to manipulating `SummarizedExperiment`
   objects. For now they are exclusive in their functionality, but there may be
   plans to reconsile conflicts in the future!
 
-## biocmask 0.99.12
+## plyxp 0.99.12
 
 * developer subscribed to bioc-devel mailing list
 * used `<-` assignment instead of `=` in top-level functions
 
-## biocmask 0.99.11
+## plyxp 0.99.11
 
 Biocondcutor Submission version!

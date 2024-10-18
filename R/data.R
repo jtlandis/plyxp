@@ -1,4 +1,4 @@
-#' @title Biocmask Simple Example Summarized Experiment
+#' @title Plyxp Simple Example Summarized Experiment
 #' 
 #' @description
 #' A small data SummarizedExperiment Object of 20 observations, 5 rows and 4 

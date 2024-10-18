@@ -1,6 +1,6 @@
 # @seealso [plyxp::PlyxpMaskManager]
 
-#' @title New Biocmask
+#' @title New Plyxp mask
 #' @name new_plyxp_manager
 #' @description
 #' Create a plyxp for an object
