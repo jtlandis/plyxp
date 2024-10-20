@@ -86,16 +86,16 @@ add_bind <- function(.expr, .env_expr,
 ## objects
 
 #' @title `plyxp` Data Mask Object
-#' @name plyxp
+#' @name plyxp_mask
 #' @description
 #' An R6 Object that tracks bindings of a list-like object.
 #' This includes DFrame objects. There are several inherited
 #' environments that the data is stored within.
-#' 
+#'
 #' Environments:
-#' 
+#'
 #' .shared_env --> curr_group_ctx --> foreign --> lazy --> chops --> active_mask
-#' 
+#'
 #' * .shared_env : environment provided at initialization. This may be shared
 #'                 with multiple other BiocDataMasks.
 #' * curr_group  : Currently not used.
@@ -104,8 +104,8 @@ add_bind <- function(.expr, .env_expr,
 #'                 place the pronouns into related contexts.
 #' * lazy        : A strict lazy binding to the data within `.data`. This binding
 #'                 is made only at initialization.
-#' * chops       : lazy data but chopped into list by `.indices`. New bindings 
-#'                 for this BiocDataMask context are expected to be in a 
+#' * chops       : lazy data but chopped into list by `.indices`. New bindings
+#'                 for this BiocDataMask context are expected to be in a
 #'                 "chopped" format and are assigned here.
 #' * active_mask : An active binding to chops in which the proper list index is
 #'                 used depending on the current group context. The current group
@@ -116,21 +116,21 @@ add_bind <- function(.expr, .env_expr,
 #' @return an R6 object of class `plyxp`
 #' @examples
 #' # note: this R6 class is not exported at this moment
-#' 
-#' mask <- getNamespace("plyxp")$plyxp$new(iris,
+#'
+#' mask <- getNamespace("plyxp")$plyxp_masknew(iris,
 #'                      .env_bot = rlang::env(`plyxp:::ctx:::group_id` = 1L))
 #' mask$eval(quote(Sepal.Width))
-#' 
-#' 
+#'
+#'
 #' @noRd
-plyxp <- R6::R6Class(
-  "plyxp",
+plyxp_mask <- R6::R6Class(
+  "plyxp_mask",
   cloneable = FALSE,
   public = list(
     #' @description
     #' Create a plyxp from `.data`. `.data` is chopped by
     #' `.indices`, and environments are built from `.env`
-    #' 
+    #'
     #' @param .data a named list like object to create a mask
     #' @param .indices the indices that will be used to chop `.data`
     #' @param .env_bot an environment that the resulting mask will be built from.
@@ -154,7 +154,7 @@ plyxp <- R6::R6Class(
 
       # get current chop
       private$init_mask_bind()
-      
+
       private$init_environments()
       invisible(self)
 
@@ -162,7 +162,7 @@ plyxp <- R6::R6Class(
     #' @description
     #' appends a callback function that is executed after a value is bound
     #' to this mask. Mainly used to inform other masks of new values
-    #' 
+    #'
     #' @param .fun a function created from `add_bind()`
     on_bind = function(.fun) {
       private$.on_bind <- append(private$.on_bind, .fun)
@@ -170,7 +170,7 @@ plyxp <- R6::R6Class(
     },
     #' @description
     #' binds value to an name within the chops environment.
-    #' 
+    #'
     #' @param name a character scalar
     #' @param value results from `$eval` in the form of chops
     bind = function(name, value) {
@@ -340,14 +340,14 @@ plyxp <- R6::R6Class(
         private$env_mask_bind,
         !!name := fun
       )
-      
-      
+
+
       needs_unbind <- name %in% private$.names
       private$.names[name] <- name
       private$.added[name] <- name
       private$.ptype[[name]] <- vec_slice(value[[1]], 0L)
       invisible(needs_unbind)
-      
+
     },
     .on_bind = list(),
 
@@ -390,22 +390,22 @@ plyxp <- R6::R6Class(
 
 
 #' @title `plyxp` for SummarizedExperiment `assays()`
-#' @name BiocDataMask-assays
+#' @name plyxp_mask-assays
 #' @description
-#' A more specialized version of the plyxp R6 object for the 
-#' assays list object. This includes chopping and unchopping 
+#' A more specialized version of the plyxp R6 object for the
+#' assays list object. This includes chopping and unchopping
 #' of matrix like objects.
 #' @return an object inheriting [`plyxp`][plyxp::BiocDataMask].
 #' @noRd
 plyxp_assay <- R6::R6Class(
   "plyxp_assay",
-  inherit = plyxp, 
+  inherit = plyxp_mask,
   cloneable = FALSE,
   public = list(
     #' @description
     #' Create a plyxp from `.data`. `.data` is chopped by
     #' `.indices`, and environments are built from `.env`
-    #' 
+    #'
     #' @param .data a named list like object to create a mask
     #' @param .indices the indices that will be used to chop `.data`
     #' @param .env_bot an environment that the resulting mask will be built from.
@@ -420,8 +420,8 @@ plyxp_assay <- R6::R6Class(
       )
       private$.nrow <- .nrow
       private$.ncol <- .ncol
-      
-  
+
+
 
     },
     #' @description

@@ -2,7 +2,6 @@
 % Please edit documentation in R/plyxp-package.R
 \docType{package}
 \name{plyxp-package}
-\alias{plyxp}
 \alias{plyxp-package}
 \title{plyxp: Data masks for SummarizedExperiment enabling dplyr-like manipulation}
 \value{
