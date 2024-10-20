@@ -10,22 +10,24 @@
 #' @keywords internal
 #' @noRd
 #' @examples
-#'  
+#'
 #' manager <- new_plyxp_manager(se_simple)
 #' manager$ctx
-#' q <- plyxp_quos(counts_1 = counts + 1,
-#'                    cols(is_drug = condition=="drug"),
-#'                    .ctx_default = "assays",
-#'                    .ctx_opt = c("rows", "cols"))
+#' q <- plyxp_quos(
+#'   counts_1 = counts + 1,
+#'   cols(is_drug = condition == "drug"),
+#'   .ctx_default = "assays",
+#'   .ctx_opt = c("rows", "cols")
+#' )
 #' manager$eval(q[[1]])
 #' manager$results()
-#' #evaluating second quo without switching contexts will error
+#' # evaluating second quo without switching contexts will error
 #' manager$eval(q[[2]]) |> try()
 #' manager$ctx <- "cols"
 #' manager$ctx
 #' manager$eval(q[[2]])
 #' manager$results()
-#' 
+#'
 new_plyxp_manager <- function(obj, ...) {
   UseMethod("new_plyxp_manager")
 }
@@ -37,32 +39,41 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   nr <- nrow(obj)
   nc <- ncol(obj)
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
-  
+
   mask_assay <- plyxp_assay$new(assays(obj),
-                                   get_group_indices(groups, expanded, "assay"),
-                                   .nrow = nr,
-                                   .ncol = nc,
-                                   .env_bot = shared_ctx_env,
-                                   .env_top = top_env)
-  mask_rows <- plyxp$new(prepend_rownames(rowData(obj), column = ".features"),
-                            get_group_indices(groups, expanded, "rowData"),
-                            .env_bot = shared_ctx_env,
-                            .env_top = top_env)
-  mask_cols <- plyxp$new(prepend_rownames(colData(obj), column = ".samples"),
-                            get_group_indices(groups, expanded, "colData"),
-                            .env_bot = shared_ctx_env,
-                            .env_top = top_env)
-  
-  extended_environments <- connect_masks(mask_assays = mask_assay,
-                                         mask_rows = mask_rows,
-                                         mask_cols = mask_cols)
-  
-  plyxp_manager$new(.data = obj,
-                       .masks = list(assays = mask_assay,
-                                     rows = mask_rows,
-                                     cols = mask_cols),
-                       .ctx_env = shared_ctx_env,
-                       .extended_env = extended_environments)
+    get_group_indices(groups, expanded, "assay"),
+    .nrow = nr,
+    .ncol = nc,
+    .env_bot = shared_ctx_env,
+    .env_top = top_env
+  )
+  mask_rows <- plyxp_mask$new(prepend_rownames(rowData(obj), column = ".features"),
+    get_group_indices(groups, expanded, "rowData"),
+    .env_bot = shared_ctx_env,
+    .env_top = top_env
+  )
+  mask_cols <- plyxp_mask$new(prepend_rownames(colData(obj), column = ".samples"),
+    get_group_indices(groups, expanded, "colData"),
+    .env_bot = shared_ctx_env,
+    .env_top = top_env
+  )
+
+  extended_environments <- connect_masks(
+    mask_assays = mask_assay,
+    mask_rows = mask_rows,
+    mask_cols = mask_cols
+  )
+
+  plyxp_manager$new(
+    .data = obj,
+    .masks = list(
+      assays = mask_assay,
+      rows = mask_rows,
+      cols = mask_cols
+    ),
+    .ctx_env = shared_ctx_env,
+    .extended_env = extended_environments
+  )
 }
 
 plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
@@ -73,9 +84,9 @@ plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
   n_quo <- length(quos)
   try_fetch(
     {
-      for(i in seq_len(n_quo)) {
+      for (i in seq_len(n_quo)) {
         quo <- quos[[i]]
-        #nm <- nams[i]
+        # nm <- nams[i]
         mask$ctx <- ctxs[[i]]
         mask$eval(quo, env = env)
       }

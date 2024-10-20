@@ -2,37 +2,44 @@
 #' @title arrange rows or columns
 #' @description
 #' `arrange()` orders either the rows or columns of a `SummarizedExperiment`
-#' object. Note, to guarentee a valid `SummarizedExperiment` is returned, 
+#' object. Note, to guarentee a valid `SummarizedExperiment` is returned,
 #' arranging in the `assays` evaluation context is disabled.
-#' 
-#' Unlike other dplyr verbs, `arrange()` largely ignores grouping. The 
+#'
+#' Unlike other dplyr verbs, `arrange()` largely ignores grouping. The
 #' `SummarizedExperiment` method also provides the same functionality via the
 #' `.by_group` argument.
-#' 
+#'
 #' @inheritParams dplyr::arrange
 #' @return an object inheriting SummarizedExperiment class
 #' @examples
-#' 
-#' #arrange within rows/cols contexts separately
-#' arrange(se_simple,
-#'         rows(direction),
-#'         cols(dplyr::desc(condition)))
-#' 
+#'
+#' # arrange within rows/cols contexts separately
+#' arrange(
+#'   se_simple,
+#'   rows(direction),
+#'   cols(dplyr::desc(condition))
+#' )
+#'
 #' # access assay data to compute arrangement
-#' arrange(se_simple, 
-#'         rows(rowSums(.assays_asis$counts)),
-#'         cols(colSums(.assays_asis$counts)))
-#' 
+#' arrange(
+#'   se_simple,
+#'   rows(rowSums(.assays_asis$counts)),
+#'   cols(colSums(.assays_asis$counts))
+#' )
+#'
 #' # assay context is disabled
 #' arrange(se_simple, counts) |> try()
-#' 
+#'
 #' # convert to `data.frame` first
 #' as.data.frame(se_simple) |>
 #'   arrange(counts)
-#' 
-#' 
+#'
 #' @export
-arrange.SummarizedExperiment <- function(.data, ..., .by_group = FALSE) {
+arrange.PlySummarizedExperiment <- function(.data, ..., .by_group = FALSE) {
+  plyxp(.data, arrange_se_impl, ..., .by_group = .by_group)
+}
+
+arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   .env <- caller_env()
   quos <- plyxp_quos(..., .ctx_default = "assays",
                         .ctx_opt = c("rows", "cols"))

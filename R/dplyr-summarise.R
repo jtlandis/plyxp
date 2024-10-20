@@ -1,5 +1,3 @@
-
-
 #' @importFrom dplyr summarize summarise
 NULL
 
@@ -7,11 +5,11 @@ NULL
 #' @param .data a SummarizedExperiment object,
 #' @param ... expressions to summarize the object
 #' @param .retain This argument controls how `rowData()` or `colData()` is retained
-#' after summarizing. When "auto" (the default), `.retain` behavior depends on 
+#' after summarizing. When "auto" (the default), `.retain` behavior depends on
 #' the groupings of `.data`. When exactly one dimension is grouped, "auto"
-#' behaves like "ungrouped-dim", and "none" otherwise. When "ungrouped-dim", 
-#' the ungrouped dimension's data are retained in the resulting 
-#' `SummarizedExperiment` object and scalar outputs are recycled to the length 
+#' behaves like "ungrouped-dim", and "none" otherwise. When "ungrouped-dim",
+#' the ungrouped dimension's data are retained in the resulting
+#' `SummarizedExperiment` object and scalar outputs are recycled to the length
 #' of the ungrouped dimension. When "none", all outputs are expected to be
 #' scalar and only computed values are retained in `rowData()` and `colData()`
 #' @return an object inheriting SummarizedExperiment class
@@ -22,43 +20,53 @@ NULL
 #' # dimension while .retain = "auto"/"ungrouped-dim"
 #' se_simple |>
 #'   group_by(rows(direction)) |>
-#'   summarise(col_sums = colSums(counts),
-#'             sample = sample(1:20, 1L))
+#'   summarise(
+#'     col_sums = colSums(counts),
+#'     sample = sample(1:20, 1L)
+#'   )
 #'
 #' # .retain = "none" will drop ungrouped dimensions and
 #' # outputs of assay context should be length 1.
 #' se_simple |>
 #'   group_by(rows(direction)) |>
-#'   summarise(col_sums = list(colSums(counts)),
-#'             .retain = "none")
+#'   summarise(
+#'     col_sums = list(colSums(counts)),
+#'     .retain = "none"
+#'   )
 #'
 #' # using an `across()` function will help
 #' # nest ungrouped dimensions
 #' se_simple |>
 #'   group_by(rows(direction)) |>
-#'   summarise(col_sums = list(colSums(counts)),
-#'             cols(across(everything(), list)),
-#'              .retain = "none")
+#'   summarise(
+#'     col_sums = list(colSums(counts)),
+#'     cols(across(everything(), list)),
+#'     .retain = "none"
+#'   )
 #'
 #' @export
-summarise.SummarizedExperiment <- function(.data, ...,
-                                           .retain = c("auto",
-                                                       "ungrouped", "none")) {
+summarise.PlySummarizedExperiment <- function(.data, ...,
+                                              .retain = c("auto", "ungrouped", "none")) {
+  plyxp(.data, summarise_se_impl, ..., .retain = .retain)
+}
 
+summarise_se_impl <- function(.data, ...,
+                              .retain = c("auto", "ungrouped", "none")) {
   .env <- caller_env()
   .groups <- metadata(.data)[["group_data"]]
   .retain <- match.arg(.retain, choices = c("auto", "ungrouped", "none"))
   .retain <- switch(.retain,
-                    auto = !is.null(.groups),
-                    ungrouped = TRUE,
-                    none = FALSE)
+    auto = !is.null(.groups),
+    ungrouped = TRUE,
+    none = FALSE
+  )
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "summarise")
   quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (! "assays" %in% ctxs) {
+  if (!"assays" %in% ctxs) {
     abort(
       message = c(
         "No assay context expression detected",
@@ -68,7 +76,7 @@ summarise.SummarizedExperiment <- function(.data, ...,
     )
   }
 
-  nms  <- names(quos)
+  nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   assay_chops <- mask_pull_chops(mask$masks[["assays"]])
   group_vars_ <- group_vars(.data)
@@ -82,8 +90,11 @@ summarise.SummarizedExperiment <- function(.data, ...,
     # get all chop data, groups and evaled
     row_chops <- mask_pull_chops(
       mask$masks[["rows"]],
-      union(group_vars_$row_groups,
-            mask$masks[["rows"]]$added))
+      union(
+        group_vars_$row_groups,
+        mask$masks[["rows"]]$added
+      )
+    )
     # some settings
     if (.retain && !grouped_rows) {
       row_chops_sizes <- .nrow <- nrow(.data)
@@ -96,7 +107,8 @@ summarise.SummarizedExperiment <- function(.data, ...,
           row_chops[group_vars_$row_groups],
           function(group_vec) {
             map(group_vec, .subset, 1L)
-          })
+          }
+        )
       }
     }
     # recycle each chop to required length
@@ -105,14 +117,17 @@ summarise.SummarizedExperiment <- function(.data, ...,
       "DFrame",
       listData = map(
         row_chops,
-        vctrs::list_unchop),
-      nrows = .nrow)
+        vctrs::list_unchop
+      ),
+      nrows = .nrow
+    )
   }
   if (grouped_cols || "cols" %in% ctxs) {
     # get all of the chops, including any groups
     col_chops <- mask_pull_chops(
       mask$masks[["cols"]],
-      union(group_vars_$col_groups, mask$masks[["cols"]]$added))
+      union(group_vars_$col_groups, mask$masks[["cols"]]$added)
+    )
     # settings
     if (.retain && !grouped_cols) {
       col_chops_sizes <- .ncol <- ncol(.data)
@@ -125,7 +140,8 @@ summarise.SummarizedExperiment <- function(.data, ...,
           col_chops[group_vars_$col_groups],
           function(group_vec) {
             map(group_vec, .subset, 1L)
-          })
+          }
+        )
       }
     }
     # recycle each chop to required length
@@ -134,12 +150,15 @@ summarise.SummarizedExperiment <- function(.data, ...,
       "DFrame",
       listData = map(
         col_chops,
-        vctrs::list_unchop),
-      nrows = .ncol)
+        vctrs::list_unchop
+      ),
+      nrows = .ncol
+    )
   } else {
     col_data <- methods::new("DFrame",
-                             listData = set_names(list(), character()),
-                             nrows = .ncol)
+      listData = set_names(list(), character()),
+      nrows = .ncol
+    )
   }
   # finally, if retained and not grouped, reassign back
   # to original row_data/col_data
@@ -158,7 +177,8 @@ summarise.SummarizedExperiment <- function(.data, ...,
   if (group_type(.groups) != "none") {
     new_metadata$group_data <- plyxp_groups(
       row_data[group_vars_$row_groups],
-      col_data[group_vars_$col_groups])
+      col_data[group_vars_$col_groups]
+    )
   }
 
   if (".features" %in% names(row_data)) {
@@ -170,24 +190,27 @@ summarise.SummarizedExperiment <- function(.data, ...,
     col_data$.samples <- NULL
   }
 
-  #we should have some type of value to view from
+  # we should have some type of value to view from
   # assays as it was enforced earlier.
   assay_data <- assert_chops_size(assay_chops,
-                                  size = row_chops_sizes * col_chops_sizes) |>
-    map(
-    vctrs::list_unchop
+    size = row_chops_sizes * col_chops_sizes
   ) |>
+    map(
+      vctrs::list_unchop
+    ) |>
     map(
       matrix,
       nrow = .nrow,
       ncol = .ncol
     )
 
-  out <- SummarizedExperiment(assays = assay_data,
-                       rowData = row_data,
-                       colData = col_data,
-                       metadata = new_metadata,
-                       checkDimnames = FALSE)
+  out <- SummarizedExperiment(
+    assays = assay_data,
+    rowData = row_data,
+    colData = col_data,
+    metadata = new_metadata,
+    checkDimnames = FALSE
+  )
   if (!is.null(row_names)) {
     rownames(out) <- row_names
   }
@@ -198,7 +221,7 @@ summarise.SummarizedExperiment <- function(.data, ...,
 }
 
 #' @export
-summarize.SummarizedExperiment <- summarise.SummarizedExperiment
+summarize.PlySummarizedExperiment <- summarise.PlySummarizedExperiment
 
 
 

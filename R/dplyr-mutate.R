@@ -1,4 +1,3 @@
-
 #' @importFrom dplyr mutate
 
 #' @title Mutate a SummarizedExperiment object
@@ -10,20 +9,24 @@
 #' @param ... expressions to evaluate
 #' @return an object inheriting SummarizedExperiment class
 #' @examples
-#' 
+#'
 #' mutate(se_simple,
-#'     counts_1 = counts + 1,
-#'     logp_counts = log(counts_1),
-#'     # access assays context with ".assays" pronoun,
-#'     # note that assays are sliced into a list to 
-#'     # fit dimensions of cols context
-#'     cols(sum = purrr::map_dbl(.assays$counts, sum)),
-#'     # access assays context "asis" with the same pronoun
-#'     # but with a "_asis" suffix.
-#'     rows(sum = rowSums(.assays_asis$counts))
+#'   counts_1 = counts + 1,
+#'   logp_counts = log(counts_1),
+#'   # access assays context with ".assays" pronoun,
+#'   # note that assays are sliced into a list to
+#'   # fit dimensions of cols context
+#'   cols(sum = purrr::map_dbl(.assays$counts, sum)),
+#'   # access assays context "asis" with the same pronoun
+#'   # but with a "_asis" suffix.
+#'   rows(sum = rowSums(.assays_asis$counts))
 #' )
 #' @export
-mutate.SummarizedExperiment <- function(.data, ...) {
+mutate.PlySummarizedExperiment <- function(.data, ...) {
+  plyxp(.data, mutate_se_impl, ...)
+}
+
+mutate_se_impl <- function(.data, ...) {
   # browser()
   .env <- caller_env()
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
@@ -32,10 +35,10 @@ mutate.SummarizedExperiment <- function(.data, ...) {
   poke_ctx_local("plyxp:::dplyr_verb", "mutate")
   quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  nms  <- names(quos)
+  nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env, .matrix = TRUE)
   results <- mask$results()
-  
+
   nms <- names(results$rows)
   if (length(nms)) {
     if (".features" %in% nms) {
@@ -47,7 +50,7 @@ mutate.SummarizedExperiment <- function(.data, ...) {
       rowData(.data)[[nms[i]]] <- results$rows[[i]]
     }
   }
-  
+
   nms <- names(results$cols)
   if (length(nms)) {
     if (".samples" %in% nms) {
@@ -67,7 +70,6 @@ mutate.SummarizedExperiment <- function(.data, ...) {
     dimnames(new_assay) <- dim_nms
     assay(.data, nms[i], withDimnames = FALSE) <- new_assay
   }
-  
+
   .data
 }
-
