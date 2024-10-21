@@ -1,4 +1,3 @@
-
 test_that("unused arguments notify user", {
   expect_warning(
     pull(se_simple, name = "foo"),
@@ -7,63 +6,60 @@ test_that("unused arguments notify user", {
 })
 
 test_that("pull from assays", {
-  
   expect_identical(
-    assay(se_simple, 1),
+    assay(se_simple@se, 1),
     pull(se_simple, 1)
   )
-  
+
   expect_identical(
-    assay(se_simple, "counts"),
+    assay(se_simple@se, "counts"),
     pull(se_simple, counts)
   )
-  
+
   expect_identical(
-    assay(se_simple, length(assays(se_simple))),
+    assay(se_simple@se, length(assays(se_simple))),
     pull(se_simple, -1)
   )
-  
 })
 
 test_that("pull from rows", {
   expect_identical(
-    rowData(se_simple)[[1]],
+    rowData(se_simple@se)[[1]],
     pull(se_simple, rows(1))
   )
-  
+
   expect_identical(
-    rowData(se_simple)[["direction"]],
+    rowData(se_simple@se)[["direction"]],
     pull(se_simple, rows(direction))
   )
-  
+
   expect_identical(
-    rowData(se_simple)[[length(rowData(se_simple))]],
+    rowData(se_simple@se)[[length(rowData(se_simple@se))]],
     pull(se_simple, rows(-1))
   )
-  
+
   expect_error(
     pull(se_simple, rows(.features))
   )
-  
 })
 
 
 test_that("pull from rows", {
   expect_identical(
-    colData(se_simple)[[1]],
+    colData(se_simple@se)[[1]],
     pull(se_simple, cols(1))
   )
-  
+
   expect_identical(
-    colData(se_simple)[["condition"]],
+    colData(se_simple@se)[["condition"]],
     pull(se_simple, cols(condition))
   )
-  
+
   expect_identical(
-    colData(se_simple)[[length(colData(se_simple))]],
+    colData(se_simple@se)[[length(colData(se_simple@se))]],
     pull(se_simple, cols(-1))
   )
-  
+
   expect_error(
     pull(se_simple, cols(.samples))
   )

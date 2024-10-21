@@ -1,7 +1,6 @@
-
-
-bm <- new_plyxp_manager(se_simple)
+bm <- new_plyxp_manager(se_simple@se)
 gbm <- group_by(se_simple, rows(direction), cols(condition)) |>
+  _@se |>
   plyxp:::new_plyxp_manager()
 
 test_that("`new_plyxp_manager` returns an R6 `plyxp_manager`", {
@@ -38,4 +37,3 @@ test_that("correct number of groups for ungrouped and grouped `se_simple`", {
   expect_identical(gbm$n_groups, 2L)
   gbm$ctx <- "assays"
 })
-
