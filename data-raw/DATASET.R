@@ -16,5 +16,5 @@ se <- SummarizedExperiment(
 rownames(se) <- sprintf("row_%i", seq_len(5L))
 colnames(se) <- sprintf("col_%i", seq_len(4L))
 assay(se, "logcounts") <- log(assay(se, "counts"))
-se_simple <- se
+se_simple <- plyxp::new_plyxp(se)
 usethis::use_data(se_simple, overwrite = TRUE)
