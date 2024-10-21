@@ -5,7 +5,7 @@
 #' @param se SummarizedExperiment object
 #' @return PlySummarizedExperiment object
 #' @examples
-#' plyxp(se = se_simple)
+#' new_plyxp(se = se_simple@se)
 #' @export
 new_plyxp <- function(se) {
   PlySummarizedExperiment(se = se)
@@ -25,6 +25,16 @@ PlySummarizedExperiment <-
     )
   )
 
+#' @name plyxp
+#' @title Modify SummarizedExperiment Object
+#' @description
+#' Modify the underlying SummarizedExperiment object with a function.
+#' @param .data a PlySummarizedExperiment object
+#' @param .f a function that returns a SummarizedExperiment object
+#' @param ... additional arguments passed to `.f`
+#' @return a PlySummarizedExperiment object
+#' @examples
+#' plyxp(se_simple, function(x) x)
 #' @export
 plyxp <- function(.data, .f, ...) {
   .f <- rlang::as_function(.f)
@@ -65,12 +75,37 @@ print.PlySummarizedExperiment <- function(x, ...) {
 }
 
 #' @export
+`$<-.PlySummarizedExperiment` <- function(x, name, value) {
+  colData(x)[[name]] <- value
+  x
+}
+
+#' @export
 dim.PlySummarizedExperiment <- function(x) {
   dim(x@se)
 }
 
 S7::S4_register(PlySummarizedExperiment)
 
+#' @name PlySummarizedExperiment-methods
+#' @title PlySummarizedExperiment Methods
+#' @description
+#' Methods from SummarizedExperiment package re-implemented for PlySummarizedExperiment.
+#' @param x PlySummarizedExperiment object
+#' @param withDimnames logical
+#' @param ... additional arguments
+#' @param i character or numeric index
+#' @param value replacement value
+#' @param use.names logical
+#' @examples
+#' assays(se_simple)
+#' rowData(se_smple)
+#' colData(se_simple)
+#'
+NULL
+
+#' @name PlySummarizedExperiment-methods
+#' @export
 setMethod(
   "assays", "PlySummarizedExperiment",
   function(x, withDimnames = TRUE, ...) {
@@ -89,33 +124,48 @@ set_assays <- function(
 #   out
 # }
 
+#' @rdname PlySummarizedExperiment-methods
+#' @export
 setMethod(
   "assays<-", c("PlySummarizedExperiment", "list"),
   set_assays
 )
 
+#' @rdname PlySummarizedExperiment-methods
+#' @export
 setMethod(
   "assays<-", c("PlySummarizedExperiment", "SimpleList"),
   set_assays
 )
 
+
 get_assay <- function(x, i, withDimnames = TRUE, ...) {
   assay(x@se, i = i, withDimnames = withDimnames, ...)
 }
 
+#' @rdname PlySummarizedExperiment-methods
+#' @export
 setMethod(
   "assay", c("PlySummarizedExperiment", "missing"),
   function(x, i, withDimnames = TRUE, ...) {
     assay(x@se, withDimnames = withDimnames, ...)
   }
 )
+
+#' @describeIn PlySummarizedExperiment-methods Get assays from a PlySummarizedExperiment object
+#' @export
 setMethod("assay", c("PlySummarizedExperiment", "numeric"), get_assay)
+
+#' @describeIn PlySummarizedExperiment-methods Get assays from a PlySummarizedExperiment object
+#' @export
 setMethod("assay", c("PlySummarizedExperiment", "character"), get_assay)
 
 set_assay <- function(x, i, withDimnames = TRUE, ..., value) {
   plyxp(x, `assay<-`, i = i, withDimnames = withDimnames, ..., value = value)
 }
 
+#' @describeIn PlySummarizedExperiment-methods set assay in a PlySummarizedExperiment object
+#' @export
 setMethod(
   "assay<-", c("PlySummarizedExperiment", "missing"),
   function(x, i, withDimnames = TRUE, ..., value = value) {
@@ -123,10 +173,16 @@ setMethod(
   }
 )
 
+#' @describeIn PlySummarizedExperiment-methods set assay in a PlySummarizedExperiment object
+#' @export
 setMethod("assay<-", c("PlySummarizedExperiment", "numeric"), set_assay)
+
+#' @describeIn PlySummarizedExperiment-methods set assay in a PlySummarizedExperiment object
+#' @export
 setMethod("assay<-", c("PlySummarizedExperiment", "character"), set_assay)
 
-
+#' @describeIn PlySummarizedExperiment-methods get rowData in a PlySummarizedExperiment object
+#' @export
 setMethod(
   "rowData", "PlySummarizedExperiment",
   function(
@@ -136,6 +192,8 @@ setMethod(
   }
 )
 
+#' @describeIn PlySummarizedExperiment-methods set rowData in a PlySummarizedExperiment object
+#' @export
 setMethod(
   "rowData<-", "PlySummarizedExperiment",
   function(
@@ -144,6 +202,8 @@ setMethod(
   }
 )
 
+#' @describeIn PlySummarizedExperiment-methods get colData in a PlySummarizedExperiment object
+#' @export
 setMethod(
   "colData", "PlySummarizedExperiment",
   function(x, ...) {
@@ -151,6 +211,8 @@ setMethod(
   }
 )
 
+#' @describeIn PlySummarizedExperiment-methods set colData in a PlySummarizedExperiment object
+#' @export
 setMethod(
   "colData<-",
   c("PlySummarizedExperiment", "DataFrame"),
@@ -159,6 +221,8 @@ setMethod(
   }
 )
 
+#' @rdname PlySummarizedExperiment-methods
+#' @export
 setMethod(
   "colData<-",
   c("PlySummarizedExperiment", "NULL"),

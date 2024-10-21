@@ -1,4 +1,3 @@
-
 #' @name as.data.frame
 #' @title create data.frame
 #' @param x `SummarizedExperiment` object
@@ -6,9 +5,10 @@
 #' @return a data.frame object
 #' @examples
 #' as.data.frame(se_simple)
-#' 
+#'
 #' @export
-as.data.frame.SummarizedExperiment <- function(x, ...) {
+as.data.frame.PlySummarizedExperiment <- function(x, ...) {
+  x <- x@se
   nc <- ncol(x)
   nr <- nrow(x)
   nn <- nc * nr
@@ -23,8 +23,7 @@ as.data.frame.SummarizedExperiment <- function(x, ...) {
     lapply(rowData(x), vec_rep, times = nc),
     lapply(colData(x), vec_rep_each, times = nr)
   )
-  attr(out, "row.names") <- c(NA_integer_, - nn)
+  attr(out, "row.names") <- c(NA_integer_, -nn)
   class(out) <- "data.frame"
   out
-  
 }

@@ -2,10 +2,10 @@
 % Please edit documentation in R/as.data.frame.R
 \name{as.data.frame}
 \alias{as.data.frame}
-\alias{as.data.frame.SummarizedExperiment}
+\alias{as.data.frame.PlySummarizedExperiment}
 \title{create data.frame}
 \usage{
-\method{as.data.frame}{SummarizedExperiment}(x, ...)
+\method{as.data.frame}{PlySummarizedExperiment}(x, ...)
 }
 \arguments{
 \item{x}{\code{SummarizedExperiment} object}

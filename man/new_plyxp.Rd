@@ -21,5 +21,5 @@ A container object for the SummarizedExperiment class.
 This is an S7 class only exported for possible extension.
 }
 \examples{
-plyxp(se = se_simple)
+new_plyxp(se = se_simple@se)
 }
