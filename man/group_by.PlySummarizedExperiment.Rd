@@ -2,18 +2,23 @@
 % Please edit documentation in R/dplyr-group_by.R
 \name{group_by.PlySummarizedExperiment}
 \alias{group_by.PlySummarizedExperiment}
+\alias{ungroup.PlySummarizedExperiment}
 \title{apply groups to SummarizedExperiments}
 \usage{
 \method{group_by}{PlySummarizedExperiment}(.data, ..., .add = FALSE)
+
+\method{ungroup}{PlySummarizedExperiment}(x, ...)
 }
 \arguments{
 \item{.data}{a SummarizedExperiment object}
 
-\item{...}{expressions to group on. Grouping may only be done on
-rowData and/or colData by \code{rows()} and \code{cols()} respectively.}
+\item{...}{\link[=plyxp-context]{contextual expressions} specifying
+which columns to ungroup. Omitting \code{...} ungroups the entire object.}
 
 \item{.add}{When \code{FALSE}, the default, \code{group_by()} will override
 existing groups.}
+
+\item{x}{A SummarizedExperiment object}
 }
 \value{
 SummarizedExperiment object
@@ -24,6 +29,11 @@ SummarizedExperiment object. Unlike the \code{data.frame} method
 the resulting output class is left unchanged. Thus \code{dplyr} generics for
 \code{SummarizedExperiment} must check grouping information manually.
 }
+\section{Functions}{
+\itemize{
+\item \code{ungroup(PlySummarizedExperiment)}: Ungroup a PlySummarizedExperiment object
+
+}}
 \examples{
 
 group_by(se_simple, rows(direction), cols(condition))
