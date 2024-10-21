@@ -99,12 +99,12 @@ S7::S4_register(PlySummarizedExperiment)
 #' @param use.names logical
 #' @examples
 #' assays(se_simple)
-#' rowData(se_smple)
+#' rowData(se_simple)
 #' colData(se_simple)
 #'
 NULL
 
-#' @name PlySummarizedExperiment-methods
+#' @describeIn PlySummarizedExperiment-methods get the assays o the PlySummarizedExperiment object
 #' @export
 setMethod(
   "assays", "PlySummarizedExperiment",
@@ -124,14 +124,14 @@ set_assays <- function(
 #   out
 # }
 
-#' @rdname PlySummarizedExperiment-methods
+#' @describeIn PlySummarizedExperiment-methods set the assays of the PlySummarizedExperiment object
 #' @export
 setMethod(
   "assays<-", c("PlySummarizedExperiment", "list"),
   set_assays
 )
 
-#' @rdname PlySummarizedExperiment-methods
+#' @describeIn PlySummarizedExperiment-methods set the assays of the PlySummarizedExperiment object
 #' @export
 setMethod(
   "assays<-", c("PlySummarizedExperiment", "SimpleList"),
@@ -143,7 +143,7 @@ get_assay <- function(x, i, withDimnames = TRUE, ...) {
   assay(x@se, i = i, withDimnames = withDimnames, ...)
 }
 
-#' @rdname PlySummarizedExperiment-methods
+#' @describeIn PlySummarizedExperiment-methods get the first assay of the PlySummarizedExperiment object
 #' @export
 setMethod(
   "assay", c("PlySummarizedExperiment", "missing"),
@@ -152,11 +152,11 @@ setMethod(
   }
 )
 
-#' @describeIn PlySummarizedExperiment-methods Get assays from a PlySummarizedExperiment object
+#' @describeIn PlySummarizedExperiment-methods get assay from a PlySummarizedExperiment object
 #' @export
 setMethod("assay", c("PlySummarizedExperiment", "numeric"), get_assay)
 
-#' @describeIn PlySummarizedExperiment-methods Get assays from a PlySummarizedExperiment object
+#' @describeIn PlySummarizedExperiment-methods get assay from a PlySummarizedExperiment object
 #' @export
 setMethod("assay", c("PlySummarizedExperiment", "character"), get_assay)
 

@@ -2,6 +2,7 @@
 % Please edit documentation in R/plyxp-class.R
 \name{PlySummarizedExperiment-methods}
 \alias{PlySummarizedExperiment-methods}
+\alias{assays,PlySummarizedExperiment-method}
 \alias{assays<-,PlySummarizedExperiment,list-method}
 \alias{assays<-,PlySummarizedExperiment,SimpleList-method}
 \alias{assay,PlySummarizedExperiment,missing-method}
@@ -63,9 +64,17 @@ Methods from SummarizedExperiment package re-implemented for PlySummarizedExperi
 }
 \section{Functions}{
 \itemize{
-\item \code{assay(x = PlySummarizedExperiment, i = numeric)}: Get assays from a PlySummarizedExperiment object
+\item \code{assays(PlySummarizedExperiment)}: get the assays o the PlySummarizedExperiment object
 
-\item \code{assay(x = PlySummarizedExperiment, i = character)}: Get assays from a PlySummarizedExperiment object
+\item \code{assays(x = PlySummarizedExperiment) <- value}: set the assays of the PlySummarizedExperiment object
+
+\item \code{assays(x = PlySummarizedExperiment) <- value}: set the assays of the PlySummarizedExperiment object
+
+\item \code{assay(x = PlySummarizedExperiment, i = missing)}: get the first assay of the PlySummarizedExperiment object
+
+\item \code{assay(x = PlySummarizedExperiment, i = numeric)}: get assay from a PlySummarizedExperiment object
+
+\item \code{assay(x = PlySummarizedExperiment, i = character)}: get assay from a PlySummarizedExperiment object
 
 \item \code{assay(x = PlySummarizedExperiment, i = missing) <- value}: set assay in a PlySummarizedExperiment object
 
@@ -84,7 +93,7 @@ Methods from SummarizedExperiment package re-implemented for PlySummarizedExperi
 }}
 \examples{
 assays(se_simple)
-rowData(se_smple)
+rowData(se_simple)
 colData(se_simple)
 
 }
