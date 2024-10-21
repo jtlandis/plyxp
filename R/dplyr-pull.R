@@ -24,7 +24,7 @@
 #'   pull(rows(-1))
 #' @export
 pull.PlySummarizedExperiment <- function(.data, var = -1, name = NULL, ...) {
-  pull_se_impl(.data@se, var = var, name = name, ...)
+  pull_se_impl(.data@se, var = {{ var }}, name = name, ...)
 }
 
 pull_se_impl <- function(.data, var = -1, name = NULL, ...) {

@@ -1,5 +1,4 @@
 #' @title get grouping data
-#' @name group_data-SummarizedExperiment
 #' @description
 #' retrieve grouping information from a `SummarizedExperiment` object. This
 #' is stored within the `metadata()` of the object.
@@ -9,7 +8,10 @@
 #' @examples
 #' group_by(se_simple, rows(direction), cols(condition)) |> group_data()
 #' @export
-group_data.SummarizedExperiment <- function(.data) {
+group_data.PlySummarizedExperiment <- function(.data) {
+  group_data_se_impl(.data@se)
+}
+group_data_se_impl <- function(.data) {
   metadata(.data)[["group_data"]]
 }
 
@@ -125,7 +127,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
 }
 
 
-#' @describeIn group_by.SummarizedExperiment Ungroup a SummarizedExperiment object
+#' @describeIn group_by.PlySummarizedExperiment Ungroup a PlySummarizedExperiment object
 #'
 #' @param x A SummarizedExperiment object
 #' @param ... [contextual expressions][plyxp::plyxp-context] specifying
@@ -215,7 +217,7 @@ groups_se_impl <- function(x) {
 }
 
 plyxp_curr_groups <- function(x) {
-  vars <- groups(x)
+  vars <- groups_se_impl(x)
   row_v <- if (is_empty(vars$row_groups)) {
     NULL
   } else {
