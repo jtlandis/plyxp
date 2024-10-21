@@ -97,6 +97,7 @@ S7::S4_register(PlySummarizedExperiment)
 #' @param i character or numeric index
 #' @param value replacement value
 #' @param use.names logical
+#' @return Replacement functions return a PlySummarizedExperiment object. Other functions will return the same object as the method from SummarizedExperiment.
 #' @examples
 #' assays(se_simple)
 #' rowData(se_simple)

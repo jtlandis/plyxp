@@ -59,6 +59,9 @@
 
 \item{use.names}{logical}
 }
+\value{
+Replacement functions return a PlySummarizedExperiment object. Other functions will return the same object as the method from SummarizedExperiment.
+}
 \description{
 Methods from SummarizedExperiment package re-implemented for PlySummarizedExperiment.
 }
