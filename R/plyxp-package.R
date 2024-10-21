@@ -25,6 +25,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise 
 #' @importFrom dplyr ungroup
+#' @importFrom methods new
 #' @importFrom pillar align
 #' @importFrom pillar ctl_new_pillar
 #' @importFrom pillar ctl_new_rowid_pillar

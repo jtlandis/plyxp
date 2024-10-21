@@ -11,17 +11,20 @@ new_plyxp <- function(se) {
   PlySummarizedExperiment(se = se)
 }
 
+#' @importClassesFrom SummarizedExperiment SummarizedExperiment
+#' @importClassesFrom SummarizedExperiment RangedSummarizedExperiment
+methods::setClassUnion("SE_OR_RangedSE", c("SummarizedExperiment", "RangedSummarizedExperiment"))
+
+
 #' @rdname new_plyxp
 #' @description
-#' This is an S7 class only exported for possible extension.
+#' This is an S4 class only exported for possible extension.
 #' @export
 PlySummarizedExperiment <-
-  S7::new_class(
+  setClass(
     "PlySummarizedExperiment",
-    properties = list(
-      se = S7::new_property(
-        class = methods::getClass("SummarizedExperiment")
-      )
+    slots = c(
+      se = "SE_OR_RangedSE"
     )
   )
 
@@ -84,8 +87,6 @@ print.PlySummarizedExperiment <- function(x, ...) {
 dim.PlySummarizedExperiment <- function(x) {
   dim(x@se)
 }
-
-S7::S4_register(PlySummarizedExperiment)
 
 #' @name PlySummarizedExperiment-methods
 #' @title PlySummarizedExperiment Methods
