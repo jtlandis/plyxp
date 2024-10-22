@@ -39,8 +39,8 @@ test_that("endomorphism", {
     )
 
   endo <- local({
-    row_sub <- rowData(se_simple@se)[["length"]] > 30
-    col_sub <- colData(se_simple@se)[["sample"]] %in% c("s2", "s3")
+    row_sub <- rowData(se(se_simple))[["length"]] > 30
+    col_sub <- colData(se(se_simple))[["sample"]] %in% c("s2", "s3")
     se_simple[row_sub, col_sub]
   })
 

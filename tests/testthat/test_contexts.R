@@ -1,6 +1,6 @@
 is_pronoun <- function(x) inherits(x, "rlang_data_pronoun")
 plyxp_eval_ctx <- function(..., .ctx, .data, .results = c("chops", "results")) {
-  bm <- plyxp:::new_plyxp_manager(.data@se)
+  bm <- plyxp:::new_plyxp_manager(se(.data))
   quos <- plyxp:::plyxp_quos(..., .ctx_default = .ctx)
   bm$ctx <- .ctx
   lapply(quos, bm$eval)
@@ -167,7 +167,7 @@ test_that("assays groups ordered by rows", {
   )
 
   expect_identical(
-    assay(res@se, "check"), matrix(1:4, 2, 2)
+    assay(se(res), "check"), matrix(1:4, 2, 2)
   )
 })
 

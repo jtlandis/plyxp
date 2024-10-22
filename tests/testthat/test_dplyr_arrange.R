@@ -76,8 +76,8 @@ test_that("endomorphism", {
     cols(dplyr::desc(sample))
   )
   endo <- local({
-    ro <- order(rowData(se_simple@se)[["length"]], method = "radix")
-    co <- order(colData(se_simple@se)[["sample"]],
+    ro <- order(rowData(se(se_simple))[["length"]], method = "radix")
+    co <- order(colData(se(se_simple))[["sample"]],
       decreasing = TRUE, method = "radix"
     )
     se_simple[ro, co]
@@ -91,10 +91,10 @@ test_that("endomorphism", {
       .by_group = TRUE
     ) |>
     ungroup() |>
-    _@se
+    se()
 
   endo2 <- local({
-    se <- se_simple@se
+    se <- se(se_simple)
     ro <- order(rowData(se)[["direction"]],
       rowData(se)[["length"]],
       method = "radix"

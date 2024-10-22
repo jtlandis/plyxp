@@ -23,7 +23,7 @@ This is an S4 class only exported for possible extension.
 \examples{
 se <- SummarizedExperiment(
   assays = list(counts = matrix(1:6, nrow = 3)),
-  colData = DataFrame(condition = c("A", "B"))
+  colData = S4Vectors::DataFrame(condition = c("A", "B"))
 )
 new_plyxp(se = se)
 # or

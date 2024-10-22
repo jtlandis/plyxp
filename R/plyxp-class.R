@@ -7,7 +7,7 @@
 #' @examples
 #' se <- SummarizedExperiment(
 #'   assays = list(counts = matrix(1:6, nrow = 3)),
-#'   colData = DataFrame(condition = c("A", "B"))
+#'   colData = S4Vectors::DataFrame(condition = c("A", "B"))
 #' )
 #' new_plyxp(se = se)
 #' # or
@@ -37,10 +37,11 @@ PlySummarizedExperiment <-
 setMethod(
   "show", "PlySummarizedExperiment",
   function(object) {
-    show_tidy(object@se)
+    show_tidy(se(object))
   }
 )
 
+#' @rdname PlySummarizedExperiment-methods
 #' @export
 setGeneric("se", function(x) standardGeneric("se"))
 
@@ -48,6 +49,7 @@ setGeneric("se", function(x) standardGeneric("se"))
 #' @export
 setMethod("se", "PlySummarizedExperiment", function(x) x@se)
 
+#' @describeIn PlySummarizedExperiment-methods set the se slot of the PlySummarizedExperiment object
 #' @export
 setGeneric("se<-", function(x, value) standardGeneric("se<-"))
 
@@ -71,17 +73,17 @@ setMethod("se<-", "PlySummarizedExperiment", function(x, value) {
 #' @export
 plyxp <- function(.data, .f, ...) {
   .f <- rlang::as_function(.f)
-  out <- .f(.data@se, ...)
+  out <- .f(se(.data), ...)
   if (!methods::is(out, "SummarizedExperiment")) {
     cli::cli_abort("{.arg .f} must return a {.cls SummarizedExperiment} object")
   }
-  .data@se <- out
+  se(.data) <- out
   .data
 }
 
 #' @export
 print.PlySummarizedExperiment <- function(x, ...) {
-  show_tidy(x@se, ...)
+  show_tidy(se(x), ...)
 }
 
 #' @export
@@ -93,18 +95,18 @@ print.PlySummarizedExperiment <- function(x, ...) {
   if (!missing(j)) {
     type <- paste0(type, "j")
   }
-  x@se <- switch(type,
-    i = x@se[i, ],
-    j = x@se[, j],
-    ij = x@se[i, j],
-    x@se
+  se(x) <- switch(type,
+    i = se(x)[i, ],
+    j = se(x)[, j],
+    ij = se(x)[i, j],
+    se(x)
   )
   x
 }
 
 #' @export
 `$.PlySummarizedExperiment` <- function(x, name) {
-  colData(x@se)[[name]]
+  colData(se(x))[[name]]
 }
 
 #' @export
@@ -115,7 +117,7 @@ print.PlySummarizedExperiment <- function(x, ...) {
 
 #' @export
 dim.PlySummarizedExperiment <- function(x) {
-  dim(x@se)
+  dim(se(x))
 }
 
 #' @name PlySummarizedExperiment-methods
@@ -141,7 +143,7 @@ NULL
 setMethod(
   "assays", "PlySummarizedExperiment",
   function(x, withDimnames = TRUE, ...) {
-    assays(x@se, withDimnames = withDimnames, ...)
+    assays(se(x), withDimnames = withDimnames, ...)
   }
 )
 
@@ -172,7 +174,7 @@ setMethod(
 
 
 get_assay <- function(x, i, withDimnames = TRUE, ...) {
-  assay(x@se, i = i, withDimnames = withDimnames, ...)
+  assay(se(x), i = i, withDimnames = withDimnames, ...)
 }
 
 #' @describeIn PlySummarizedExperiment-methods get the first assay of the PlySummarizedExperiment object
@@ -180,7 +182,7 @@ get_assay <- function(x, i, withDimnames = TRUE, ...) {
 setMethod(
   "assay", c("PlySummarizedExperiment", "missing"),
   function(x, i, withDimnames = TRUE, ...) {
-    assay(x@se, withDimnames = withDimnames, ...)
+    assay(se(x), withDimnames = withDimnames, ...)
   }
 )
 
@@ -220,7 +222,7 @@ setMethod(
   function(
       x,
       use.names = TRUE, ...) {
-    rowData(x@se, use.names = use.names, ...)
+    rowData(se(x), use.names = use.names, ...)
   }
 )
 
@@ -239,7 +241,7 @@ setMethod(
 setMethod(
   "colData", "PlySummarizedExperiment",
   function(x, ...) {
-    colData(x@se, ...)
+    colData(se(x), ...)
   }
 )
 

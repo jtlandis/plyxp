@@ -7,7 +7,7 @@
     `SummarizedExperiment` object.
   * plyxp `dplyr` verbs are now defined for `PlySummarizedExperiment` objects
     instead of `SummarizedExperiment` objects.
-  * `PlySummarizedExperiment` utalizes enhanced printing methods to display
+  * `PlySummarizedExperiment` uses enhanced printing methods to display
     `SummarizedExperiment` objects in a tidy format.
 
 ## plyxp 0.99.19

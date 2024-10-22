@@ -1,6 +1,6 @@
-bm <- new_plyxp_manager(se_simple@se)
+bm <- new_plyxp_manager(se(se_simple))
 gbm <- group_by(se_simple, rows(direction), cols(condition)) |>
-  _@se |>
+  se() |>
   plyxp:::new_plyxp_manager()
 
 test_that("`new_plyxp_manager` returns an R6 `plyxp_manager`", {

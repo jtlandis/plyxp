@@ -9,7 +9,7 @@
 #' group_by(se_simple, rows(direction), cols(condition)) |> group_data()
 #' @export
 group_data.PlySummarizedExperiment <- function(.data) {
-  group_data_se_impl(.data@se)
+  group_data_se_impl(se(.data))
 }
 group_data_se_impl <- function(.data) {
   metadata(.data)[["group_data"]]
@@ -206,7 +206,7 @@ ungroup_se_impl <- function(x, ...) {
 
 #' @export
 groups.PlySummarizedExperiment <- function(x) {
-  groups_se_impl(x@se)
+  groups_se_impl(se(x))
 }
 
 groups_se_impl <- function(x) {

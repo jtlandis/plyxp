@@ -6,7 +6,7 @@
 # cols_mask <- bm$masks[["rows"]]
 
 test_that("evaluation works", {
-  bm <- plyxp:::new_plyxp_manager(se_simple@se)
+  bm <- plyxp:::new_plyxp_manager(se(se_simple))
   expect_error(bm$eval(rlang::quo("foo")), "requires quosure from")
   quo <- plyxp:::plyxp_quos(
     foo = rep(1L, n()),

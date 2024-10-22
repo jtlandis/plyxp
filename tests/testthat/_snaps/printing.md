@@ -1,7 +1,7 @@
 # Default printing is `SummarizedExperiment`
 
     Code
-      se_simple@se
+      se(se_simple)
     Output
       class: SummarizedExperiment 
       dim: 5 4 
@@ -16,7 +16,7 @@
 
     Code
       use_show_tidy()
-      se_simple@se
+      se(se_simple)
     Output
       # A SummarizedExperiment-tibble Abstraction: 5 x 4
           .features .samples | counts logcounts | gene  length direction | sample
@@ -39,7 +39,7 @@
 
     Code
       use_show_default()
-      se_simple@se
+      se(se_simple)
     Output
       class: SummarizedExperiment 
       dim: 5 4 
@@ -53,7 +53,7 @@
 # force `plyxp` printing
 
     Code
-      show_tidy(se_simple@se)
+      show_tidy(se(se_simple))
     Output
       # A SummarizedExperiment-tibble Abstraction: 5 x 4
           .features .samples | counts logcounts | gene  length direction | sample

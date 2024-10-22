@@ -8,7 +8,7 @@
 #'
 #' @export
 as.data.frame.PlySummarizedExperiment <- function(x, ...) {
-  x <- x@se
+  x <- se(x)
   nc <- ncol(x)
   nr <- nrow(x)
   nn <- nc * nr
