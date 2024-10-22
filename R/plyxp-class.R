@@ -3,6 +3,7 @@
 #' @description
 #' A container object for the SummarizedExperiment class.
 #' @param se SummarizedExperiment object
+#' @aliases PlySummarizedExperiment
 #' @return PlySummarizedExperiment object
 #' @examples
 #' se <- SummarizedExperiment(
@@ -26,13 +27,18 @@ methods::setClassUnion("SE_OR_RangedSE", c("SummarizedExperiment", "RangedSummar
 #' @description
 #' This is an S4 class only exported for possible extension.
 #' @export
-PlySummarizedExperiment <-
-  setClass(
-    "PlySummarizedExperiment",
-    slots = c(
-      se = "SE_OR_RangedSE"
-    )
+setClass(
+  "PlySummarizedExperiment",
+  slots = c(
+    se = "SE_OR_RangedSE"
   )
+)
+
+#' @rdname new_plyxp
+#' @export
+PlySummarizedExperiment <- function(se) {
+  new("PlySummarizedExperiment", se = se)
+}
 
 setMethod(
   "show", "PlySummarizedExperiment",
@@ -219,9 +225,8 @@ setMethod("assay<-", c("PlySummarizedExperiment", "character"), set_assay)
 #' @export
 setMethod(
   "rowData", "PlySummarizedExperiment",
-  function(
-      x,
-      use.names = TRUE, ...) {
+  function(x,
+           use.names = TRUE, ...) {
     rowData(se(x), use.names = use.names, ...)
   }
 )

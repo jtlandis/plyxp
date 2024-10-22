@@ -3,11 +3,13 @@
 \docType{class}
 \name{new_plyxp}
 \alias{new_plyxp}
-\alias{PlySummarizedExperiment-class}
 \alias{PlySummarizedExperiment}
+\alias{PlySummarizedExperiment-class}
 \title{SummarizedExperiment Shell Object}
 \usage{
 new_plyxp(se)
+
+PlySummarizedExperiment(se)
 }
 \arguments{
 \item{se}{SummarizedExperiment object}
