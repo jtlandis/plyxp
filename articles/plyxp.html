@@ -56,7 +56,7 @@ Landis</h4>
                                     <h4 data-toc-skip class="author">Michael
 Love</h4>
                         
-            <h4 data-toc-skip class="date">10/18/2024</h4>
+            <h4 data-toc-skip class="date">10/22/2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/main/vignettes/plyxp.Rmd" class="external-link"><code>vignettes/plyxp.Rmd</code></a></small>
       <div class="d-none name"><code>plyxp.Rmd</code></div>
@@ -99,64 +99,91 @@ well as most classes derived from this, including <em>DESeqDataSet</em>,
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jtlandis/plyxp" class="external-link">plyxp</a></span><span class="op">)</span></span>
-<span><span class="co"># add data (mutate) to any of the three tables,</span></span>
+<span><span class="co"># to use plyxp, call `new_plyxp()` on your SummarizedExperiment object</span></span>
+<span><span class="va">airway</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_plyxp.html">new_plyxp</a></span><span class="op">(</span><span class="va">airway</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># add data (mutate) to any of the three tables,</span></span>
 <span><span class="co"># assay, colData, rowData,</span></span>
 <span><span class="co"># ...using contextual helpers cols() and rows()</span></span>
 <span><span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>log_counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>,</span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span>treated <span class="op">=</span> <span class="va">dex</span> <span class="op">==</span> <span class="st">"trt"</span><span class="op">)</span>,</span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>new_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gene-"</span>, <span class="va">gene_name</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
-<span><span class="co">## dim: 63677 8 </span></span>
-<span><span class="co">## metadata(1): ''</span></span>
-<span><span class="co">## assays(2): counts log_counts</span></span>
-<span><span class="co">## rownames(63677): ENSG00000000003 ENSG00000000005 ... ENSG00000273492</span></span>
-<span><span class="co">##   ENSG00000273493</span></span>
-<span><span class="co">## rowData names(4): gene_id gene_name gene_biotype new_id</span></span>
-<span><span class="co">## colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521</span></span>
-<span><span class="co">## colData names(5): SampleName cell dex albut treated</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
+<span><span class="co">##     .features      .samples <span style="color: #949494;">|</span> counts log_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype</span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>    679       6.52 <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>      0       0    <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> ENSG000000004… SRR1039… <span style="color: #949494;">|</span>    467       6.15 <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> ENSG000000004… SRR1039… <span style="color: #949494;">|</span>    260       5.56 <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> ENSG000000004… SRR1039… <span style="color: #949494;">|</span>     60       4.11 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod…</span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>       <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>     </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> ENSG000002734… SRR1039… <span style="color: #949494;">|</span>      0       0    <span style="color: #949494;">|</span> ENSG00… RP11-180… antisense   </span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> ENSG000002734… SRR1039… <span style="color: #949494;">|</span>      0       0    <span style="color: #949494;">|</span> ENSG00… TSEN34    protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> ENSG000002734… SRR1039… <span style="color: #949494;">|</span>      0       0    <span style="color: #949494;">|</span> ENSG00… RP11-138… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> ENSG000002734… SRR1039… <span style="color: #949494;">|</span>      0       0    <span style="color: #949494;">|</span> ENSG00… AP000230… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> ENSG000002734… SRR1039… <span style="color: #949494;">|</span>      0       0    <span style="color: #949494;">|</span> ENSG00… RP11-80H… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 7 more variables: new_id &lt;chr&gt;, `` &lt;&gt;, SampleName &lt;fct&gt;, cell &lt;fct&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   dex &lt;fct&gt;, albut &lt;fct&gt;, treated &lt;lgl&gt;</span></span></span></code></pre>
 <p>The operations can span contexts, and only the necessary data will be
 extracted from each context for computation:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">airway</span><span class="op">$</span><span class="va">sizeFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">.9</span>, <span class="fl">1.1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># making scaled counts, then computing row means:</span></span>
 <span><span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span>, <span class="co">#</span></span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>ave_scl_cts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">scaled_counts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
-<span><span class="co">## dim: 63677 8 </span></span>
-<span><span class="co">## metadata(1): ''</span></span>
-<span><span class="co">## assays(2): counts scaled_counts</span></span>
-<span><span class="co">## rownames(63677): ENSG00000000003 ENSG00000000005 ... ENSG00000273492</span></span>
-<span><span class="co">##   ENSG00000273493</span></span>
-<span><span class="co">## rowData names(4): gene_id gene_name gene_biotype ave_scl_cts</span></span>
-<span><span class="co">## colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521</span></span>
-<span><span class="co">## colData names(5): SampleName cell dex albut sizeFactor</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
+<span><span class="co">##     .features   .samples <span style="color: #949494;">|</span> counts scaled_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype</span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>    679         741.  <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>    467         510.  <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>    260         284.  <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>     60          65.5 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod…</span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>      <span style="color: #949494;">…</span>          <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>       <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>     </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-180… antisense   </span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TSEN34    protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-138… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… AP000230… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-80H… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 7 more variables: ave_scl_cts &lt;dbl&gt;, `` &lt;&gt;, SampleName &lt;fct&gt;, cell &lt;fct&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   dex &lt;fct&gt;, albut &lt;fct&gt;, sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
 <p>Calling <code>.cols</code> in the assay context produces an object of
 the matching size and orientation to the other assay data.</p>
 <p>Alternatively we could have used <em>purrr</em> to compute row
 means:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span>,</span>
 <span>         <span class="co"># You may expect a list when accessing other contexts</span></span>
 <span>         <span class="co"># from either the rows() or cols() contexts.</span></span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>ave_scl_cts <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">.assays</span><span class="op">$</span><span class="va">scaled_counts</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
-<span><span class="co">## dim: 63677 8 </span></span>
-<span><span class="co">## metadata(1): ''</span></span>
-<span><span class="co">## assays(2): counts scaled_counts</span></span>
-<span><span class="co">## rownames(63677): ENSG00000000003 ENSG00000000005 ... ENSG00000273492</span></span>
-<span><span class="co">##   ENSG00000273493</span></span>
-<span><span class="co">## rowData names(4): gene_id gene_name gene_biotype ave_scl_cts</span></span>
-<span><span class="co">## colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521</span></span>
-<span><span class="co">## colData names(5): SampleName cell dex albut sizeFactor</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
+<span><span class="co">##     .features   .samples <span style="color: #949494;">|</span> counts scaled_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype</span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>    679         741.  <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>    467         510.  <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>    260         284.  <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> ENSG000000… SRR1039… <span style="color: #949494;">|</span>     60          65.5 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod…</span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>      <span style="color: #949494;">…</span>          <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>       <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>     </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-180… antisense   </span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TSEN34    protein_cod…</span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-138… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… AP000230… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> ENSG000002… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-80H… lincRNA     </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 7 more variables: ave_scl_cts &lt;dbl&gt;, `` &lt;&gt;, SampleName &lt;fct&gt;, cell &lt;fct&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   dex &lt;fct&gt;, albut &lt;fct&gt;, sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
 <p>See below for details on how objects are made available across
 contexts.</p>
 <p><code>plyxp</code> also enables common grouping and summarization
 routines:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">gene_biotype</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarize</a></span><span class="op">(</span>col_sums <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>,</span>
@@ -180,7 +207,7 @@ routines:</p>
 <span><span class="co">## IG_J_pseudogene                 IG_J_pseudogene</span></span>
 <span><span class="co">## 3prime_overlapping_ncrna 3prime_overlapping_n..</span></span>
 <span><span class="co">## processed_pseudogene       processed_pseudogene</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualizing the output as a tibble:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="va">summary</span> <span class="op">|&gt;</span></span>
@@ -377,34 +404,50 @@ context</li>
 </h3>
 <p>We can compare two ways of dividing out a vector from
 <code>colData</code> along the columns of <code>assay</code> data:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># here the `.cols$` pronoun reshapes the data to fit the `assays` context</span></span>
 <span><span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
-<span><span class="co">## dim: 63677 8 </span></span>
-<span><span class="co">## metadata(1): ''</span></span>
-<span><span class="co">## assays(2): counts scaled_counts</span></span>
-<span><span class="co">## rownames(63677): ENSG00000000003 ENSG00000000005 ... ENSG00000273492</span></span>
-<span><span class="co">##   ENSG00000273493</span></span>
-<span><span class="co">## rowData names(3): gene_id gene_name gene_biotype</span></span>
-<span><span class="co">## colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521</span></span>
-<span><span class="co">## colData names(5): SampleName cell dex albut sizeFactor</span></span></code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
+<span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts scaled_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype <span style="color: #949494;">|</span></span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>    679         741.  <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>    467         510.  <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>    260         284.  <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>     60          65.5 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>     <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>       <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>       </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-180… antisense    <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TSEN34    protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-138… lincRNA      <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… AP000230… lincRNA      <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-80H… lincRNA      <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: SampleName &lt;fct&gt;, cell &lt;fct&gt;, dex &lt;fct&gt;, albut &lt;fct&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this is equivalent to the following, where we have to transpose</span></span>
 <span><span class="co"># the `counts` assay data twice to enable the correct recycling</span></span>
 <span><span class="co"># of the size factor vector</span></span>
 <span><span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span> <span class="op">/</span> <span class="va">.cols_asis</span><span class="op">$</span><span class="va">sizeFactor</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
-<span><span class="co">## dim: 63677 8 </span></span>
-<span><span class="co">## metadata(1): ''</span></span>
-<span><span class="co">## assays(2): counts scaled_counts</span></span>
-<span><span class="co">## rownames(63677): ENSG00000000003 ENSG00000000005 ... ENSG00000273492</span></span>
-<span><span class="co">##   ENSG00000273493</span></span>
-<span><span class="co">## rowData names(3): gene_id gene_name gene_biotype</span></span>
-<span><span class="co">## colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521</span></span>
-<span><span class="co">## colData names(5): SampleName cell dex albut sizeFactor</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
+<span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts scaled_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype <span style="color: #949494;">|</span></span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>    679         741.  <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>    467         510.  <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>    260         284.  <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>     60          65.5 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>     <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>       <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>           <span style="color: #949494;">…</span>       </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-180… antisense    <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… TSEN34    protein_cod… <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-138… lincRNA      <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… AP000230… lincRNA      <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> ENSG0000… SRR1039… <span style="color: #949494;">|</span>      0           0   <span style="color: #949494;">|</span> ENSG00… RP11-80H… lincRNA      <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: SampleName &lt;fct&gt;, cell &lt;fct&gt;, dex &lt;fct&gt;, albut &lt;fct&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -451,7 +494,7 @@ values. Assume you have a small 5 by 4 <code>SummarizedExperiment</code>
 object. Both of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> and <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code>
 are grouped such that there are 2 groups in both <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code>
 and <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> totaling in 4 groups across the assays.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">se_simple</span>, <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">direction</span><span class="op">)</span>, <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="va">condition</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>data_from_cols <span class="op">=</span> <span class="va">.cols</span><span class="op">$</span><span class="va">condition</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The above syntax implies we wish to move data from the
@@ -489,7 +532,7 @@ the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperi
 <em>tidySummarizedExperiment</em>, we visualize the data as if it was
 tabular. <code>plyxp</code> offers the option to opt-in on this behavior
 by setting the associated global option:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"show_SummarizedExperiment_as_tibble_abstraction"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, you may use helper functions
 <code><a href="../reference/plyxp-printing.html">use_show_tidy()</a></code> and <code><a href="../reference/plyxp-printing.html">use_show_default()</a></code> to
@@ -527,17 +570,25 @@ These are special in that assigning a value to <code>.features</code> in
 the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> context or <code>.samples</code> in the
 <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> context does not create a new column, but changes
 the rownames or colnames of the resulting object.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se_simple</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: SummarizedExperiment </span></span>
-<span><span class="co">## dim: 5 4 </span></span>
-<span><span class="co">## metadata(0):</span></span>
-<span><span class="co">## assays(2): counts logcounts</span></span>
-<span><span class="co">## rownames(5): row_1 row_2 row_3 row_4 row_5</span></span>
-<span><span class="co">## rowData names(3): gene length direction</span></span>
-<span><span class="co">## colnames(4): col_1 col_2 col_3 col_4</span></span>
-<span><span class="co">## colData names(2): sample condition</span></span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span></span>
+<span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts logcounts <span style="color: #949494;">|</span> gene  length direction <span style="color: #949494;">|</span> sample</span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> row_1     col_1    <span style="color: #949494;">|</span>     14      2.64 <span style="color: #949494;">|</span> g1         1 -         <span style="color: #949494;">|</span> s1    </span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> row_2     col_1    <span style="color: #949494;">|</span>     19      2.94 <span style="color: #949494;">|</span> g2        24 +         <span style="color: #949494;">|</span> s1    </span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> row_3     col_1    <span style="color: #949494;">|</span>     16      2.77 <span style="color: #949494;">|</span> g3        60 +         <span style="color: #949494;">|</span> s1    </span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> row_4     col_1    <span style="color: #949494;">|</span>     11      2.40 <span style="color: #949494;">|</span> g4        39 -         <span style="color: #949494;">|</span> s1    </span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> row_5     col_1    <span style="color: #949494;">|</span>     18      2.89 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s1    </span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>   <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>             <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>     <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span> <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>    </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> row_1     col_4    <span style="color: #949494;">|</span>      9      2.20 <span style="color: #949494;">|</span> g1         1 -         <span style="color: #949494;">|</span> s4    </span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> row_2     col_4    <span style="color: #949494;">|</span>      4      1.39 <span style="color: #949494;">|</span> g2        24 +         <span style="color: #949494;">|</span> s4    </span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> row_3     col_4    <span style="color: #949494;">|</span>     20      3.00 <span style="color: #949494;">|</span> g3        60 +         <span style="color: #949494;">|</span> s4    </span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> row_4     col_4    <span style="color: #949494;">|</span>      3      1.10 <span style="color: #949494;">|</span> g4        39 -         <span style="color: #949494;">|</span> s4    </span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> row_5     col_4    <span style="color: #949494;">|</span>      5      1.61 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s4    </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 20</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span></span></code></pre>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># moving data to rownames and colnames</span></span>
 <span><span class="va">se_simple</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -554,14 +605,22 @@ the rownames or colnames of the resulting object.</p>
 <span>         <span class="co"># deleting colData column</span></span>
 <span>         sample <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: SummarizedExperiment </span></span>
-<span><span class="co">## dim: 5 4 </span></span>
-<span><span class="co">## metadata(0):</span></span>
-<span><span class="co">## assays(3): counts logcounts orig_names</span></span>
-<span><span class="co">## rownames(5): g1 g2 g3 g4 g5</span></span>
-<span><span class="co">## rowData names(2): length direction</span></span>
-<span><span class="co">## colnames(4): s1 s2 s3 s4</span></span>
-<span><span class="co">## colData names(1): condition</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span></span>
+<span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts logcounts orig_names  <span style="color: #949494;">|</span> length direction <span style="color: #949494;">|</span></span></span>
+<span><span class="co">##     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  1</span> g1        s1       <span style="color: #949494;">|</span>     14      2.64 row_1-col_1 <span style="color: #949494;">|</span>      1 -         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  2</span> g2        s1       <span style="color: #949494;">|</span>     19      2.94 row_2-col_1 <span style="color: #949494;">|</span>     24 +         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  3</span> g3        s1       <span style="color: #949494;">|</span>     16      2.77 row_3-col_1 <span style="color: #949494;">|</span>     60 +         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  4</span> g4        s1       <span style="color: #949494;">|</span>     11      2.40 row_4-col_1 <span style="color: #949494;">|</span>     39 -         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">  5</span> g5        s1       <span style="color: #949494;">|</span>     18      2.89 row_5-col_1 <span style="color: #949494;">|</span>     37 +         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">##   <span style="color: #949494;">…</span>  <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>              <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>       <span style="color: #949494;">…</span>             <span style="color: #949494;">…</span> <span style="color: #949494;">…</span>          </span></span>
+<span><span class="co">## <span style="color: #949494;">n-4</span> g1        s4       <span style="color: #949494;">|</span>      9      2.20 row_1-col_4 <span style="color: #949494;">|</span>      1 -         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-3</span> g2        s4       <span style="color: #949494;">|</span>      4      1.39 row_2-col_4 <span style="color: #949494;">|</span>     24 +         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-2</span> g3        s4       <span style="color: #949494;">|</span>     20      3.00 row_3-col_4 <span style="color: #949494;">|</span>     60 +         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n-1</span> g4        s4       <span style="color: #949494;">|</span>      3      1.10 row_4-col_4 <span style="color: #949494;">|</span>     39 -         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;">n  </span> g5        s4       <span style="color: #949494;">|</span>      5      1.61 row_5-col_4 <span style="color: #949494;">|</span>     37 +         <span style="color: #949494;">|</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ n = 20</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
@@ -572,12 +631,12 @@ in <code>dplyr</code>, they are unfortunately more complex. This means
 there is some overhead in creating the evaluation mask per dplyr verb.
 Try to reduce the number of <code>dplyr</code> verb calls and instead
 increase the content of each verb. For example instead of doing:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>foo <span class="op">=</span> <span class="va">bar</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>baz <span class="op">=</span> <span class="va">foo</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>do the following</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    foo <span class="op">=</span> <span class="va">bar</span>,</span>
@@ -608,7 +667,7 @@ to the development team first through one of the above channels.</li>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">##  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
@@ -620,7 +679,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  collate  en_US.UTF-8</span></span>
 <span><span class="co">##  ctype    en_US.UTF-8</span></span>
 <span><span class="co">##  tz       UTC</span></span>
-<span><span class="co">##  date     2024-10-18</span></span>
+<span><span class="co">##  date     2024-10-22</span></span>
 <span><span class="co">##  pandoc   3.2 @ /usr/bin/ (via rmarkdown)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Packages ───────────────────────────────────────────────────────────────────</span></span></span>
@@ -661,7 +720,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  lattice                0.22-6     <span style="color: #555555;">2024-03-20</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.4.1)</span></span></span>
 <span><span class="co">##  lifecycle              1.0.4      <span style="color: #555555;">2023-11-07</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  magrittr               2.0.3      <span style="color: #555555;">2022-03-30</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  Matrix                 1.7-0      <span style="color: #555555;">2024-04-26</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.4.1)</span></span></span>
+<span><span class="co">##  Matrix                 1.7-1      <span style="color: #555555;">2024-10-18</span> <span style="color: #555555;">[3]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  MatrixGenerics       * 1.16.0     <span style="color: #555555;">2024-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  matrixStats          * 1.4.1      <span style="color: #555555;">2024-09-08</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  memoise                2.0.1      <span style="color: #555555;">2021-11-26</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
@@ -672,7 +731,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  pkgconfig              2.0.3      <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgdown                2.1.1      <span style="color: #555555;">2024-09-17</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgload                1.4.0      <span style="color: #555555;">2024-06-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  plyxp                * 0.99.19    <span style="color: #555555;">2024-10-18</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  plyxp                * 0.99.19    <span style="color: #555555;">2024-10-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  profvis                0.4.0      <span style="color: #555555;">2024-09-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  promises               1.3.0      <span style="color: #555555;">2024-04-05</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  purrr                  1.0.2      <span style="color: #555555;">2023-08-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>

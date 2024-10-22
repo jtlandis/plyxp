@@ -153,14 +153,22 @@ use the S3 generic <code>show_tidy(...)</code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># default printing</span></span></span>
 <span class="r-in"><span><span class="va">se_simple</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class: SummarizedExperiment </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dim: 5 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> metadata(0):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> assays(2): counts logcounts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rownames(5): row_1 row_2 row_3 row_4 row_5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rowData names(3): gene length direction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> colnames(4): col_1 col_2 col_3 col_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> colData names(2): sample condition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .features .samples <span style="color: #949494;">|</span> counts logcounts <span style="color: #949494;">|</span> gene  length direction <span style="color: #949494;">|</span> sample</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  1</span> row_1     col_1    <span style="color: #949494;">|</span>     14      2.64 <span style="color: #949494;">|</span> g1         1 -         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  2</span> row_2     col_1    <span style="color: #949494;">|</span>     19      2.94 <span style="color: #949494;">|</span> g2        24 +         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  3</span> row_3     col_1    <span style="color: #949494;">|</span>     16      2.77 <span style="color: #949494;">|</span> g3        60 +         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  4</span> row_4     col_1    <span style="color: #949494;">|</span>     11      2.40 <span style="color: #949494;">|</span> g4        39 -         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  5</span> row_5     col_1    <span style="color: #949494;">|</span>     18      2.89 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494;">…</span>   <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>             <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>     <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span> <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-4</span> row_1     col_4    <span style="color: #949494;">|</span>      9      2.20 <span style="color: #949494;">|</span> g1         1 -         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-3</span> row_2     col_4    <span style="color: #949494;">|</span>      4      1.39 <span style="color: #949494;">|</span> g2        24 +         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-2</span> row_3     col_4    <span style="color: #949494;">|</span>     20      3.00 <span style="color: #949494;">|</span> g3        60 +         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-1</span> row_4     col_4    <span style="color: #949494;">|</span>      3      1.10 <span style="color: #949494;">|</span> g4        39 -         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n  </span> row_5     col_4    <span style="color: #949494;">|</span>      5      1.61 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ n = 20</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># use `plyxp` tibble abstraction</span></span></span>
 <span class="r-in"><span><span class="fu">use_show_tidy</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">se_simple</span></span></span>
@@ -183,14 +191,22 @@ use the S3 generic <code>show_tidy(...)</code>.</p>
 <span class="r-in"><span><span class="co"># restore default print</span></span></span>
 <span class="r-in"><span><span class="fu">use_show_default</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">se_simple</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> class: SummarizedExperiment </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dim: 5 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> metadata(0):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> assays(2): counts logcounts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rownames(5): row_1 row_2 row_3 row_4 row_5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> rowData names(3): gene length direction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> colnames(4): col_1 col_2 col_3 col_4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> colData names(2): sample condition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .features .samples <span style="color: #949494;">|</span> counts logcounts <span style="color: #949494;">|</span> gene  length direction <span style="color: #949494;">|</span> sample</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  1</span> row_1     col_1    <span style="color: #949494;">|</span>     14      2.64 <span style="color: #949494;">|</span> g1         1 -         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  2</span> row_2     col_1    <span style="color: #949494;">|</span>     19      2.94 <span style="color: #949494;">|</span> g2        24 +         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  3</span> row_3     col_1    <span style="color: #949494;">|</span>     16      2.77 <span style="color: #949494;">|</span> g3        60 +         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  4</span> row_4     col_1    <span style="color: #949494;">|</span>     11      2.40 <span style="color: #949494;">|</span> g4        39 -         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">  5</span> row_5     col_1    <span style="color: #949494;">|</span>     18      2.89 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494;">…</span>   <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span>             <span style="color: #949494;">…</span>        <span style="color: #949494;">…</span>     <span style="color: #949494;">…</span>         <span style="color: #949494;">…</span> <span style="color: #949494;">…</span>            <span style="color: #949494;">…</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-4</span> row_1     col_4    <span style="color: #949494;">|</span>      9      2.20 <span style="color: #949494;">|</span> g1         1 -         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-3</span> row_2     col_4    <span style="color: #949494;">|</span>      4      1.39 <span style="color: #949494;">|</span> g2        24 +         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-2</span> row_3     col_4    <span style="color: #949494;">|</span>     20      3.00 <span style="color: #949494;">|</span> g3        60 +         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n-1</span> row_4     col_4    <span style="color: #949494;">|</span>      3      1.10 <span style="color: #949494;">|</span> g4        39 -         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">n  </span> row_5     col_4    <span style="color: #949494;">|</span>      5      1.61 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ n = 20</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="co"># explicitly using tibble abstraction</span></span></span>
 <span class="r-in"><span><span class="fu">show_tidy</span><span class="op">(</span><span class="va">se_simple</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span>
