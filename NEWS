@@ -1,3 +1,15 @@
+## plyxp 0.99.20
+
+* plyxp now wraps `SummarizedExperiment` in a shell class named
+  `PlySummarizedExperiment` to avoid conflicts with `tidySummarizedExperiment`.
+  * Use `PlySummarizedExperiment()` or `new_plyxp()` to create a new object.
+  * Use standard Generics `se()` and `se<-()` to get and set the underlying
+    `SummarizedExperiment` object.
+  * plyxp `dplyr` verbs are now defined for `PlySummarizedExperiment` objects
+    instead of `SummarizedExperiment` objects.
+  * `PlySummarizedExperiment` utalizes enhanced printing methods to display
+    `SummarizedExperiment` objects in a tidy format.
+
 ## plyxp 0.99.19
 
 * Package renamed to `plyxp` to be more specific about its functionality
@@ -9,13 +21,13 @@
 
 ## plyxp 0.99.13
 
-* `print.SummarizedExperiment` has been renamed to 
+* `print.SummarizedExperiment` has been renamed to
   `show_tidy.SummarizedExperiment` and `show_tidy` is exported as an S3 generic.
-* Adjust show function display original show method by default. using 
+* Adjust show function display original show method by default. using
   `show_tidy()` is now opt-in via options or `use_show_tidy()`.
 * Verbose messages checking if `tidySummarizedExperiment` is already attached or
   ever becomes loaded with `plyxp`.
-* change README and Vignette explaining this package provides an alternative 
+* change README and Vignette explaining this package provides an alternative
   approach to `tidySummarizedExperiment` to manipulating `SummarizedExperiment`
   objects. For now they are exclusive in their functionality, but there may be
   plans to reconsile conflicts in the future!

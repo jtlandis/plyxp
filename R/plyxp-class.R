@@ -5,7 +5,13 @@
 #' @param se SummarizedExperiment object
 #' @return PlySummarizedExperiment object
 #' @examples
-#' new_plyxp(se = se_simple@se)
+#' se <- SummarizedExperiment(
+#'   assays = list(counts = matrix(1:6, nrow = 3)),
+#'   colData = DataFrame(condition = c("A", "B"))
+#' )
+#' new_plyxp(se = se)
+#' # or
+#' PlySummarizedExperiment(se = se)
 #' @export
 new_plyxp <- function(se) {
   PlySummarizedExperiment(se = se)
@@ -27,6 +33,30 @@ PlySummarizedExperiment <-
       se = "SE_OR_RangedSE"
     )
   )
+
+setMethod(
+  "show", "PlySummarizedExperiment",
+  function(object) {
+    show_tidy(object@se)
+  }
+)
+
+#' @export
+setGeneric("se", function(x) standardGeneric("se"))
+
+#' @describeIn PlySummarizedExperiment-methods get the se slot of the PlySummarizedExperiment object
+#' @export
+setMethod("se", "PlySummarizedExperiment", function(x) x@se)
+
+#' @export
+setGeneric("se<-", function(x, value) standardGeneric("se<-"))
+
+#' @describeIn PlySummarizedExperiment-methods set the se slot of the PlySummarizedExperiment object
+#' @export
+setMethod("se<-", "PlySummarizedExperiment", function(x, value) {
+  x@se <- value
+  x
+})
 
 #' @name plyxp
 #' @title Modify SummarizedExperiment Object

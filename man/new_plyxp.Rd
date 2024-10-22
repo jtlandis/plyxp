@@ -21,5 +21,11 @@ A container object for the SummarizedExperiment class.
 This is an S4 class only exported for possible extension.
 }
 \examples{
-new_plyxp(se = se_simple@se)
+se <- SummarizedExperiment(
+  assays = list(counts = matrix(1:6, nrow = 3)),
+  colData = DataFrame(condition = c("A", "B"))
+)
+new_plyxp(se = se)
+# or
+PlySummarizedExperiment(se = se)
 }
