@@ -1,15 +1,19 @@
-#' @title arrange rows or columns
+
+#' @name arrange
+#' @title arrange rows or columns of PlySummarizedExperiment
 #' @description
-#' `arrange()` orders either the rows or columns of a `SummarizedExperiment`
-#' object. Note, to guarentee a valid `SummarizedExperiment` is returned,
+#' `arrange()` orders either the rows or columns of a `PlySummarizedExperiment`
+#' object. Note, to guarentee a valid `PlySummarizedExperiment` is returned,
 #' arranging in the `assays` evaluation context is disabled.
 #'
 #' Unlike other dplyr verbs, `arrange()` largely ignores grouping. The
-#' `SummarizedExperiment` method also provides the same functionality via the
+#' `PlySummarizedExperiment` method also provides the same functionality via the
 #' `.by_group` argument.
 #'
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @inheritParams dplyr::arrange
-#' @return an object inheriting SummarizedExperiment class
+#' @return an object inheriting `PlySummarizedExperiment` class
 #' @examples
 #'
 #' # arrange within rows/cols contexts separately

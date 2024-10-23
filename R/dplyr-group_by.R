@@ -1,9 +1,12 @@
+
+#' @name group_data
 #' @title get grouping data
 #' @description
 #' retrieve grouping information from a `SummarizedExperiment` object. This
 #' is stored within the `metadata()` of the object.
 #'
-#' @param .data an object
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @return list of groupings for an SummarizedExperiment
 #' @examples
 #' group_by(se_simple, rows(direction), cols(condition)) |> group_data()
@@ -15,18 +18,20 @@ group_data_se_impl <- function(.data) {
   metadata(.data)[["group_data"]]
 }
 
-#' @title apply groups to SummarizedExperiments
+#' @name group_by
+#' @title apply groups to PlySummarizedExperiment 
 #' @description
 #' create grouping variables about the rowData and colData of a
-#' SummarizedExperiment object. Unlike the `data.frame` method
+#' `PlySummarizedExperiment` object. Unlike the `data.frame` method
 #' the resulting output class is left unchanged. Thus `dplyr` generics for
-#' `SummarizedExperiment` must check grouping information manually.
-#' @param .data a SummarizedExperiment object
+#' `PlySummarizedExperiment` must check grouping information manually.
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param ... expressions to group on. Grouping may only be done on
 #' rowData and/or colData by `rows()` and `cols()` respectively.
 #' @param .add When `FALSE`, the default, `group_by()` will override
 #' existing groups.
-#' @return SummarizedExperiment object
+#' @return `PlySummarizedExperiment` object
 #' @examples
 #'
 #' group_by(se_simple, rows(direction), cols(condition))
@@ -127,9 +132,10 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
 }
 
 
-#' @describeIn group_by.PlySummarizedExperiment Ungroup a PlySummarizedExperiment object
+#' @describeIn group_by Ungroup a PlySummarizedExperiment object
 #'
-#' @param x A SummarizedExperiment object
+#' @param x An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param ... [contextual expressions][plyxp::plyxp-context] specifying
 #' which columns to ungroup. Omitting `...` ungroups the entire object.
 #' @export

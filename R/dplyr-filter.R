@@ -2,22 +2,24 @@
 # function could take NULLs
 `%|!|%` <- function(x, y) if (!is_empty(x)) y else NULL
 
-#' @title Filter SummarizedExperiment
+#' @name filter
+#' @title filter PlySummarizedExperiment
 #' @description
 #'
-#' The `filter()` function is sused to subset an object, returing the observations
+#' The `filter()` function is used to subset an object, returning the observations
 #' that satisfy your conditions. An observation must return TRUE for all conditions
 #' within a context to be retained. Note, to guarantee a valid
-#' `SummarizedExperiment` is returned, filtering in the `assays` evaluation
+#' `PlySummarizedExperiment` is returned, filtering in the `assays` evaluation
 #' context is disabled.
 #'
-#' @param .data A SummarizedExperiment object
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param ... conditions to filter on. These must be wrapped in `cols()` and or
 #' `rows()`
 #' @param .preserve Relevant when the .data input is grouped. If .preserve = FALSE
 #' (the default), the grouping structure is recalculated based on the resulting data,
 #' i.e. the number of groups may change.
-#' @return an object inheriting SummarizedExperiment class
+#' @return an object inheriting `PlySummarizedExperiment` class
 #' @examples
 #' # example code
 #' filter(

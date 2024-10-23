@@ -20,8 +20,17 @@ PlySummarizedExperiment object
 \description{
 A container object for the SummarizedExperiment class.
 
-This is an S4 class only exported for possible extension.
+This S4 class is implemented to bring unique \code{dplyr}
+syntax to the \code{SummarizedExperiment} object without clashing with the
+\code{tidySummarizedExperiment} package. As such, this is a simple wrapper that
+contains one slot, which holds a \code{SummarizedExperiment} object.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{se}}{contains the underlying \code{SummarizedExperiment} class.}
+}}
+
 \examples{
 se <- SummarizedExperiment(
   assays = list(counts = matrix(1:6, nrow = 3)),

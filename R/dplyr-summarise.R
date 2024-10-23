@@ -1,8 +1,10 @@
 #' @importFrom dplyr summarize summarise
 NULL
 
-#' @title Summarize SummarizedExperiment
-#' @param .data a SummarizedExperiment object,
+#' @name summarize
+#' @title Summarize PlySummarizedExperiment
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param ... expressions to summarize the object
 #' @param .retain This argument controls how `rowData()` or `colData()` is retained
 #' after summarizing. When "auto" (the default), `.retain` behavior depends on
@@ -12,7 +14,8 @@ NULL
 #' `SummarizedExperiment` object and scalar outputs are recycled to the length
 #' of the ungrouped dimension. When "none", all outputs are expected to be
 #' scalar and only computed values are retained in `rowData()` and `colData()`
-#' @return an object inheriting SummarizedExperiment class
+#' @aliases summarise
+#' @return an object inheriting PlySummarizedExperiment class
 #' @examples
 #'
 #' # outputs in assay context may be either
@@ -45,12 +48,12 @@ NULL
 #'   )
 #'
 #' @export
-summarise.PlySummarizedExperiment <- function(.data, ...,
+summarize.PlySummarizedExperiment <- function(.data, ...,
                                               .retain = c("auto", "ungrouped", "none")) {
-  plyxp(.data, summarise_se_impl, ..., .retain = .retain)
+  plyxp(.data, summarize_se_impl, ..., .retain = .retain)
 }
 
-summarise_se_impl <- function(.data, ...,
+summarize_se_impl <- function(.data, ...,
                               .retain = c("auto", "ungrouped", "none")) {
   .env <- caller_env()
   .groups <- metadata(.data)[["group_data"]]
@@ -220,8 +223,10 @@ summarise_se_impl <- function(.data, ...,
   out
 }
 
+
+#' @rdname summarize
 #' @export
-summarize.PlySummarizedExperiment <- summarise.PlySummarizedExperiment
+summarise.PlySummarizedExperiment <- summarize.PlySummarizedExperiment
 
 
 

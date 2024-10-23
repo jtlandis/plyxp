@@ -23,7 +23,7 @@ dplyr::mutate
 dplyr::filter
 
 #' @export
-dplyr::summarise
+dplyr::summarize
 
 #' @export
 dplyr::select

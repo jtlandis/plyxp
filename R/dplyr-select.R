@@ -1,5 +1,5 @@
 
-
+#' @name select
 #' @title select assays, rowData, and colData names
 #' @description
 #' Select one or more values from each context. By default omitting an expression
@@ -15,11 +15,12 @@
 #' original data.
 #'
 #'
-#' @param .data a `SummarizedExperiment` object
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param ... <[`tidy-select`][dplyr::dplyr_tidy_select]> one or more selection
 #' expressions. Supports wrapping expressions within the
 #' <[`plyxp-contexts`][plyxp::plyxp-context]>.
-#' @return an object inheriting SummarizedExperiment class
+#' @return an object inheriting PlySummarizedExperiment class
 #' @examples
 #'
 #'

@@ -1,13 +1,15 @@
 #' @importFrom dplyr mutate
 
-#' @title Mutate a SummarizedExperiment object
+#' @name mutate
+#' @title Mutate a PlySummarizedExperiment object
 #' @description
-#' Mutate a SummarizedExperiment object under an data mask. Unlike a few other
+#' Mutate a PlySummarizedExperiment object under an data mask. Unlike a few other
 #' `dplyr` implementations, all contextual evaluations of `mutate()` for
 #' `SummarizedExperiment` are valid.
-#' @param .data an objecting inheriting SummarizedExperiment class
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param ... expressions to evaluate
-#' @return an object inheriting SummarizedExperiment class
+#' @return an object inheriting PlySummarizedExperiment class
 #' @examples
 #'
 #' mutate(se_simple,

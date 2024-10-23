@@ -1,11 +1,13 @@
+#' @name pull
 #' @title extract data from object
 #' @description
 #' similar to `dplyr::pull.data.frame` except allows to extract objects
 #' from different contexts.
-#' @param .data a SummarizedExperiment object
+#' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
+#' class for `SummarizedExperiment` objects
 #' @param var A variable as specified by [dplyr::pull][dplyr::pull]
 #' @param name ignored argument. Due to the range of data types a
-#' `SummarizedExperiment` this argument is not supported
+#' `PlySummarizedExperiment` this argument is not supported
 #' @param ... unused argument
 #' @return an element from either the assays, rowData, or colData of a
 #' `SummarizedExperiment` object
