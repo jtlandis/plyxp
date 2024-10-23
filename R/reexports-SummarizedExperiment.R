@@ -1,5 +1,10 @@
 
-#'@export
+# The following functions should
+# be available to users from our package
+
+
+#' @rdname reexports
+#' @export
 SummarizedExperiment::SummarizedExperiment
 
 #' @export

@@ -2,9 +2,9 @@
 % Please edit documentation in R/reexports-SummarizedExperiment.R,
 %   R/reexports-dplyr.R
 \docType{import}
-\name{reexports}
-\alias{reexports}
+\name{SummarizedExperiment}
 \alias{SummarizedExperiment}
+\alias{reexports}
 \alias{assay}
 \alias{assay<-}
 \alias{assays}
@@ -15,26 +15,36 @@
 \alias{colData<-}
 \alias{metadata}
 \alias{metadata<-}
-\alias{arrange}
-\alias{mutate}
-\alias{filter}
-\alias{summarize}
-\alias{select}
-\alias{pull}
-\alias{group_by}
-\alias{group_data}
-\alias{group_vars}
-\alias{ungroup}
 \title{Objects exported from other packages}
+\usage{
+SummarizedExperiment(
+  assays = SimpleList(),
+  rowData = NULL,
+  rowRanges = GRangesList(),
+  colData = DataFrame(),
+  metadata = list(),
+  checkDimnames = TRUE
+)
+}
 \value{
 exported functions available from \code{plyxp}
 }
 \examples{
-
 arrange(se_simple, rows(direction)) |>
   mutate(logp_counts = log1p(counts)) |>
   filter(cols(condition=="drug"))
+  
+assays(se_simple)
+rowData(se_simple)
+colData(se_simple)
 
+}
+\seealso{
+\code{\link[=arrange]{arrange()}} \code{\link[=mutate]{mutate()}} \code{\link[=filter]{filter()}}
+\code{\link[=summarize]{summarize()}} \code{\link[=select]{select()}} \code{\link[=pull]{pull()}} \code{\link[=group_by]{group_by()}}
+\code{\link[=group_data]{group_data()}} \code{\link[=group_vars]{group_vars()}} \code{\link[=ungroup]{ungroup()}}
+
+\link{PlySummarizedExperiment-methods}
 }
 \keyword{internal}
 \description{
@@ -44,8 +54,6 @@ below to see their documentation.
 \describe{
   \item{S4Vectors}{\code{\link[S4Vectors:Annotated-class]{metadata}}, \code{\link[S4Vectors:Annotated-class]{metadata<-}}}
 
-  \item{SummarizedExperiment}{\code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assays}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assays<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{colData}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{colData<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{rowData}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{rowData<-}}}
-
-  \item{dplyr}{\code{\link[dplyr]{arrange}}, \code{\link[dplyr]{filter}}, \code{\link[dplyr]{group_by}}, \code{\link[dplyr]{group_data}}, \code{\link[dplyr:group_data]{group_vars}}, \code{\link[dplyr]{mutate}}, \code{\link[dplyr]{pull}}, \code{\link[dplyr]{select}}, \code{\link[dplyr:summarise]{summarize}}, \code{\link[dplyr:group_by]{ungroup}}}
+  \item{SummarizedExperiment}{\code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assays}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assays<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{colData}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{colData<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{rowData}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{rowData<-}}}
 }}
 
