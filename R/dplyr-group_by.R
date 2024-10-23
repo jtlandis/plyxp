@@ -1,4 +1,3 @@
-
 #' @name group_data
 #' @title get grouping data
 #' @description
@@ -19,7 +18,7 @@ group_data_se_impl <- function(.data) {
 }
 
 #' @name group_by
-#' @title apply groups to PlySummarizedExperiment 
+#' @title apply groups to PlySummarizedExperiment
 #' @description
 #' create grouping variables about the rowData and colData of a
 #' `PlySummarizedExperiment` object. Unlike the `data.frame` method
@@ -217,7 +216,7 @@ groups.PlySummarizedExperiment <- function(x) {
 
 groups_se_impl <- function(x) {
   map(
-    group_vars(x),
+    group_vars_se_impl(x),
     syms
   )
 }

@@ -97,13 +97,17 @@ is_grouped_cols <- function(.groups) {
 #' @return NULL or list containing names of grouping columns
 #' @export
 group_vars.PlySummarizedExperiment <- function(x) {
-  map(metadata(se(x))[["group_data"]],
-         function(x) {
-           grep(x = names(x),
-                pattern = "^.indices",
-                value = TRUE,
-                invert = TRUE)
-         })
+  group_vars_se_impl(se(x))
+}
+
+group_vars_se_impl <- function(x) {
+  map(metadata(x)[["group_data"]],
+      function(x) {
+        grep(x = names(x),
+             pattern = "^.indices",
+             value = TRUE,
+             invert = TRUE)
+      })
 }
 
 

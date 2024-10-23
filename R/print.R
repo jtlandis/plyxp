@@ -293,7 +293,7 @@ tbl_sum.SE_abstraction <- function(x) {
   out <- sprintf("A %s-tibble Abstraction: %s", class(se), out)
   # names(out) <- sprintf("A %s-tibble Abstraction", class(se))
   if (!is.null(groups <- metadata(se)[["group_data"]])) {
-    gv <- group_vars(se)
+    gv <- group_vars_se_impl(se)
     vars <- c(
       if (!is_empty(gv$row_groups)) sprintf("rows(%s)", collapse(gv$row_groups)),
       if (!is_empty(gv$col_groups)) sprintf("cols(%s)", collapse(gv$col_groups))

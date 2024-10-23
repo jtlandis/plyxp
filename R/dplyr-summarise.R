@@ -82,7 +82,7 @@ summarize_se_impl <- function(.data, ...,
   nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   assay_chops <- mask_pull_chops(mask$masks[["assays"]])
-  group_vars_ <- group_vars(.data)
+  group_vars_ <- group_vars_se_impl(.data)
   row_data <- col_data <- NULL
   .nrow <- .ncol <- 1L
   row_chops_sizes <- col_chops_sizes <- 1L
