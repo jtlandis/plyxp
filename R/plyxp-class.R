@@ -19,25 +19,28 @@ new_plyxp <- function(se) {
 }
 
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
-#' @importClassesFrom SummarizedExperiment RangedSummarizedExperiment
-methods::setClassUnion("SE_OR_RangedSE", c("SummarizedExperiment", "RangedSummarizedExperiment"))
 
-
-#' @rdname new_plyxp
-#' @description
-#' This is an S4 class only exported for possible extension.
+#' @rdname new_plyxp 
+#' @description 
+#' This S4 class is implemented to bring unique `dplyr` 
+#' syntax to the `SummarizedExperiment` object without clashing with the
+#' `tidySummarizedExperiment` package. As such, this is a simple wrapper that
+#' contains one slot, which holds a `SummarizedExperiment` object.
+#' @slot se contains the underlying `SummarizedExperiment` class.
 #' @export
 setClass(
   "PlySummarizedExperiment",
   slots = c(
-    se = "SE_OR_RangedSE"
+    se = "SummarizedExperiment"
   )
 )
 
 #' @rdname new_plyxp
 #' @export
 PlySummarizedExperiment <- function(se) {
-  new("PlySummarizedExperiment", se = se)
+  obj <- new("PlySummarizedExperiment")
+  obj@se <- se
+  obj
 }
 
 setMethod(
