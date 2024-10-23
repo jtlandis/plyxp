@@ -1,25 +1,25 @@
-
 # The following functions should
 # be available to users from our package
 
+#' @title reexports from other packages
 #' @name reexports
-#' @returns 
+#' @returns
 #' exported functions available from `plyxp`
-#' 
+#'
 #' @seealso [plyxp::arrange()] [plyxp::mutate()] [plyxp::filter()]
 #' [plyxp::summarize()] [plyxp::select()] [plyxp::pull()] [plyxp::group_by()]
 #' [plyxp::group_data()] [plyxp::group_vars()] [plyxp::ungroup()]
 #' @seealso [plyxp::PlySummarizedExperiment-methods]
-#' 
+#'
 #' @examples
 #' arrange(se_simple, rows(direction)) |>
 #'   mutate(logp_counts = log1p(counts)) |>
-#'   filter(cols(condition=="drug"))
-#'   
+#'   filter(cols(condition == "drug"))
+#'
 #' assays(se_simple)
 #' rowData(se_simple)
 #' colData(se_simple)
-#' 
+#'
 NULL
 
 #' @noRd
