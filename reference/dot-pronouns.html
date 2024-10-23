@@ -19,7 +19,7 @@ name, .assays, .assays_asis, etc."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.19</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.23</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@ name, <code>.assays</code>, <code>.assays_asis</code>, etc.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">se_simple</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="mutate.html">mutate</a></span><span class="op">(</span><span class="va">se_simple</span>,</span></span>
 <span class="r-in"><span>       <span class="co"># access via pronoun</span></span></span>
 <span class="r-in"><span>       <span class="fu"><a href="plyxp-context.html">rows</a></span><span class="op">(</span>sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">counts</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="fu"><a href="plyxp-context.html">cols</a></span><span class="op">(</span>sum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">.assays</span><span class="op">$</span><span class="va">counts</span>, <span class="va">sum</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
