@@ -81,9 +81,23 @@ is_grouped_cols <- function(.groups) {
   !is_empty(.groups$col_groups)
 }
 
+#' @name group_vars
+#' @title get PlySummarizedExperiment grouping Variables
+#' @description
+#' like in [dplyr::group_vars()] will get character strings for
+#' groupings with the exection of the return value
+#' being a list for each grouped context
+#' 
+#' @param x PlySummarizedExperiment
+#' @examples
+#' 
+#' out <- group_by(se_simple, rows(direction))
+#' group_vars(out)
+#' 
+#' @return NULL or list containing names of grouping columns
 #' @export
-group_vars.SummarizedExperiment <- function(x) {
-  map(metadata(x)[["group_data"]],
+group_vars.PlySummarizedExperiment <- function(x) {
+  map(metadata(se(x))[["group_data"]],
          function(x) {
            grep(x = names(x),
                 pattern = "^.indices",

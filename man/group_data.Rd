@@ -3,6 +3,7 @@
 \name{group_data}
 \alias{group_data}
 \alias{group_data.PlySummarizedExperiment}
+\alias{ungroup}
 \title{get grouping data}
 \usage{
 \method{group_data}{PlySummarizedExperiment}(.data)

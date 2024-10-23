@@ -4,7 +4,7 @@
 #' @description
 #' retrieve grouping information from a `SummarizedExperiment` object. This
 #' is stored within the `metadata()` of the object.
-#'
+#' @aliases ungroup
 #' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
 #' class for `SummarizedExperiment` objects
 #' @return list of groupings for an SummarizedExperiment
