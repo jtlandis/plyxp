@@ -1,3 +1,11 @@
+
+## plyxp 0.99.21
+
+* Fixed documentation of `?plyxp::mutate` and other dplyr functions reexported
+  by `plyxp`.
+* `PlySummarizedExperiment` should be able to hold any `SummarizedExperiment` 
+  object
+
 ## plyxp 0.99.20
 
 * plyxp now wraps `SummarizedExperiment` in a shell class named
