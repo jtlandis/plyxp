@@ -12,7 +12,13 @@
 }
 \arguments{
 \item{.data}{An object Inheriting from \code{PlySummarizedExperiment}, the wrapper
-class for \code{SummarizedExperiment} objects}
+class for \code{SummarizedExperiment} objects
+\subsection{S4 Compatibility}{
+
+At the moment, grouping on S4 Vectors is not yet supported. This is due to
+\code{plyxp} using \verb{[vec_group_loc][vctrs::vec_group_loc]} to form grouping
+information. \code{plyxp} will eventually develop a method to handle S4 Vectors.
+}}
 
 \item{...}{\link[=plyxp-context]{contextual expressions} specifying
 which columns to ungroup. Omitting \code{...} ungroups the entire object.}

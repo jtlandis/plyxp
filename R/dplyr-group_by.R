@@ -26,6 +26,13 @@ group_data_se_impl <- function(.data) {
 #' `PlySummarizedExperiment` must check grouping information manually.
 #' @param .data An object Inheriting from `PlySummarizedExperiment`, the wrapper
 #' class for `SummarizedExperiment` objects
+#'
+#' ## S4 Compatibility
+#'
+#' At the moment, grouping on S4 Vectors is not yet supported. This is due to
+#' `plyxp` using `[vec_group_loc][vctrs::vec_group_loc]` to form grouping
+#' information. `plyxp` will eventually develop a method to handle S4 Vectors.
+#'
 #' @param ... expressions to group on. Grouping may only be done on
 #' rowData and/or colData by `rows()` and `cols()` respectively.
 #' @param .add When `FALSE`, the default, `group_by()` will override
