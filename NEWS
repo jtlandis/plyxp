@@ -1,9 +1,14 @@
 
+## plyxp 0.99.24
+
+* Since `plyxp` does not have a conflict with `tidySummarizedExperiment` anymore,
+  we have removed package startup messages warning of potential conflicts.
+
 ## plyxp 0.99.21
 
 * Fixed documentation of `?plyxp::mutate` and other dplyr functions reexported
   by `plyxp`.
-* `PlySummarizedExperiment` should be able to hold any `SummarizedExperiment` 
+* `PlySummarizedExperiment` should be able to hold any `SummarizedExperiment`
   object
 
 ## plyxp 0.99.20
