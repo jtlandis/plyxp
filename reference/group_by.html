@@ -13,7 +13,7 @@ PlySummarizedExperiment must check grouping information manually."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.23</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,14 @@ the resulting output class is left unchanged. Thus <code>dplyr</code> generics f
 
 <dl><dt id="arg--data">.data<a class="anchor" aria-label="anchor" href="#arg--data"></a></dt>
 <dd><p>An object Inheriting from <code>PlySummarizedExperiment</code>, the wrapper
-class for <code>SummarizedExperiment</code> objects</p></dd>
+class for <code>SummarizedExperiment</code> objects</p><div class="section">
+<h3 id="s-compatibility">S4 Compatibility<a class="anchor" aria-label="anchor" href="#s-compatibility"></a></h3>
+
+
+<p>At the moment, grouping on S4 Vectors is not yet supported. This is due to
+<code>plyxp</code> using <code>[vec_group_loc][vctrs::vec_group_loc]</code> to form grouping
+information. <code>plyxp</code> will eventually develop a method to handle S4 Vectors.</p>
+</div></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

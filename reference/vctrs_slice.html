@@ -40,15 +40,17 @@ context would force the CompressedGRangesList object to be
 chopped element-wise.
 Unfortunately, there is a massive performance hit in attempting to construct
 250,000 GRanges. Unless you do not mind waiting over an hour for each
-dplyr verb in which exons gets evaluated, consider plyxp_s4_proxy_vec().
+dplyr verb in which exons gets evaluated, doing so  is not recommended.
+The plyxp package is planning to export a new generic
+named plyxp_s4_proxy_vec().
 This attempts to reconstruct certain standard S4Vectors::Vectors as
 standard vectors or tibbles. The equivalent exons object would require
 much more memory use, but at the advantage of only taking several seconds to
-construct.When you are done, you can attempt to restore the original S4
+construct. When you are done, you can attempt to restore the original S4
 Vector with plyxp_restore_s4_proxy().
-plyxp_s4_proxy_vec() is faster to work with because there are less
-checks on the object validity and all @elementMetadata and @metadata are
-dropped from the objects.
+In development, plyxp_s4_proxy_vec() is faster to work with because there
+are less checks on the object validity and all @elementMetadata and
+@metadata are dropped from the objects.
 
 '><meta property="og:description" content='This extends vctrs::vec_slice to S4Vectors::Vector class by masking
 vec_slice with S7::new_generic. Atomic vectors and other base S3 classes
@@ -91,15 +93,17 @@ context would force the CompressedGRangesList object to be
 chopped element-wise.
 Unfortunately, there is a massive performance hit in attempting to construct
 250,000 GRanges. Unless you do not mind waiting over an hour for each
-dplyr verb in which exons gets evaluated, consider plyxp_s4_proxy_vec().
+dplyr verb in which exons gets evaluated, doing so  is not recommended.
+The plyxp package is planning to export a new generic
+named plyxp_s4_proxy_vec().
 This attempts to reconstruct certain standard S4Vectors::Vectors as
 standard vectors or tibbles. The equivalent exons object would require
 much more memory use, but at the advantage of only taking several seconds to
-construct.When you are done, you can attempt to restore the original S4
+construct. When you are done, you can attempt to restore the original S4
 Vector with plyxp_restore_s4_proxy().
-plyxp_s4_proxy_vec() is faster to work with because there are less
-checks on the object validity and all @elementMetadata and @metadata are
-dropped from the objects.
+In development, plyxp_s4_proxy_vec() is faster to work with because there
+are less checks on the object validity and all @elementMetadata and
+@metadata are dropped from the objects.
 
 '></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -109,7 +113,7 @@ dropped from the objects.
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.23</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.24</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,15 +181,17 @@ context would force the <code>CompressedGRangesList</code> object to be
 chopped element-wise.</p>
 <p>Unfortunately, there is a massive performance hit in attempting to construct
 250,000 <code>GRanges</code>. Unless you do not mind waiting over an hour for each
-<code>dplyr</code> verb in which <code>exons</code> gets evaluated, consider <code>plyxp_s4_proxy_vec()</code>.
+<code>dplyr</code> verb in which <code>exons</code> gets evaluated, doing so  is not recommended.</p>
+<p>The <code>plyxp</code> package is planning to export a new generic
+named <code>plyxp_s4_proxy_vec()</code>.
 This attempts to reconstruct certain standard <code>S4Vectors::Vectors</code> as
 standard vectors or tibbles. The equivalent <code>exons</code> object would require
 much more memory use, but at the advantage of only taking several seconds to
-construct.When you are done, you can attempt to restore the original S4
+construct. When you are done, you can attempt to restore the original S4
 Vector with <code>plyxp_restore_s4_proxy()</code>.</p>
-<p><code>plyxp_s4_proxy_vec()</code> is faster to work with because there are less
-checks on the object validity and all <code>@elementMetadata</code> and <code>@metadata</code> are
-dropped from the objects.</p>
+<p>In development, <code>plyxp_s4_proxy_vec()</code> is faster to work with because there
+are less checks on the object validity and all <code>@elementMetadata</code> and
+<code>@metadata</code> are dropped from the objects.</p>
 </div>
 
     </div>
