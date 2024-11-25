@@ -2,9 +2,12 @@
 % Please edit documentation in R/plyxp-class.R
 \name{plyxp}
 \alias{plyxp}
+\alias{plyxp_on}
 \title{Modify SummarizedExperiment Object}
 \usage{
 plyxp(.data, .f, ...)
+
+plyxp_on(.data, .f, ..., .on)
 }
 \arguments{
 \item{.data}{a PlySummarizedExperiment object}
@@ -12,6 +15,9 @@ plyxp(.data, .f, ...)
 \item{.f}{a function that returns a SummarizedExperiment object}
 
 \item{...}{additional arguments passed to \code{.f}}
+
+\item{.on}{a symbol matching an accessor and setter function for the
+\code{SummarizedExperiment} Class.}
 }
 \value{
 a PlySummarizedExperiment object
@@ -19,6 +25,30 @@ a PlySummarizedExperiment object
 \description{
 Modify the underlying SummarizedExperiment object with a function.
 }
+\section{Functions}{
+\itemize{
+\item \code{plyxp_on()}: pass a function to the result of an accessor of the
+\code{SummarizedExperiment} Class
+This function is a wrapper for the expression:
+\preformatted{
+ plyxp::plyxp(.data, function(se, ...) {
+   .f <- rlang::as_function(.f)
+   obj <- .on(se)
+   obj <- .f(se, ...)
+   .on(se) <- obj
+   se
+ }, ...)
+}
+where \code{.on} is the symbol for the accessor function into a
+\code{SummarizedExperiment} Class. Note: the setter variant must exist in the
+environment that \code{plyxp_on()} is called. All other arguments are diffused
+as quosures and will be evaluated in the environment they were quoted.
+
+}}
 \examples{
 plyxp(se_simple, function(x) x)
+plyxp_on(se_simple, 
+        .f = lapply, # function to call on `.on` args,
+        .on = rowData, # data `.f` will be used on
+         paste, "foo" # arguments for `.f`)
 }

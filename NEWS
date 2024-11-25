@@ -1,4 +1,13 @@
 
+## plyxp 1.1.1
+
+* added `plyxp_on()` as a way to have further interior mutability on the 
+  SummarizedExperiment class.
+
+## plyxp 1.0.0
+
+* BioConductor 3.20 release
+
 ## plyxp 0.99.24
 
 * Since `plyxp` does not have a conflict with `tidySummarizedExperiment` anymore,
