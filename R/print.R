@@ -1,5 +1,3 @@
-
-
 sep_ <- function(n) {
   x <- vctrs::vec_rep("|", times = n)
   class(x) <- "sep!"
@@ -58,46 +56,46 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #' @description
 #' `plyxp` uses [pillar][pillar::pillar-package] for its printing.
 #' If you want to change how your S4 object is printed within
-#' `plyxp`'s print method, consider writing a method for 
+#' `plyxp`'s print method, consider writing a method for
 #' this function.
 #'
 #' To print S4 objects in a tibble, `plyxp` hacks a custom
-#' integer vector built from [`vctrs`][vctrs::new_vctr] where 
-#' the S4 object lives in an attribute named "phantomData". 
+#' integer vector built from [`vctrs`][vctrs::new_vctr] where
+#' the S4 object lives in an attribute named "phantomData".
 #' You can create your own S4 phantom vector with `vec_phantom()`.
 #' This function is not used outside of printing for `plyxp`
-#' 
+#'
 #' The default method for formatting a `vec_phantom()` is to call
 #' [`showAsCell()`][S4Vectors::showAsCell].
-#' 
-#' @section tidy printing: 
-#' 
-#' By default, `plyxp` will not affect the show method for 
+#'
+#' @section tidy printing:
+#'
+#' By default, `plyxp` will not affect the show method for
 #' `SummarizedExperiment` objects. In order to use a tibble abstraction, use
 #' `use_show_tidy()` to enable or `use_show_default()` to disable this feature.
 #' These functions are called for their side effects, modifying the global
 #' option "show_SummarizedExperiment_as_tibble_abstraction".
-#' 
+#'
 #' To show an object as the tibble abstraction regardless of the set option,
 #' use the S3 generic `show_tidy(...)`.
-#' 
-#' 
+#'
+#'
 #' @param x The S4 object
 #' @param ... other arguments passed from [`pillar_shaft`][pillar::pillar_shaft]
 #' @examples
-#' 
+#'
 #' if(require("IRanges")) {
 #'   ilist <- IRanges::IntegerList(list(c(1L,2L,3L),c(5L,6L)))
 #'   phantom <- vec_phantom(ilist)
 #'   pillar::pillar_shaft(phantom)
-#'   
+#'
 #'   plyxp_pillar_format.CompressedIntegerList <- function(x) {
 #'    sprintf("Int: [%i]", lengths(x))
 #'   }
 #'   pillar::pillar_shaft(phantom)
 #'   rm(plyxp_pillar_format.CompressedIntegerList)
 #' }
-#' 
+#'
 #' # default printing
 #' se_simple
 #' # use `plyxp` tibble abstraction
@@ -108,8 +106,8 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #' se_simple
 #' # explicitly using tibble abstraction
 #' show_tidy(se_simple)
-#' 
-#' @returns 
+#'
+#' @returns
 #' `plyxp_pillar_format` -> formatted version of your S4 vector
 #' `vec_phantom` -> integer vector with arbitrary object in `phatomData` attribute.
 #' @export
@@ -143,19 +141,17 @@ show_tidy.default <- function(x, ...) {
   methods::show(object = x)
 }
 
-
 #' @export
 show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
-  
-  top_n <- ceiling(n/2)
-  bot_n <- floor(n/2)
+  top_n <- ceiling(n / 2)
+  bot_n <- floor(n / 2)
   onr <- nr <- nrow(x)
   row_slice <- if (nr < 2 * n) {
     seq_len(nr)
   } else {
     c(seq_len(n), (nr - n + 1):nr)
   }
-  
+
   onc <- nc <- ncol(x)
   col_slice <- if (nc < 2 * n) {
     seq_len(nc)
@@ -185,9 +181,9 @@ show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
     col_
   )
   # browser()
-  attr(out, "row.names") <- c(NA_integer_, - nn)
-  class(out) <- c("SE_abstraction","tbl_df", "tbl", "data.frame")
-  
+  attr(out, "row.names") <- c(NA_integer_, -nn)
+  class(out) <- c("SE_abstraction", "tbl_df", "tbl", "data.frame")
+
   # browser()
   sub_seq <- if (nn < 2 * top_n) {
     seq_len(nn)
@@ -198,9 +194,9 @@ show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
     )
   }
   # if (diff(min(top_half):max(bot_half)))
-  out_sub <- out[sub_seq,]
-  
-  if (nrow(out_sub)==nn) {
+  out_sub <- out[sub_seq, ]
+
+  if (nrow(out_sub) == nn) {
     attr(out_sub, "plyxp:::has_break_at") <- 0L
   } else {
     attr(out_sub, "plyxp:::has_break_at") <- max(top_n)
@@ -215,7 +211,7 @@ collapse <- function(x) {
 }
 
 #' @export
-format.plyxp_pillar_rid_type <- function(x, width= NULL, ...) {
+format.plyxp_pillar_rid_type <- function(x, width = NULL, ...) {
   ""
 }
 
@@ -225,19 +221,25 @@ format.plyxp_pillar_rid_shaft <- function(x, width, ...) {
     style_subtle(
       align(x$row_ids, width = width, align = "right")
     ),
-    width = width, align = "right"
+    width = width,
+    align = "right"
   )
 }
 
 #' @export
-ctl_new_rowid_pillar.SE_abstraction <- function(controller,
-                                                x, width, ...,
-                                                title = NULL, type = NULL) {
-  
+ctl_new_rowid_pillar.SE_abstraction <- function(
+  controller,
+  x,
+  width,
+  ...,
+  title = NULL,
+  type = NULL
+) {
   if (val <- attr(controller, "plyxp:::has_break_at")) {
     # browser()
-    template <- names(ctl_new_pillar(controller, vector(), width, 
-                                     title = title))
+    template <- names(
+      ctl_new_pillar(controller, vector(), width, title = title)
+    )
     if (!length(template)) {
       return(NULL)
     }
@@ -246,19 +248,21 @@ ctl_new_rowid_pillar.SE_abstraction <- function(controller,
     bot_half <- rev(seq_len(nrow(controller) - (val + 1L)))
     data <- if (length(bot_half)) {
       spec <- sprintf("n-%i", bot_half)
-      c(top_half,
+      c(
+        top_half,
         align(
-          c(spec,
-            "n"),
-          align = "left")
+          c(spec, "n"),
+          align = "left"
         )
+      )
     } else {
       c(top_half, "n")
     }
     if ("type" %in% template) {
       out$type <- pillar_component(
         structure(
-          list(), class = "plyxp_pillar_rid_type",
+          list(),
+          class = "plyxp_pillar_rid_type",
           width = 1L
         )
       )
@@ -295,7 +299,8 @@ tbl_sum.SE_abstraction <- function(x) {
   if (!is.null(groups <- metadata(se)[["group_data"]])) {
     gv <- group_vars_se_impl(se)
     vars <- c(
-      if (!is_empty(gv$row_groups)) sprintf("rows(%s)", collapse(gv$row_groups)),
+      if (!is_empty(gv$row_groups))
+        sprintf("rows(%s)", collapse(gv$row_groups)),
       if (!is_empty(gv$col_groups)) sprintf("cols(%s)", collapse(gv$col_groups))
     )
     out <- c(out, sprintf("Groups: %s", collapse(vars)))
@@ -304,10 +309,15 @@ tbl_sum.SE_abstraction <- function(x) {
 }
 
 #' @export
-tbl_format_setup.SE_abstraction <- function(x, width, ...,
-                                            n, max_extra_cols,
-                             max_footer_lines, focus) {
-  
+tbl_format_setup.SE_abstraction <- function(
+  x,
+  width,
+  ...,
+  n,
+  max_extra_cols,
+  max_footer_lines,
+  focus
+) {
   setup <- NextMethod()
   setup$rows_total <- prod(dim(attr(x, "plyxp:::data")))
   if (val <- attr(x, "plyxp:::has_break_at")) {
@@ -317,17 +327,24 @@ tbl_format_setup.SE_abstraction <- function(x, width, ...,
     len <- attr(position, "match.length")
     new_line <- vctrs::vec_rep(" ", times = nchar(prev_line))
     new_line[position + floor(len / 2)] <- style_subtle(cli::symbol$continue)
-    setup$body <- append(setup$body,
-                         paste(new_line, collapse = ""),
-                         body_idx) |>
+    setup$body <- append(
+      setup$body,
+      paste(new_line, collapse = ""),
+      body_idx
+    ) |>
       glue::as_glue()
   }
   setup
 }
 
 #' @export
-ctl_new_pillar.SE_abstraction <- function(controller, x, width, ..., title = NULL) {
-  
+ctl_new_pillar.SE_abstraction <- function(
+  controller,
+  x,
+  width,
+  ...,
+  title = NULL
+) {
   if (inherits(x, "sep!")) {
     p <- pillar(x, title = "|", ...)
     class(p$title[[1]]) <- "blank_pillar_title"
@@ -343,15 +360,22 @@ ctl_new_pillar.SE_abstraction <- function(controller, x, width, ..., title = NUL
 }
 
 #' @export
-tbl_format_footer.SE_abstraction <-function(x, setup, ...) {
-  
+tbl_format_footer.SE_abstraction <- function(x, setup, ...) {
   out <- NextMethod()
   if (attr(x, "plyxp:::has_break_at")) {
     out <- c(
-      style_subtle(sprintf("# %s n = %s",
-                           cli::symbol$info,
-                           format(setup$rows_total, big.mark = ",",
-                                  scientific = FALSE, digits = 1))),
+      style_subtle(
+        sprintf(
+          "# %s n = %s",
+          cli::symbol$info,
+          format(
+            setup$rows_total,
+            big.mark = ",",
+            scientific = FALSE,
+            digits = 1
+          )
+        )
+      ),
       out
     )
   }
@@ -366,20 +390,25 @@ format.blank_pillar_type <- function(x, width, ...) {
 #' @export
 format.blank_pillar_title <- format.blank_pillar_type
 
-
 setMethod(
-  f="show",
-  signature="SummarizedExperiment",
-  definition=function(object) {
-    if (isTRUE(x=getOption(x="show_SummarizedExperiment_as_tibble_abstraction",
-                           default = FALSE)) 
+  f = "show",
+  signature = "SummarizedExperiment",
+  definition = function(object) {
+    if (
+      isTRUE(
+        x = getOption(
+          x = "show_SummarizedExperiment_as_tibble_abstraction",
+          default = FALSE
+        )
+      )
     ) {
       show_tidy(object)
     } else {
       methods::getMethod(
         f = "show",
         signature = "SummarizedExperiment",
-        where=asNamespace(ns = "SummarizedExperiment"))(object)
+        where = asNamespace(ns = "SummarizedExperiment")
+      )(object)
     }
   }
 )
@@ -395,4 +424,3 @@ use_show_tidy <- function() {
 use_show_default <- function() {
   options(show_SummarizedExperiment_as_tibble_abstraction = FALSE)
 }
-
