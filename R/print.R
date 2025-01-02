@@ -318,9 +318,18 @@ tbl_format_setup.SE_abstraction <- function(
   max_footer_lines,
   focus
 ) {
+  # pillar 1.10.0 now passes 'setup' as NULL on first call
+  # If we fail to check, the setup$body will always be NULL
+  dots_setup <- ...names() %in% "setup"
+  is_first_call <- any(dots_setup) && is.null(...elt(which(dots_setup)))
   setup <- NextMethod()
   setup$rows_total <- prod(dim(attr(x, "plyxp:::data")))
-  if (val <- attr(x, "plyxp:::has_break_at")) {
+  # on second call, setup$body should exist
+  if (
+    !is_first_call &&
+      !is.null(setup$body) &&
+      (val <- attr(x, "plyxp:::has_break_at"))
+  ) {
     body_idx <- val + 2L
     prev_line <- cli::ansi_strip(setup$body[body_idx])
     position <- gregexec("[^ |]+", prev_line)[[1]]
