@@ -59,32 +59,34 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
   quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
-    abort(
-      message = c(
-        "Cannot filter in `assays` context",
-        "x" = sprintf(
-          "review expression indices %s in dots",
-          paste0(which(err), collapse = ", ")
-        ),
-        "i" = "consider wrapping expressions in rows(...) or cols(...)"
-      )
-    )
+    plyxp_assays_cannot(do = "filter", review = err)
   }
   nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   results <- mask$results()
   filter_ <- ""
   if (!is_empty(results$rows)) {
-    row_logic <- vec_recycle_common(splice(results$rows)) |>
+    row_logic <- vctrs::vec_cast_common(
+      splice(results$rows),
+      .to = logical()
+    ) |>
+      splice() |>
+      vec_recycle_common() |>
       reduce(`&`)
     filter_ <- "row"
   }
   if (!is_empty(results$cols)) {
-    col_logic <- vec_recycle_common(splice(results$cols)) |>
+    col_logic <- vctrs::vec_cast_common(
+      splice(results$cols),
+      .to = logical()
+    ) |>
+      splice() |>
+      vec_recycle_common() |>
       reduce(`&`)
     filter_ <- paste0(filter_, "col")
   }
-  .data <- switch(filter_,
+  .data <- switch(
+    filter_,
     rowcol = .data[row_logic, col_logic],
     row = .data[row_logic, ],
     col = .data[, col_logic],
@@ -94,14 +96,22 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
   if (is.null(current_groups)) {
     return(.data)
   }
-  row_select <- grep("^.indices", names(current_groups[["row_groups"]]),
-    value = TRUE, invert = TRUE
+  row_select <- grep(
+    "^.indices",
+    names(current_groups[["row_groups"]]),
+    value = TRUE,
+    invert = TRUE
   )
-  row_groups <- row_select %|!|% as_tibble(rowData(.data), rownames = ".features")[row_select]
-  col_select <- grep("^.indices", names(current_groups[["col_groups"]]),
-    value = TRUE, invert = TRUE
+  row_groups <- row_select %|!|%
+    as_tibble(rowData(.data), rownames = ".features")[row_select]
+  col_select <- grep(
+    "^.indices",
+    names(current_groups[["col_groups"]]),
+    value = TRUE,
+    invert = TRUE
   )
-  col_groups <- col_select %|!|% as_tibble(colData(.data), rownames = ".samples")[col_select]
+  col_groups <- col_select %|!|%
+    as_tibble(colData(.data), rownames = ".samples")[col_select]
   new_groups <- plyxp_groups(
     row_groups = row_groups,
     col_groups = col_groups
