@@ -40,19 +40,22 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   nc <- ncol(obj)
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
 
-  mask_assay <- plyxp_assay$new(assays(obj),
+  mask_assay <- plyxp_assay$new(
+    assays(obj),
     get_group_indices(groups, expanded, "assay"),
     .nrow = nr,
     .ncol = nc,
     .env_bot = shared_ctx_env,
     .env_top = top_env
   )
-  mask_rows <- plyxp_mask$new(prepend_rownames(rowData(obj), column = ".features"),
+  mask_rows <- plyxp_mask$new(
+    prepend_rownames(rowData(obj), column = ".features"),
     get_group_indices(groups, expanded, "rowData"),
     .env_bot = shared_ctx_env,
     .env_top = top_env
   )
-  mask_cols <- plyxp_mask$new(prepend_rownames(colData(obj), column = ".samples"),
+  mask_cols <- plyxp_mask$new(
+    prepend_rownames(colData(obj), column = ".samples"),
     get_group_indices(groups, expanded, "colData"),
     .env_bot = shared_ctx_env,
     .env_top = top_env
@@ -82,13 +85,14 @@ plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
     quos <- enforce_matrix(quos, ctxs)
   }
   n_quo <- length(quos)
+  curr_quo <- NULL
   try_fetch(
     {
       for (i in seq_len(n_quo)) {
-        quo <- quos[[i]]
+        curr_quo <- quos[[i]]
         # nm <- nams[i]
         mask$ctx <- ctxs[[i]]
-        mask$eval(quo, env = env)
+        mask$eval(curr_quo, env = env)
       }
     },
     error = function(cnd) {
@@ -97,7 +101,7 @@ plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
       cli::cli_abort(
         message = "an error occured in group {current_gid} of `{current_ctx}` context",
         parent = cnd,
-        call = .call,
+        call = quo,
         class = "plyxp_dplyr_eval_error"
       )
     }
