@@ -8,8 +8,8 @@
 <title>Data masks for SummarizedExperiment enabling dplyr-like manipulation • plyxp</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Data masks for SummarizedExperiment enabling dplyr-like manipulation">
 <meta name="description" content="The package provides `rlang` data masks for the SummarizedExperiment class. The enables the evaluation of unquoted expression in different contexts of the SummarizedExperiment object with optional access to other contexts. The goal for `plyxp` is for evaluation to feel like a data.frame object without ever needing to unwind to a rectangular data.frame.">
 <meta property="og:description" content="The package provides `rlang` data masks for the SummarizedExperiment class. The enables the evaluation of unquoted expression in different contexts of the SummarizedExperiment object with optional access to other contexts. The goal for `plyxp` is for evaluation to feel like a data.frame object without ever needing to unwind to a rectangular data.frame.">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.24</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,14 +50,16 @@
 <div class="page-header"><h1 id="plyxp">
 <code>plyxp</code><a class="anchor" aria-label="anchor" href="#plyxp"></a>
 </h1></div>
-<p><code>plyxp</code> provides efficient abstractions to the <em>SummarizedExperiment</em> such that using common dplyr functions feels as natural to operating on a <em>data.frame</em> or <em>tibble</em>. <code>plyxp</code> was built as an alternative to the <code>tidySummarizedExperiment</code> package but there may be a future in which their conflicts are reconciled. <code>plyxp</code> uses <a href="https://rlang.r-lib.org/reference/topic-data-mask-programming.html" class="external-link">data-masking</a> from the <code>rlang</code> package in order to connect dplyr functions to <em>SummarizedExperiment</em> slots in a manner that aims to be intuitive and avoiding ambiguity in outcomes.</p>
-<p><strong><em>Note:</em></strong> This package is still under active development as of Fall 2024.</p>
+<p><code>plyxp</code> provides efficient abstractions to <em>SummarizedExperiment</em> such that using common dplyr functions feels as natural to operating on a <em>data.frame</em> or <em>tibble</em>. <code>plyxp</code> makes use of a concise grammar for exploring and manipulating annotated matrix data in the form of the <em>SummarizedExperiment</em>, scaling from simple to complex operations spanning one or more tables of data. We also aim for optimized implementations in <code>plyxp</code> to power some functionality within the <code>tidySummarizedExperiment</code> package, which also offers a dplyr-like interface to <em>SummarizedExperiment</em>. These two packages can easily be used in parallel, by casting objects with the <code>new_plyxp</code> constructor to enable <code>plxyp</code>-driven functionality.</p>
+<p><code>plyxp</code> uses <a href="https://rlang.r-lib.org/reference/topic-data-mask-programming.html" class="external-link">data-masking</a> from the <code>rlang</code> package in order to connect dplyr functions to <em>SummarizedExperiment</em> slots in a manner that aims to be intuitive and avoiding ambiguity in outcomes.</p>
+<p><strong><em>Note:</em></strong> This package is still under active development. Feel free to reach out to the package developers, see <em>Feedback</em> section below.</p>
 <div class="section level2">
 <h2 id="installing-plyxp">installing <code>plyxp</code>
 <a class="anchor" aria-label="anchor" href="#installing-plyxp"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"plyxp"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># plyxp is available on BiocManager version 3.20</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"plyxp"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level1">
@@ -77,7 +79,7 @@ The <code>SummarizedExperiment</code> object contains three main components/“c
 </div>
 <p><br></p>
 <p>The <code>.assays</code>, <code>.rows</code> and <code>.cols</code> pronouns outputs depends on the evaluating context. Users should expect that the underlying data returned from <code>.rows</code> or <code>.cols</code> pronouns in the <em><strong>assays context</strong></em> is a vector, replicated to match size of the assay context.<br>
-Alternatively, using a pronoun in either the <code><a href="reference/plyxp-context.html">rows()</a></code> or <code><a href="reference/plyxp-context.html">cols()</a></code> contexts will likely return a list equal in length to either <code>nrows(rowData())</code> or <code>nrows(colData())</code>.</p>
+Alternatively, using a pronoun in either the <code><a href="reference/plyxp-context.html">rows()</a></code> or <code><a href="reference/plyxp-context.html">cols()</a></code> contexts will likely return a list equal in length to either <code>nrows(rowData())</code> or <code>nrows(colData())</code> respectively.</p>
 </div>
 <div class="section level1">
 <h1 id="feedback">Feedback<a class="anchor" aria-label="anchor" href="#feedback"></a>
