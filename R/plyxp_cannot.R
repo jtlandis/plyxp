@@ -1,7 +1,7 @@
 plyxp_assays_cannot <- function(do, review) {
   cli::cli_abort(
     message = c(
-      "Cannot {do} in `assays`",
+      "Cannot {do} in `assays` context",
       "x" = sprintf(
         "review expression: %s",
         paste0("..", which(review), collapse = ", ")
