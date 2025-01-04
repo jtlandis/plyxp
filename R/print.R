@@ -71,10 +71,10 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #' @section tidy printing:
 #'
 #' By default, `plyxp` will not affect the show method for
-#' `SummarizedExperiment` objects. In order to use a tibble abstraction, use
-#' `use_show_tidy()` to enable or `use_show_default()` to disable this feature.
-#' These functions are called for their side effects, modifying the global
-#' option "show_SummarizedExperiment_as_tibble_abstraction".
+#' `SummarizedExperiment` objects. The `PlySummarizedExperiment` object will
+#' always use the tibble abstraction method. If you want to use tibble
+#' abstraction, you may use `use_show_tidy()` to enable or `use_show_default()` #' to disable this feature. These functions are called for their side effects, #' modifying the global option
+#' "show_SummarizedExperiment_as_tibble_abstraction".
 #'
 #' To show an object as the tibble abstraction regardless of the set option,
 #' use the S3 generic `show_tidy(...)`.
@@ -92,20 +92,23 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #'   plyxp_pillar_format.CompressedIntegerList <- function(x) {
 #'    sprintf("Int: [%i]", lengths(x))
 #'   }
-#'   pillar::pillar_shaft(phantom)
+#'   print(pillar::pillar_shaft(phantom))
 #'   rm(plyxp_pillar_format.CompressedIntegerList)
 #' }
 #'
-#' # default printing
+#' # default printing for PlySummarizedExperiment object
 #' se_simple
+#' # default printing for SummarizedExperiment object
+#' se <- se(se_simple)
+#' se
 #' # use `plyxp` tibble abstraction
 #' use_show_tidy()
-#' se_simple
+#' se
 #' # restore default print
 #' use_show_default()
-#' se_simple
+#' se
 #' # explicitly using tibble abstraction
-#' show_tidy(se_simple)
+#' show_tidy(se)
 #'
 #' @returns
 #' `plyxp_pillar_format` -> formatted version of your S4 vector
