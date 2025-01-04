@@ -87,28 +87,33 @@ plyxp <- function(.data, .f, ..., .caller = caller_env()) {
   # browser()
   plyxp_function <- substitute(.f)
   .f <- rlang::as_function(.f)
-  #out <- .f(se(.data), ...)
-  out <- tryCatch(.f(se(.data), ...), error = function(cnd) {
-    message <- NULL
-    if (is_call(cnd$call, ".f")) {
-      if (is_call(plyxp_function)) {
-        # .f is likely an anonymous function
-        cnd$call <- NULL
-        message <- c(
-          "error in plyxp()",
-          "i" = "check the function passed to `.f` argument"
-        )
-      } else {
-        cnd$call[[1]] <- plyxp_function
+  out <- try_fetch(
+    .f(se(.data), ...),
+    plyxp_on_failure = function(cnd) {
+      abort(class = "plyxp_failure", parent = cnd, call = NULL)
+    },
+    error = function(cnd) {
+      message <- NULL
+      if (is_call(cnd$call, ".f")) {
+        if (is_call(plyxp_function)) {
+          # .f is likely an anonymous function
+          cnd$call <- NULL
+          message <- c(
+            "error in plyxp()",
+            "i" = "check the function passed to `.f` argument"
+          )
+        } else {
+          cnd$call[[1]] <- plyxp_function
+        }
       }
+      abort(
+        message = message,
+        class = "plyxp_failure",
+        parent = cnd,
+        call = .caller
+      )
     }
-    abort(
-      message = message,
-      class = "plyxp_failure",
-      parent = cnd,
-      call = .caller
-    )
-  })
+  )
   if (!methods::is(out, "SummarizedExperiment")) {
     cli::cli_abort("{.arg .f} must return a {.cls SummarizedExperiment} object")
   }
@@ -146,15 +151,58 @@ plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
   .on_name <- rlang::as_string(.on_sub)
   .on <- find_func(.on_name)
   `.on<-` <- find_func(sprintf("%s<-", .on_name))
-
+  this_call <- caller_call(0)
   inner_function <- function(se, ...) {
     .f <- rlang::as_function(.f)
-    obj <- .on(se)
-    obj <- .f(obj, ...)
-    .on(se) <- obj
+    try_fetch(
+      {
+        obj <- .on(se)
+        obj <- .f(obj, ...)
+        .on(se) <- obj
+      },
+      error = function(cnd) {
+        message <- NULL
+        case_call(
+          cnd$call,
+          .on = {
+            cnd$call[[1]] <- as_sym(.on_name)
+            message <- sprintf("error in `%s(se(.data))", .on_name)
+          },
+          .f = {
+            cnd$call[[1]] <- .f_sub
+            message <- sprintf(
+              "error in `%s(%s(se(.data)), ...)",
+              as_label(.f_sub),
+              .on_name
+            )
+          },
+          `.on<-` = {
+            cnd$call[[1]] <- as_sym(sprintf("%s<-", .on_name))
+            message <- sprintf("error in `%s(se(.data)) <- value`", .on_name)
+          }
+        )
+        abort(
+          message = message,
+          class = "plyxp_on_failure",
+          parent = cnd,
+          plyxp_on_call = .caller,
+          call = this_call
+        )
+      }
+    )
     se
   }
   plyxp(.data, .f = inner_function, ..., .caller = .caller)
+}
+
+case_call <- function(x, ...) {
+  env <- parent.frame(1)
+  if (is.call(x)) {
+    call_arg <- as_label(x[[1]])
+    dots <- enexprs(...)
+    expr <- expr(switch(!!call_arg, !!!dots))
+    eval(expr, envir = env)
+  }
 }
 
 find_func <- function(func, .caller = caller_env()) {
