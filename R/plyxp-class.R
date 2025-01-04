@@ -143,7 +143,7 @@ plyxp <- function(.data, .f, ..., .caller = caller_env()) {
 #' plyxp_on(se_simple,
 #'         .f = lapply, # function to call on `.on` args,
 #'         .on = rowData, # data `.f` will be used on
-#'          paste, "foo" # arguments for `.f`)
+#'          paste, "foo") # arguments for `.f`
 #' @export
 plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
   .on_sub <- substitute(.on)
