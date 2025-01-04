@@ -5,16 +5,19 @@
 \alias{plyxp_on}
 \title{Modify SummarizedExperiment Object}
 \usage{
-plyxp(.data, .f, ...)
+plyxp(.data, .f, ..., .caller = caller_env())
 
-plyxp_on(.data, .f, ..., .on)
+plyxp_on(.data, .f, ..., .on, .caller = caller_env())
 }
 \arguments{
 \item{.data}{a PlySummarizedExperiment object}
 
-\item{.f}{a function that returns a SummarizedExperiment object}
+\item{.f}{within \code{plyxp()}: a function that returns a SummarizedExperiment object.
+within \code{plyxp_on()}: \code{.f} should return a value compatible with \verb{.on(se)<-}}
 
 \item{...}{additional arguments passed to \code{.f}}
+
+\item{.caller}{environment in which plyxp should signal an error if one occurs.}
 
 \item{.on}{a symbol matching an accessor and setter function for the
 \code{SummarizedExperiment} Class.}
@@ -47,7 +50,7 @@ as quosures and will be evaluated in the environment they were quoted.
 }}
 \examples{
 plyxp(se_simple, function(x) x)
-plyxp_on(se_simple, 
+plyxp_on(se_simple,
         .f = lapply, # function to call on `.on` args,
         .on = rowData, # data `.f` will be used on
          paste, "foo" # arguments for `.f`)
