@@ -165,7 +165,7 @@ plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
         case_call(
           cnd$call,
           .on = {
-            cnd$call[[1]] <- as_sym(.on_name)
+            cnd$call[[1]] <- sym(.on_name)
             message <- sprintf("error in `%s(se(.data))", .on_name)
           },
           .f = {
@@ -177,7 +177,7 @@ plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
             )
           },
           `.on<-` = {
-            cnd$call[[1]] <- as_sym(sprintf("%s<-", .on_name))
+            cnd$call[[1]] <- sym(sprintf("%s<-", .on_name))
             message <- sprintf("error in `%s(se(.data)) <- value`", .on_name)
           }
         )
