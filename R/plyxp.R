@@ -98,10 +98,15 @@ plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
     error = function(cnd) {
       current_ctx <- mask$ctx
       current_gid <- mask$group_id
+      message <- if (mask$n_groups > 1) {
+        "error in expression {i} occured in group {current_gid} of the `{current_ctx}` context"
+      } else {
+        "error in expression {i} occured in the `{current_ctx}` context"
+      }
       cli::cli_abort(
-        message = "an error occured in group {current_gid} of `{current_ctx}` context",
+        message = message,
         parent = cnd,
-        call = quo,
+        call = curr_quo,
         class = "plyxp_dplyr_eval_error"
       )
     }
