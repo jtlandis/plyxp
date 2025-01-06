@@ -73,9 +73,11 @@ The operations can span contexts, and only the necessary data will be extracted
 from each context for computation:
 
 ```{r}
+# suppose a variable, `sizeFactor`, in the colData
 airway$sizeFactor <- runif(8, .9, 1.1)
 
-# making scaled counts, then computing row means:
+# we wish to scale the counts in the matrix using the size factor,
+# then compute row means over the scaled counts matrix:
 airway |>
   mutate(scaled_counts = counts / .cols$sizeFactor, #
          rows(ave_scl_cts = rowMeans(.assays_asis$scaled_counts)))
@@ -130,21 +132,22 @@ Here we have focused on the design principles of function *endomorphism*
 (returning the same object that was input), avoiding ambiguity through strictly
 defined behavior (potentially at the expense of longer code), and allowing
 the user the convenience of multiple expressions for the same result, some of
-which may have improved computational performance.
+which may improve computational performance.
 
 ### A Note on `tidySummarizedExperiment`
 
-At the moment, `plyxp` and `tidySummarizedExperiment` export conflicting
-functions as they both define `dplyr` methods for manipulating the
-`SummarizedExperiment` class. `plyxp` exists as an alternative to
-`tidySummarizedExperiment` and enables a unique approach to working with the
-`SummarizedExperiment` class. We advise limiting your analysis to one package
-or another, as which methods that are available in your search path depends on
-the order in which the packages are attached leading to unexpected behaviors.
+`plyxp` and `tidySummarizedExperiment` both provide *dplyr*-style interfaces to
+*SummarizedExperiment* objects, and can easily be loaded and used in the same R
+session without the functions conflicting. By casting objects with the
+`new_plyxp` constructor, users can enable the `plyxp`-driven functionality. We
+plan to also use `plyxp` functions in some cases to speed up or improve
+efficiency of functions implemented in *tidySummarizedExperiment*.
 
 # Manipulating *SummarizedExperiment* with `plyxp`
+
 <!-- copied from README -->
 <!-- unsure if it is better here or in README -->
+
 The `SummarizedExperiment` object contains three main components/"contexts" that we mask,
 the `assays()`, `rowData()`[^1] and `colData()`.
 
