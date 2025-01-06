@@ -123,16 +123,15 @@ summary |>
 
 We note that `plyxp` is highly related to other *tidyomics* projects including:
 
-* tidySummarizedExperiment
-* plyranges
-* DFplyr
-* and more.
+* *tidySummarizedExperiment*
+* *plyranges*
+* *DFplyr*
 
-Here we have focused on the design principles of function *endomorphism*
-(returning the same object that was input), avoiding ambiguity through strictly
-defined behavior (potentially at the expense of longer code), and allowing
-the user the convenience of multiple expressions for the same result, some of
-which may improve computational performance.
+Here we have focused on the design principles of:
+(1) function *endomorphism* (returning the same class of object that was input), 
+(2) avoiding code ambiguity through strictly defined behavior and scope,
+and (3) allowing the user the convenience of multiple expressions for the same
+result, which may involve a trade-off between efficiency and verbosity.
 
 ### A Note on `tidySummarizedExperiment`
 
