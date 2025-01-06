@@ -56,7 +56,7 @@ Landis</h4>
                                     <h4 data-toc-skip class="author">Michael
 Love</h4>
                         
-            <h4 data-toc-skip class="date">01/04/2025</h4>
+            <h4 data-toc-skip class="date">01/06/2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/devel/vignettes/plyxp.Rmd" class="external-link"><code>vignettes/plyxp.Rmd</code></a></small>
       <div class="d-none name"><code>plyxp.Rmd</code></div>
@@ -131,9 +131,11 @@ well as most classes derived from this, including <em>DESeqDataSet</em>,
 <p>The operations can span contexts, and only the necessary data will be
 extracted from each context for computation:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">airway</span><span class="op">$</span><span class="va">sizeFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">.9</span>, <span class="fl">1.1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># suppose a variable, `sizeFactor`, in the colData</span></span>
+<span><span class="va">airway</span><span class="op">$</span><span class="va">sizeFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">.9</span>, <span class="fl">1.1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># making scaled counts, then computing row means:</span></span>
+<span><span class="co"># we wish to scale the counts in the matrix using the size factor,</span></span>
+<span><span class="co"># then compute row means over the scaled counts matrix:</span></span>
 <span><span class="va">airway</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span>, <span class="co">#</span></span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>ave_scl_cts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">scaled_counts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -246,21 +248,20 @@ routines:</p>
 <em>endomorphism</em> (returning the same object that was input),
 avoiding ambiguity through strictly defined behavior (potentially at the
 expense of longer code), and allowing the user the convenience of
-multiple expressions for the same result, some of which may have
-improved computational performance.</p>
+multiple expressions for the same result, some of which may improve
+computational performance.</p>
 <div class="section level4">
 <h4 id="a-note-on-tidysummarizedexperiment">A Note on <code>tidySummarizedExperiment</code><a class="anchor" aria-label="anchor" href="#a-note-on-tidysummarizedexperiment"></a>
 </h4>
-<p>At the moment, <code>plyxp</code> and
-<code>tidySummarizedExperiment</code> export conflicting functions as
-they both define <code>dplyr</code> methods for manipulating the
-<code>SummarizedExperiment</code> class. <code>plyxp</code> exists as an
-alternative to <code>tidySummarizedExperiment</code> and enables a
-unique approach to working with the <code>SummarizedExperiment</code>
-class. We advise limiting your analysis to one package or another, as
-which methods that are available in your search path depends on the
-order in which the packages are attached leading to unexpected
-behaviors.</p>
+<p><code>plyxp</code> and <code>tidySummarizedExperiment</code> both
+provide <em>dplyr</em>-style interfaces to <em>SummarizedExperiment</em>
+objects, and can easily be loaded and used in the same R session without
+the functions conflicting. By casting objects with the
+<code>new_plyxp</code> constructor, users can enable the
+<code>plyxp</code>-driven functionality. We plan to also use
+<code>plyxp</code> functions in some cases to speed up or improve
+efficiency of functions implemented in
+<em>tidySummarizedExperiment</em>.</p>
 </div>
 </div>
 </div>
@@ -681,7 +682,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  collate  en_US.UTF-8</span></span>
 <span><span class="co">##  ctype    en_US.UTF-8</span></span>
 <span><span class="co">##  tz       UTC</span></span>
-<span><span class="co">##  date     2025-01-04</span></span>
+<span><span class="co">##  date     2025-01-06</span></span>
 <span><span class="co">##  pandoc   3.2 @ /usr/bin/ (via rmarkdown)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Packages ───────────────────────────────────────────────────────────────────</span></span></span>
@@ -731,7 +732,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  pkgconfig              2.0.3      <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgdown                2.1.1      <span style="color: #555555;">2024-09-17</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgload                1.4.0      <span style="color: #555555;">2024-06-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  plyxp                * 1.1.1      <span style="color: #555555;">2025-01-04</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  plyxp                * 1.1.1      <span style="color: #555555;">2025-01-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  profvis                0.4.0      <span style="color: #555555;">2024-09-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  promises               1.3.2      <span style="color: #555555;">2024-11-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  purrr                  1.0.2      <span style="color: #555555;">2023-08-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
