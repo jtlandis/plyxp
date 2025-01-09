@@ -1,11 +1,9 @@
-
 # `skip!` <- structure(list(), class = "skip")
 # skip <- function() {
 #   `skip!`
 # }
 # print.skip <- function(x, ...) cat("<skip>\n")
 # is_skip <- function(x) inherits(x, "skip")
-
 
 ctx_env <- new.env(parent = emptyenv())
 
@@ -30,8 +28,6 @@ poke_ctx_local <- function(name, value) {
   )
   invisible(old)
 }
-
-
 
 # this is the top of all our rlang data masks (inherited from base).
 # it contains all expected functions for transforming values  in multi-tiered
@@ -60,12 +56,16 @@ top_env <- new_environment(
 
 bot_env <- new.env(parent = top_env)
 
-plyxp_group_ids2 <- function(groups, expanded, relative_to = c("assays","rows","cols")) {
+plyxp_group_ids2 <- function(
+  groups,
+  expanded,
+  relative_to = c("assays", "rows", "cols")
+) {
   # browser()
-  relative_to <- match.arg(relative_to, c("assays","rows","cols"))
+  relative_to <- match.arg(relative_to, c("assays", "rows", "cols"))
   Nr <- nrow(groups$row_groups)
   Nc <- nrow(groups$col_groups)
-  switch (
+  switch(
     relative_to,
     assays = {
       out <- expanded
@@ -87,7 +87,7 @@ plyxp_group_ids2 <- function(groups, expanded, relative_to = c("assays","rows","
       r_ncol <- vec_rep(sum(r_ncol), Nr)
       r_nsiz <- r_nrow * r_ncol
       list(
-        assays = lapply(g_ind, function(i) Nr *(c_ind - 1) + i),
+        assays = lapply(g_ind, function(i) Nr * (c_ind - 1) + i),
         rows = g_ind,
         cols = vec_rep(list(c_ind), Nr),
         .nrow = as.list(r_nrow),
@@ -104,7 +104,7 @@ plyxp_group_ids2 <- function(groups, expanded, relative_to = c("assays","rows","
       c_nrow <- vec_rep(sum(c_nrow), Nc) #?
       c_nsiz <- c_nrow * c_ncol
       list(
-        assays = lapply(g_ind, function(i) Nr*(i-1L) + r_ind),
+        assays = lapply(g_ind, function(i) Nr * (i - 1L) + r_ind),
         rows = vec_rep(list(r_ind), Nc),
         cols = g_ind,
         .nrow = as.list(c_nrow),
@@ -141,7 +141,6 @@ env_group_id <- function(env) {
 # contexts should collect certain data. Most of this headache is to support
 # grouping operations.
 prepare_shared_ctx_env <- function(groups, expanded) {
-
   ind_d <- attr(groups, "obj_dim")
 
   inf_assay <- plyxp_group_ids2(groups, expanded, "assays")
@@ -205,13 +204,13 @@ prepare_shared_ctx_env <- function(groups, expanded) {
       # list of all contexts, each contains
       # indices to retrieve data from that context
       # while evaluating from rows context
-      `plyxp:::rows:::group_chop_ids` =   rows_group_id,
+      `plyxp:::rows:::group_chop_ids` = rows_group_id,
       # list of all contexts, each contains
       # indices to retrieve data from that context
       # while evaluating from cols context
-      `plyxp:::cols:::group_chop_ids` =   cols_group_id,
+      `plyxp:::cols:::group_chop_ids` = cols_group_id,
       # shortcut to the current context's indices
-      `plyxp:::ctx:::group_chop_ids`  =   ctx_group_id,
+      `plyxp:::ctx:::group_chop_ids` = ctx_group_id,
       # list of all contexts, each contains
       # the number of rows for the context
       `plyxp:::dim:::nrow` = nrow_info,
@@ -225,12 +224,18 @@ prepare_shared_ctx_env <- function(groups, expanded) {
       # rows -> nrow of rowData
       # cols -> nrow of colData
       `plyxp:::dim:::size` = nsize_info,
-      `plyxp:::dim:::n` =    nsize_ctx,
-      `plyxp:::ctx:::n_groups` = expanded |>
-        summarise(assays = max(.group_id),
-                  rows = max(`.rows::.indices_group_id`),
-                  cols = max(`.cols::.indices_group_id`)) |>
-        as.list()
+      `plyxp:::dim:::n` = nsize_ctx,
+      `plyxp:::ctx:::n_groups` = list(
+        assays = max(expanded$.group_id),
+        rows = max(expanded[[".rows::.indices_group_id"]]),
+        cols = max(expanded[[".cols::.indices_group_id"]])
+      )
+
+      #expanded |>
+      #  summarise(assays = max(.group_id),
+      #            rows = max(`.rows::.indices_group_id`),
+      #            cols = max(`.cols::.indices_group_id`)) |>
+      #  as.list()
     ),
     parent = bot_env
   )
@@ -242,69 +247,91 @@ prepare_shared_ctx_env <- function(groups, expanded) {
     `plyxp:::n_groups` = new_function(
       pairlist(),
       expr(.subset2(`plyxp:::ctx:::n_groups`, `plyxp:::ctx`)),
-      env = shared_ctx_env),
+      env = shared_ctx_env
+    ),
     # indices of current group in current context
     `plyxp:::ctx:::current_chops` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::ctx:::group_chop_ids`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::ctx:::group_chop_ids`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     # assays indices for current group
     `plyxp:::assays:::current_chops` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::assays:::group_chop_ids`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::assays:::group_chop_ids`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     # rowData indices for current group
     `plyxp:::rows:::current_chops` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::rows:::group_chop_ids`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::rows:::group_chop_ids`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     # colData indices for current group
     `plyxp:::cols:::current_chops` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::cols:::group_chop_ids`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::cols:::group_chop_ids`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     # nrow for current context and group
     `plyxp:::ctx:::nrow` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::dim:::nrow`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::dim:::nrow`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     # nrow for current context and group
     `plyxp:::ctx:::ncol` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::dim:::ncol`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::dim:::ncol`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     # size for current context and group
     `plyxp:::ctx:::size` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::dim:::size`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::dim:::size`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     ),
     #
     `plyxp:::ctx:::n` = new_function(
       pairlist(),
-      expr(.subset2(`plyxp:::dim:::n`, `plyxp:::ctx`) |>
-             .subset2(`plyxp:::ctx:::group_id`)),
+      expr(
+        .subset2(`plyxp:::dim:::n`, `plyxp:::ctx`) |>
+          .subset2(`plyxp:::ctx:::group_id`)
+      ),
       env = shared_ctx_env
     )
   )
-  shared_ctx_env$n <- new_function(pairlist(),quote(`plyxp:::ctx:::n`),
-                                   shared_ctx_env)
-  shared_ctx_env$cur_group_id <- new_function(pairlist(),
-                                              quote(`plyxp:::ctx:::group_id`),
-                                              shared_ctx_env)
+  shared_ctx_env$n <- new_function(
+    pairlist(),
+    quote(`plyxp:::ctx:::n`),
+    shared_ctx_env
+  )
+  shared_ctx_env$cur_group_id <- new_function(
+    pairlist(),
+    quote(`plyxp:::ctx:::group_id`),
+    shared_ctx_env
+  )
   shared_ctx_env$set_group_id <- env_group_id(shared_ctx_env)
   shared_ctx_env
 }
