@@ -14,7 +14,7 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-# Quick start
+# Introduction
 
 `plyxp` provides efficient abstractions to the *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
@@ -24,7 +24,7 @@ from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and avoiding
 ambiguity in outcomes.
 
-## Supported data types and operations
+## Enabling dplyr verbs
 
 `plyxp` works on *SummarizedExperiment* objects, as well as most
 classes derived from this, including *DESeqDataSet*,
@@ -119,6 +119,12 @@ summary |>
   as_tibble(rownames = "type")
 ```
 
+To extract the *SummarizedExperiment* (if needed):
+
+```{r}
+se(xp)
+```
+
 ## Related work
 
 We note that `plyxp` is highly related to other *tidyomics* projects including:
@@ -142,10 +148,7 @@ session without the functions conflicting. By casting objects with the
 plan to also use `plyxp` functions in some cases to speed up or improve
 efficiency of functions implemented in *tidySummarizedExperiment*.
 
-# Manipulating *SummarizedExperiment* with `plyxp`
-
-<!-- copied from README -->
-<!-- unsure if it is better here or in README -->
+# `plyxp` grammar
 
 The `SummarizedExperiment` object contains three main components/"contexts" that we mask,
 the `assays()`, `rowData()`[^1] and `colData()`.
