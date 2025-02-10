@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@ Landis</h4>
                                     <h4 data-toc-skip class="author">Michael
 Love</h4>
                         
-            <h4 data-toc-skip class="date">01/06/2025</h4>
+            <h4 data-toc-skip class="date">02/10/2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/devel/vignettes/plyxp.Rmd" class="external-link"><code>vignettes/plyxp.Rmd</code></a></small>
       <div class="d-none name"><code>plyxp.Rmd</code></div>
@@ -65,7 +65,7 @@ Love</h4>
     
     
 <div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p><code>plyxp</code> provides efficient abstractions to the
 <em>SummarizedExperiment</em> such that using common dplyr functions
@@ -75,7 +75,7 @@ from the <code>rlang</code> package in order to connect dplyr functions
 to <em>SummarizedExperiment</em> slots in a manner that aims to be
 intuitive and avoiding ambiguity in outcomes.</p>
 <div class="section level3">
-<h3 id="supported-data-types-and-operations">Supported data types and operations<a class="anchor" aria-label="anchor" href="#supported-data-types-and-operations"></a>
+<h3 id="enabling-dplyr-verbs">Enabling dplyr verbs<a class="anchor" aria-label="anchor" href="#enabling-dplyr-verbs"></a>
 </h3>
 <p><code>plyxp</code> works on <em>SummarizedExperiment</em> objects, as
 well as most classes derived from this, including <em>DESeqDataSet</em>,
@@ -97,17 +97,15 @@ well as most classes derived from this, including <em>DESeqDataSet</em>,
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">airway</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">airway</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jtlandis/plyxp" class="external-link">plyxp</a></span><span class="op">)</span></span>
 <span><span class="co"># to use plyxp, call `new_plyxp()` on your SummarizedExperiment object</span></span>
-<span><span class="va">airway</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_plyxp.html">new_plyxp</a></span><span class="op">(</span><span class="va">airway</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<span><span class="va">xp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_plyxp.html">new_plyxp</a></span><span class="op">(</span><span class="va">airway</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add data (mutate) to any of the three tables,</span></span>
 <span><span class="co"># assay, colData, rowData,</span></span>
 <span><span class="co"># ...using contextual helpers cols() and rows()</span></span>
-<span><span class="va">airway</span> <span class="op">|&gt;</span></span>
+<span><span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>log_counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>,</span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span>treated <span class="op">=</span> <span class="va">dex</span> <span class="op">==</span> <span class="st">"trt"</span><span class="op">)</span>,</span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>new_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gene-"</span>, <span class="va">gene_name</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -130,13 +128,13 @@ well as most classes derived from this, including <em>DESeqDataSet</em>,
 <span><span class="co">## <span style="color: #949494;">#   dex &lt;fct&gt;, albut &lt;fct&gt;, treated &lt;lgl&gt;</span></span></span></code></pre>
 <p>The operations can span contexts, and only the necessary data will be
 extracted from each context for computation:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># suppose a variable, `sizeFactor`, in the colData</span></span>
-<span><span class="va">airway</span><span class="op">$</span><span class="va">sizeFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">.9</span>, <span class="fl">1.1</span><span class="op">)</span></span>
+<span><span class="va">xp</span><span class="op">$</span><span class="va">sizeFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">.9</span>, <span class="fl">1.1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># we wish to scale the counts in the matrix using the size factor,</span></span>
 <span><span class="co"># then compute row means over the scaled counts matrix:</span></span>
-<span><span class="va">airway</span> <span class="op">|&gt;</span></span>
+<span><span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span>, <span class="co">#</span></span>
 <span>         <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>ave_scl_cts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">scaled_counts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
@@ -160,8 +158,8 @@ extracted from each context for computation:</p>
 the matching size and orientation to the other assay data.</p>
 <p>Alternatively we could have used <em>purrr</em> to compute row
 means:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">airway</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span>,</span>
 <span>         <span class="co"># You may expect a list when accessing other contexts</span></span>
 <span>         <span class="co"># from either the rows() or cols() contexts.</span></span>
@@ -187,8 +185,8 @@ means:</p>
 contexts.</p>
 <p><code>plyxp</code> also enables common grouping and summarization
 routines:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="va">airway</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">gene_biotype</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/summarize.html">summarize</a></span><span class="op">(</span>col_sums <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>,</span>
 <span>            <span class="co"># may rename rows with .features</span></span>
@@ -211,7 +209,7 @@ routines:</p>
 <span><span class="co">## IG_J_pseudogene                 IG_J_pseudogene</span></span>
 <span><span class="co">## 3prime_overlapping_ncrna 3prime_overlapping_n..</span></span>
 <span><span class="co">## processed_pseudogene       processed_pseudogene</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># visualizing the output as a tibble:</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span>
 <span><span class="va">summary</span> <span class="op">|&gt;</span></span>
@@ -232,6 +230,18 @@ routines:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> sense_intr…     <span style="text-decoration: underline;">733</span>916     <span style="text-decoration: underline;">149</span>486       <span style="text-decoration: underline;">9</span>443        202        502          0</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 20 more rows</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: SRR1039520 &lt;dbl&gt;, SRR1039521 &lt;dbl&gt;</span></span></span></code></pre>
+<p>To extract the <em>SummarizedExperiment</em> (if needed):</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlySummarizedExperiment-methods.html">se</a></span><span class="op">(</span><span class="va">xp</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
+<span><span class="co">## dim: 63677 8 </span></span>
+<span><span class="co">## metadata(1): ''</span></span>
+<span><span class="co">## assays(1): counts</span></span>
+<span><span class="co">## rownames(63677): ENSG00000000003 ENSG00000000005 ... ENSG00000273492</span></span>
+<span><span class="co">##   ENSG00000273493</span></span>
+<span><span class="co">## rowData names(3): gene_id gene_name gene_biotype</span></span>
+<span><span class="co">## colnames(8): SRR1039508 SRR1039509 ... SRR1039520 SRR1039521</span></span>
+<span><span class="co">## colData names(5): SampleName cell dex albut sizeFactor</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="related-work">Related work<a class="anchor" aria-label="anchor" href="#related-work"></a>
@@ -265,11 +275,9 @@ efficiency of functions implemented in
 </div>
 </div>
 <div class="section level2">
-<h2 id="manipulating-summarizedexperiment-with-plyxp">Manipulating <em>SummarizedExperiment</em> with
-<code>plyxp</code><a class="anchor" aria-label="anchor" href="#manipulating-summarizedexperiment-with-plyxp"></a>
+<h2 id="plyxp-grammar">
+<code>plyxp</code> grammar<a class="anchor" aria-label="anchor" href="#plyxp-grammar"></a>
 </h2>
-<!-- copied from README -->
-<!-- unsure if it is better here or in README -->
 <p>The <code>SummarizedExperiment</code> object contains three main
 components/“contexts” that we mask, the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assays()</a></code>,
 <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;At this moment &lt;code&gt;rowRanges()&lt;/code&gt; is not supported
@@ -406,9 +414,9 @@ context</li>
 </h3>
 <p>We can compare two ways of dividing out a vector from
 <code>colData</code> along the columns of <code>assay</code> data:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># here the `.cols$` pronoun reshapes the data to fit the `assays` context</span></span>
-<span><span class="va">airway</span> <span class="op">|&gt;</span></span>
+<span><span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
 <span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts scaled_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype <span style="color: #949494;">|</span></span></span>
@@ -427,11 +435,11 @@ context</li>
 <span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: SampleName &lt;fct&gt;, cell &lt;fct&gt;, dex &lt;fct&gt;, albut &lt;fct&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this is equivalent to the following, where we have to transpose</span></span>
 <span><span class="co"># the `counts` assay data twice to enable the correct recycling</span></span>
 <span><span class="co"># of the size factor vector</span></span>
-<span><span class="va">airway</span> <span class="op">|&gt;</span></span>
+<span><span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span> <span class="op">/</span> <span class="va">.cols_asis</span><span class="op">$</span><span class="va">sizeFactor</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 63,677 × 8</span></span></span>
 <span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts scaled_counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype <span style="color: #949494;">|</span></span></span>
@@ -496,7 +504,7 @@ values. Assume you have a small 5 by 4 <code>SummarizedExperiment</code>
 object. Both of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> and <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code>
 are grouped such that there are 2 groups in both <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code>
 and <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> totaling in 4 groups across the assays.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">se_simple</span>, <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">direction</span><span class="op">)</span>, <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="va">condition</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>data_from_cols <span class="op">=</span> <span class="va">.cols</span><span class="op">$</span><span class="va">condition</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The above syntax implies we wish to move data from the
@@ -534,7 +542,7 @@ the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperi
 <em>tidySummarizedExperiment</em>, we visualize the data as if it was
 tabular. <code>plyxp</code> offers the option to opt-in on this behavior
 by setting the associated global option:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"show_SummarizedExperiment_as_tibble_abstraction"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, you may use helper functions
 <code><a href="../reference/plyxp-printing.html">use_show_tidy()</a></code> and <code><a href="../reference/plyxp-printing.html">use_show_default()</a></code> to
@@ -572,7 +580,7 @@ These are special in that assigning a value to <code>.features</code> in
 the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> context or <code>.samples</code> in the
 <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> context does not create a new column, but changes
 the rownames or colnames of the resulting object.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se_simple</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span></span>
 <span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts logcounts <span style="color: #949494;">|</span> gene  length direction <span style="color: #949494;">|</span> sample</span></span>
@@ -590,7 +598,7 @@ the rownames or colnames of the resulting object.</p>
 <span><span class="co">## <span style="color: #949494;">n  </span> row_5     col_4    <span style="color: #949494;">|</span>      5      1.61 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s4    </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ n = 20</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># moving data to rownames and colnames</span></span>
 <span><span class="va">se_simple</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
@@ -633,12 +641,12 @@ in <code>dplyr</code>, they are unfortunately more complex. This means
 there is some overhead in creating the evaluation mask per dplyr verb.
 Try to reduce the number of <code>dplyr</code> verb calls and instead
 increase the content of each verb. For example instead of doing:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>foo <span class="op">=</span> <span class="va">bar</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>baz <span class="op">=</span> <span class="va">foo</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>do the following</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    foo <span class="op">=</span> <span class="va">bar</span>,</span>
@@ -669,8 +677,8 @@ to the development team first through one of the above channels.</li>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://sessioninfo.r-lib.org/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">##  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
 <span><span class="co">##  version  R version 4.4.1 (2024-06-14)</span></span>
@@ -681,8 +689,9 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  collate  en_US.UTF-8</span></span>
 <span><span class="co">##  ctype    en_US.UTF-8</span></span>
 <span><span class="co">##  tz       UTC</span></span>
-<span><span class="co">##  date     2025-01-06</span></span>
+<span><span class="co">##  date     2025-02-10</span></span>
 <span><span class="co">##  pandoc   3.2 @ /usr/bin/ (via rmarkdown)</span></span>
+<span><span class="co">##  quarto   1.4.555 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Packages ───────────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">##  <span style="color: #555555; font-style: italic;">package             </span> <span style="color: #555555; font-style: italic;">*</span> <span style="color: #555555; font-style: italic;">version   </span> <span style="color: #555555; font-style: italic;">date (UTC)</span> <span style="color: #555555; font-style: italic;">lib</span> <span style="color: #555555; font-style: italic;">source</span></span></span>
@@ -690,7 +699,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  airway               * 1.24.0     <span style="color: #555555;">2024-05-02</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  Biobase              * 2.64.0     <span style="color: #555555;">2024-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  BiocGenerics         * 0.50.0     <span style="color: #555555;">2024-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
-<span><span class="co">##  bslib                  0.8.0      <span style="color: #555555;">2024-07-29</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  bslib                  0.9.0      <span style="color: #555555;">2025-01-30</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  cachem                 1.1.0      <span style="color: #555555;">2024-05-16</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  cli                    3.6.3      <span style="color: #555555;">2024-06-21</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  crayon                 1.5.3      <span style="color: #555555;">2024-06-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
@@ -700,7 +709,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  digest                 0.6.37     <span style="color: #555555;">2024-08-19</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  dplyr                * 1.1.4      <span style="color: #555555;">2023-11-17</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  ellipsis               0.3.2      <span style="color: #555555;">2021-04-29</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  evaluate               1.0.1      <span style="color: #555555;">2024-10-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  evaluate               1.0.3      <span style="color: #555555;">2025-01-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  fastmap                1.2.0      <span style="color: #555555;">2024-05-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  fs                     1.6.5      <span style="color: #555555;">2024-10-30</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  generics               0.1.3      <span style="color: #555555;">2022-07-05</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
@@ -720,37 +729,37 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  lattice                0.22-6     <span style="color: #555555;">2024-03-20</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.4.1)</span></span></span>
 <span><span class="co">##  lifecycle              1.0.4      <span style="color: #555555;">2023-11-07</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  magrittr               2.0.3      <span style="color: #555555;">2022-03-30</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  Matrix                 1.7-1      <span style="color: #555555;">2024-10-18</span> <span style="color: #555555;">[3]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  Matrix                 1.7-2      <span style="color: #555555;">2025-01-23</span> <span style="color: #555555;">[3]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  MatrixGenerics       * 1.16.0     <span style="color: #555555;">2024-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
-<span><span class="co">##  matrixStats          * 1.4.1      <span style="color: #555555;">2024-09-08</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  matrixStats          * 1.5.0      <span style="color: #555555;">2025-01-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  memoise                2.0.1      <span style="color: #555555;">2021-11-26</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  mime                   0.12       <span style="color: #555555;">2021-09-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  miniUI                 0.1.1.1    <span style="color: #555555;">2018-05-18</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  pillar                 1.10.0     <span style="color: #555555;">2024-12-17</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  pkgbuild               1.4.5      <span style="color: #555555;">2024-10-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  pillar                 1.10.1     <span style="color: #555555;">2025-01-07</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  pkgbuild               1.4.6      <span style="color: #555555;">2025-01-16</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgconfig              2.0.3      <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgdown                2.1.1      <span style="color: #555555;">2024-09-17</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  pkgload                1.4.0      <span style="color: #555555;">2024-06-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  plyxp                * 1.1.1      <span style="color: #555555;">2025-01-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  plyxp                * 1.1.2      <span style="color: #555555;">2025-02-10</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  profvis                0.4.0      <span style="color: #555555;">2024-09-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  promises               1.3.2      <span style="color: #555555;">2024-11-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  purrr                  1.0.2      <span style="color: #555555;">2023-08-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  purrr                  1.0.4      <span style="color: #555555;">2025-02-05</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  R6                     2.5.1      <span style="color: #555555;">2021-08-19</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  ragg                   1.3.3      <span style="color: #555555;">2024-09-11</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  Rcpp                   1.0.13-1   <span style="color: #555555;">2024-11-02</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  remotes                <span style="color: #BB00BB; font-weight: bold;">2.5.0.9000</span> <span style="color: #555555;">2025-01-04</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Github (r-lib/remotes@828ba53)</span></span></span>
-<span><span class="co">##  rlang                  1.1.4      <span style="color: #555555;">2024-06-04</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  Rcpp                   1.0.14     <span style="color: #555555;">2025-01-12</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  remotes                <span style="color: #BB00BB; font-weight: bold;">2.5.0.9000</span> <span style="color: #555555;">2025-02-10</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Github (r-lib/remotes@39a6a81)</span></span></span>
+<span><span class="co">##  rlang                  1.1.5      <span style="color: #555555;">2025-01-17</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  rmarkdown              2.29       <span style="color: #555555;">2024-11-04</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  S4Arrays               1.4.1      <span style="color: #555555;">2024-05-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  S4Vectors            * 0.42.1     <span style="color: #555555;">2024-07-03</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  S7                     0.2.0      <span style="color: #555555;">2024-11-07</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  sass                   0.4.9      <span style="color: #555555;">2024-03-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  sessioninfo            1.2.2      <span style="color: #555555;">2021-12-06</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  sessioninfo            1.2.3      <span style="color: #555555;">2025-02-05</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  shiny                  1.10.0     <span style="color: #555555;">2024-12-14</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  SparseArray            1.4.8      <span style="color: #555555;">2024-05-24</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  SummarizedExperiment * 1.34.0     <span style="color: #555555;">2024-05-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
-<span><span class="co">##  systemfonts            1.1.0      <span style="color: #555555;">2024-05-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  textshaping            0.4.1      <span style="color: #555555;">2024-12-06</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  systemfonts            1.2.1      <span style="color: #555555;">2025-01-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  textshaping            1.0.0      <span style="color: #555555;">2025-01-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  tibble               * 3.2.1      <span style="color: #555555;">2023-03-20</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  tidyr                  1.3.1      <span style="color: #555555;">2024-01-24</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  tidyselect             1.2.1      <span style="color: #555555;">2024-03-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
@@ -760,7 +769,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  utf8                   1.2.4      <span style="color: #555555;">2023-10-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  vctrs                  0.6.5      <span style="color: #555555;">2023-12-01</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  withr                  3.0.2      <span style="color: #555555;">2024-10-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
-<span><span class="co">##  xfun                   0.49       <span style="color: #555555;">2024-10-31</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
+<span><span class="co">##  xfun                   0.50       <span style="color: #555555;">2025-01-07</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  xtable                 1.8-4      <span style="color: #555555;">2019-04-21</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
 <span><span class="co">##  XVector                0.44.0     <span style="color: #555555;">2024-04-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.19 (R 4.4.1)</span></span></span>
 <span><span class="co">##  yaml                   2.3.10     <span style="color: #555555;">2024-07-26</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.4.0)</span></span></span>
@@ -769,6 +778,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">## <span style="color: #555555;"> [1] /__w/_temp/Library</span></span></span>
 <span><span class="co">## <span style="color: #555555;"> [2] /usr/local/lib/R/site-library</span></span></span>
 <span><span class="co">## <span style="color: #555555;"> [3] /usr/local/lib/R/library</span></span></span>
+<span><span class="co">##  <span style="color: #BBBBBB; background-color: #BB0000;">*</span> ── Packages attached to the search path.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">──────────────────────────────────────────────────────────────────────────────</span></span></span></code></pre>
 </div>
