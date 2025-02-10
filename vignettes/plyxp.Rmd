@@ -56,7 +56,7 @@ rowData(airway) <- rowData(airway)[,c(1:2,4)]
 ```{r message=FALSE}
 library(plyxp)
 # to use plyxp, call `new_plyxp()` on your SummarizedExperiment object
-xp <- new_plyxp(xp)
+xp <- new_plyxp(airway)
 ```
 
 ```{r}
