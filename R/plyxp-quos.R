@@ -58,7 +58,7 @@ plyxp_quos <- function(
   # browser()
   dots <- quos(...) |>
     as.list()
-  .ctx_default <- .ctx_default %||% abort("`.ctx_default` must be specified!")
+  .ctx_default <- .ctx_default %||% rlang::abort("`.ctx_default` must be specified!")
   has_opt_ctx <- !is.null(.ctx_opt)
   # ctx_opt <- c("cols", "rows")
   nms <- rlang::names2(dots)

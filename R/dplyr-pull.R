@@ -37,7 +37,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     .ctx_default = "assays",
     .ctx_opt = c("rows", "cols")
   )
-  if (length(quos) > 1) abort("`var` can only pull one object")
+  if (length(quos) > 1) rlang::abort("`var` can only pull one object")
   if (!is.null(name)) warn("arg `name` is not used in pull.SummarizedExperiment()")
   var <- quos[[1]]
   ctxs <- attr(var, which = "plyxp:::ctx")

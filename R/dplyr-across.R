@@ -113,7 +113,7 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
     bullets <- c("Must supply a column selection.", i = glue::glue("You most likely meant: `{across_if_fn}(everything(), {as_label(cols)})`."), 
                  i = "The first argument `.cols` selects a set of columns.", 
                  i = "The second argument `.fns` operates on each selected columns.")
-    abort(bullets, call = error_call)
+    rlang::abort(bullets, call = error_call)
   }
   ## check if cols is contextual
   ## suppose we are in rows_ctx, but want
@@ -153,7 +153,7 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
     names <- names %||% "{.col}_{.fn}"
   }
   if (!is.list(fns)) {
-    abort("Expected a list.", .internal = TRUE)
+    rlang::abort("Expected a list.", .internal = TRUE)
   }
   if (is.null(names(fns))) {
     names_fns <- seq_along(fns)
@@ -247,7 +247,7 @@ validate_fns <- function(quo, mask, error_call = caller_env()) {
       as_function(x, arg = ".fns", call = error_call)
     }
     else {
-      abort("`.fns` must be a function, a formula, or a list of functions/formulas.", 
+      rlang::abort("`.fns` must be a function, a formula, or a list of functions/formulas.", 
             call = error_call)
     }
   }

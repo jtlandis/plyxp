@@ -21,10 +21,10 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
           as_is <- as_is[,order(list_unchop(col_ind)), drop = FALSE]
         },
         error = function(cnd) {
-          if (!inherits(data_chop[[1]], "matrix")) 
-            abort("could not reconstruct 'asis' representation. underlying data was not a matrix",
+          if (!inherits(data_chop[[1]], "matrix"))
+            rlang::abort("could not reconstruct 'asis' representation. underlying data was not a matrix",
                   call = NULL)
-          abort("unexpected error", parent = cnd, call = NULL)
+            rlang::abort("unexpected error", parent = cnd, call = NULL)
         })
       }
       as_is
@@ -73,10 +73,10 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
           as_is <- as_is[order(list_unchop(row_ind)),, drop = FALSE]
         },
         error = function(cnd) {
-          if (!inherits(data_chop[[1]], "matrix")) 
-            abort("could not reconstruct 'asis' representation. underlying data was not a matrix",
+          if (!inherits(data_chop[[1]], "matrix"))
+            rlang::abort("could not reconstruct 'asis' representation. underlying data was not a matrix",
                   call = NULL)
-          abort("unexpected error", parent = cnd, call = NULL)
+            rlang::abort("unexpected error", parent = cnd, call = NULL)
         })
       }
       as_is
@@ -185,7 +185,7 @@ connect_rows_to_cols <- function(mask_rows, mask_cols) {
   fun_asis <- add_bind(
     # row data may be grouped. use vctrs::vec_c to concatenate vectors
     quote({
-      
+
       # browser();vec_c(splice(.subset(!!name_sym, `plyxp:::rows:::current_chops`)))
       chops <- `plyxp:::rows:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
@@ -230,7 +230,7 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
   fun_asis <- add_bind(
     # col data may be grouped. use vctrs::vec_c to concatenate vectors
     quote({
-      
+
       # browser();vec_c(splice(.subset(!!name_sym, `plyxp:::cols:::current_chops`))))
       chops <- `plyxp:::cols:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
@@ -266,14 +266,14 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
 }
 
 connect_masks <- function(mask_assays, mask_rows, mask_cols) {
-  
+
   col2row <- connect_cols_to_rows(mask_cols = mask_cols, mask_rows = mask_rows)
   row2col <- connect_rows_to_cols(mask_rows = mask_rows, mask_cols = mask_cols)
   col2assay <- connect_cols_to_assays(mask_cols = mask_cols, mask_assays = mask_assays)
   row2assay <- connect_rows_to_assays(mask_rows = mask_rows, mask_assays = mask_assays)
   assay2row <- connect_assays_to_rows(mask_assays = mask_assays, mask_rows = mask_rows)
   assay2col <- connect_assays_to_cols(mask_assays = mask_assays, mask_cols = mask_cols)
-  
+
   list(
     assays = list(
       cols = col2assay,

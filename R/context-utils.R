@@ -28,7 +28,7 @@ NULL
 #' colData context.
 #' @export
 cols <- function(...) {
-  abort("`cols()` is a sentinal function for SummarizedExperiment dplyr verbs")
+  rlang::abort("`cols()` is a sentinal function for SummarizedExperiment dplyr verbs")
 }
 
 #' @rdname plyxp-context 
@@ -37,7 +37,7 @@ cols <- function(...) {
 #' rowData context.
 #' @export
 rows <- function(...) {
-  abort("`rows()` is a sentinal function for SummarizedExperiment dplyr verbs")
+  rlang::abort("`rows()` is a sentinal function for SummarizedExperiment dplyr verbs")
 }
 
 
@@ -50,7 +50,7 @@ col_ctx <- function(x, asis = FALSE) {
   env <- peek_ctx("plyxp:::caller_env")
   biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
-  if (ctx=="cols") abort("`col_ctx()` within cols(...) is redunant")
+  if (ctx=="cols") rlang::abort("`col_ctx()` within cols(...) is redunant")
   quo <- new_quosure(enexpr(x), env = env)
   bot_env <- biocmanager$extended[["cols"]]
   if (asis) {
@@ -69,7 +69,7 @@ row_ctx <- function(x, asis = FALSE) {
   env <- peek_ctx("plyxp:::caller_env")
   biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
-  if (ctx=="rows") abort("`row_ctx()` within rows(...) is redunant")
+  if (ctx=="rows") rlang::abort("`row_ctx()` within rows(...) is redunant")
   quo <- new_quosure(enexpr(x), env = env)
   bot_env <- biocmanager$extended[["rows"]]
   if (asis) {
@@ -88,7 +88,7 @@ assay_ctx <- function(x, asis = FALSE) {
   env <- peek_ctx("plyxp:::caller_env")
   biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
-  if (ctx=="assays") abort("`assay_ctx()` at top level ... is redundant")
+  if (ctx=="assays") rlang::abort("`assay_ctx()` at top level ... is redundant")
   quo <- new_quosure(enexpr(x), env = env)
   bot_env <- biocmanager$extended[["assays"]]
   if (asis) {
