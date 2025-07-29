@@ -14,7 +14,7 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-# Quick start
+# Introduction
 
 `plyxp` provides efficient abstractions to the *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
@@ -24,7 +24,7 @@ from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and avoiding
 ambiguity in outcomes.
 
-## Supported data types and operations
+## Enabling dplyr verbs
 
 `plyxp` works on *SummarizedExperiment* objects, as well as most
 classes derived from this, including *DESeqDataSet*,
@@ -56,14 +56,14 @@ rowData(airway) <- rowData(airway)[,c(1:2,4)]
 ```{r message=FALSE}
 library(plyxp)
 # to use plyxp, call `new_plyxp()` on your SummarizedExperiment object
-airway <- new_plyxp(airway)
+xp <- new_plyxp(airway)
 ```
 
 ```{r}
 # add data (mutate) to any of the three tables,
 # assay, colData, rowData,
 # ...using contextual helpers cols() and rows()
-airway |>
+xp |>
   mutate(log_counts = log1p(counts),
          cols(treated = dex == "trt"),
          rows(new_id = paste0("gene-", gene_name)))
@@ -73,10 +73,12 @@ The operations can span contexts, and only the necessary data will be extracted
 from each context for computation:
 
 ```{r}
-airway$sizeFactor <- runif(8, .9, 1.1)
+# suppose a variable, `sizeFactor`, in the colData
+xp$sizeFactor <- runif(8, .9, 1.1)
 
-# making scaled counts, then computing row means:
-airway |>
+# we wish to scale the counts in the matrix using the size factor,
+# then compute row means over the scaled counts matrix:
+xp |>
   mutate(scaled_counts = counts / .cols$sizeFactor, #
          rows(ave_scl_cts = rowMeans(.assays_asis$scaled_counts)))
 ```
@@ -87,7 +89,7 @@ orientation to the other assay data.
 Alternatively we could have used *purrr* to compute row means:
 
 ```{r}
-airway |>
+xp |>
   mutate(scaled_counts = counts / .cols$sizeFactor,
          # You may expect a list when accessing other contexts
          # from either the rows() or cols() contexts.
@@ -100,7 +102,7 @@ See below for details on how objects are made available across contexts.
 
 
 ```{r}
-summary <- airway |>
+summary <- xp |>
   group_by(rows(gene_biotype)) |>
   summarize(col_sums = colSums(counts),
             # may rename rows with .features
@@ -117,34 +119,37 @@ summary |>
   as_tibble(rownames = "type")
 ```
 
+To extract the *SummarizedExperiment* (if needed):
+
+```{r}
+se(xp)
+```
+
 ## Related work
 
 We note that `plyxp` is highly related to other *tidyomics* projects including:
 
-* tidySummarizedExperiment
-* plyranges
-* DFplyr
-* and more.
+* *tidySummarizedExperiment*
+* *plyranges*
+* *DFplyr*
 
-Here we have focused on the design principles of function *endomorphism*
-(returning the same object that was input), avoiding ambiguity through strictly
-defined behavior (potentially at the expense of longer code), and allowing
-the user the convenience of multiple expressions for the same result, some of
-which may have improved computational performance.
+Here we have focused on the design principles of:
+(1) function *endomorphism* (returning the same class of object that was input), 
+(2) avoiding code ambiguity through strictly defined behavior and scope,
+and (3) allowing the user the convenience of multiple expressions for the same
+result, which may involve a trade-off between efficiency and verbosity.
 
 ### A Note on `tidySummarizedExperiment`
 
-At the moment, `plyxp` and `tidySummarizedExperiment` export conflicting
-functions as they both define `dplyr` methods for manipulating the
-`SummarizedExperiment` class. `plyxp` exists as an alternative to
-`tidySummarizedExperiment` and enables a unique approach to working with the
-`SummarizedExperiment` class. We advise limiting your analysis to one package
-or another, as which methods that are available in your search path depends on
-the order in which the packages are attached leading to unexpected behaviors.
+`plyxp` and `tidySummarizedExperiment` both provide *dplyr*-style interfaces to
+*SummarizedExperiment* objects, and can easily be loaded and used in the same R
+session without the functions conflicting. By casting objects with the
+`new_plyxp` constructor, users can enable the `plyxp`-driven functionality. We
+plan to also use `plyxp` functions in some cases to speed up or improve
+efficiency of functions implemented in *tidySummarizedExperiment*.
 
-# Manipulating *SummarizedExperiment* with `plyxp`
-<!-- copied from README -->
-<!-- unsure if it is better here or in README -->
+# `plyxp` grammar
+
 The `SummarizedExperiment` object contains three main components/"contexts" that we mask,
 the `assays()`, `rowData()`[^1] and `colData()`.
 
@@ -214,13 +219,13 @@ columns of `assay` data:
 
 ```{r}
 # here the `.cols$` pronoun reshapes the data to fit the `assays` context
-airway |>
+xp |>
   mutate(scaled_counts = counts / .cols$sizeFactor)
 
 # this is equivalent to the following, where we have to transpose
 # the `counts` assay data twice to enable the correct recycling
 # of the size factor vector
-airway |>
+xp |>
   mutate(scaled_counts = t(t(counts) / .cols_asis$sizeFactor))
 ```
 
