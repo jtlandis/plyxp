@@ -1,16 +1,25 @@
 # `plyxp`
 
-`plyxp` provides efficient abstractions to the *SummarizedExperiment* such
+`plyxp` provides efficient abstractions to *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
-*data.frame* or *tibble*. `plyxp` was built as an alternative to the 
-`tidySummarizedExperiment` package but there may be a future in which their
-conflicts are reconciled. `plyxp` uses 
+*data.frame* or *tibble*.
+`plyxp` makes use of a concise grammar for exploring and manipulating annotated
+matrix data in the form of the *SummarizedExperiment*, scaling from simple to
+complex operations spanning one or more tables of data.
+We also aim for optimized implementations in `plyxp` to power some functionality
+within the `tidySummarizedExperiment` package, which also offers a dplyr-like
+interface to *SummarizedExperiment*. These two packages can easily be used in
+parallel, by casting objects with the `new_plyxp` constructor to enable
+`plxyp`-driven functionality.
+
+`plyxp` uses 
 [data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html) 
 from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and avoiding
 ambiguity in outcomes.
 
-***Note:***  This package is still under active development as of Fall 2024.
+***Note:***  This package is still under active development. Feel free to reach
+out to the package developers, see *Feedback* section below.
 
 ## installing `plyxp`
 
@@ -49,7 +58,6 @@ Alternatively, using a pronoun in either the `rows()` or `cols()`
 contexts will likely return a list equal in length to either `nrows(rowData())`
 or `nrows(colData())`.
 
-
 # Feedback
 
 We would love to hear your feedback. Please post to 
@@ -64,5 +72,3 @@ for software development questions.
 # Funding
 
 `plyxp` was supported by a EOSS cycle 6 grant from The Wellcome Trust.
-
-
