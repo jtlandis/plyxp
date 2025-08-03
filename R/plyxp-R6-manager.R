@@ -48,7 +48,7 @@ plyxp_manager <- R6::R6Class(
       quos <- expand_across(quo, mask = self, error_call = caller_call())
       for (k in seq_along(quos)) {
         quo <- quos[[k]]
-        quo_data <- attr(quo, "plyxp:::data") %||% rlang::abort_invalid_quo()
+        quo_data <- attr(quo, "plyxp:::data") %||% abort_invalid_quo()
         chop_out <- plyxp_manager_eval(
           quo = quo,
           env = env,
