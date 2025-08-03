@@ -20,9 +20,9 @@ new_plyxp <- function(se) {
 
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 
-#' @rdname new_plyxp 
-#' @description 
-#' This S4 class is implemented to bring unique `dplyr` 
+#' @rdname new_plyxp
+#' @description
+#' This S4 class is implemented to bring unique `dplyr`
 #' syntax to the `SummarizedExperiment` object without clashing with the
 #' `tidySummarizedExperiment` package. As such, this is a simple wrapper that
 #' contains one slot, which holds a `SummarizedExperiment` object.
@@ -44,7 +44,8 @@ PlySummarizedExperiment <- function(se) {
 }
 
 setMethod(
-  "show", "PlySummarizedExperiment",
+  "show",
+  "PlySummarizedExperiment",
   function(object) {
     show_tidy(se(object))
   }
@@ -74,20 +75,140 @@ setMethod("se<-", "PlySummarizedExperiment", function(x, value) {
 #' @description
 #' Modify the underlying SummarizedExperiment object with a function.
 #' @param .data a PlySummarizedExperiment object
-#' @param .f a function that returns a SummarizedExperiment object
+#' @param .f within `plyxp()`: a function that returns a SummarizedExperiment object.
+#' within `plyxp_on()`: `.f` should return a value compatible with `.on(se)<-`
 #' @param ... additional arguments passed to `.f`
+#' @param .caller environment in which plyxp should signal an error if one occurs.
 #' @return a PlySummarizedExperiment object
 #' @examples
 #' plyxp(se_simple, function(x) x)
 #' @export
-plyxp <- function(.data, .f, ...) {
+plyxp <- function(.data, .f, ..., .caller = caller_env()) {
+  # browser()
+  plyxp_function <- substitute(.f)
   .f <- rlang::as_function(.f)
-  out <- .f(se(.data), ...)
+  out <- try_fetch(
+    .f(se(.data), ...),
+    plyxp_on_failure = function(cnd) {
+      abort(class = "plyxp_failure", parent = cnd, call = NULL)
+    },
+    error = function(cnd) {
+      message <- NULL
+      if (is_call(cnd$call, ".f")) {
+        if (is_call(plyxp_function)) {
+          # .f is likely an anonymous function
+          cnd$call <- NULL
+          message <- c(
+            "error in plyxp()",
+            "i" = "check the function passed to `.f` argument"
+          )
+        } else {
+          cnd$call[[1]] <- plyxp_function
+        }
+      }
+      abort(
+        message = message,
+        class = "plyxp_failure",
+        parent = cnd,
+        call = .caller
+      )
+    }
+  )
   if (!methods::is(out, "SummarizedExperiment")) {
     cli::cli_abort("{.arg .f} must return a {.cls SummarizedExperiment} object")
   }
   se(.data) <- out
   .data
+}
+
+#' @describeIn plyxp pass a function to the result of an accessor of the
+#' `SummarizedExperiment` Class
+#' This function is a wrapper for the expression:
+#' \preformatted{
+#'  plyxp::plyxp(.data, function(se, ...) {
+#'    .f <- rlang::as_function(.f)
+#'    obj <- .on(se)
+#'    obj <- .f(se, ...)
+#'    .on(se) <- obj
+#'    se
+#'  }, ...)
+#' }
+#' where `.on` is the symbol for the accessor function into a
+#' `SummarizedExperiment` Class. Note: the setter variant must exist in the
+#' environment that `plyxp_on()` is called. All other arguments are diffused
+#' as quosures and will be evaluated in the environment they were quoted.
+#' @param .on a symbol matching an accessor and setter function for the
+#' `SummarizedExperiment` Class.
+#' @examples
+#' plyxp_on(se_simple,
+#'         .f = lapply, # function to call on `.on` args,
+#'         .on = rowData, # data `.f` will be used on
+#'          paste, "foo") # arguments for `.f`
+#' @export
+plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
+  .on_sub <- substitute(.on)
+  .f_sub <- substitute(.f)
+  .on_name <- rlang::as_string(.on_sub)
+  .on <- find_func(.on_name)
+  `.on<-` <- find_func(sprintf("%s<-", .on_name))
+  this_call <- caller_call(0)
+  inner_function <- function(se, ...) {
+    .f <- rlang::as_function(.f)
+    try_fetch(
+      {
+        obj <- .on(se)
+        obj <- .f(obj, ...)
+        .on(se) <- obj
+      },
+      error = function(cnd) {
+        message <- NULL
+        case_call(
+          cnd$call,
+          .on = {
+            cnd$call[[1]] <- sym(.on_name)
+            message <- sprintf("error in `%s(se(.data))", .on_name)
+          },
+          .f = {
+            cnd$call[[1]] <- .f_sub
+            message <- sprintf(
+              "error in `%s(%s(se(.data)), ...)",
+              as_label(.f_sub),
+              .on_name
+            )
+          },
+          `.on<-` = {
+            cnd$call[[1]] <- sym(sprintf("%s<-", .on_name))
+            message <- sprintf("error in `%s(se(.data)) <- value`", .on_name)
+          }
+        )
+        abort(
+          message = message,
+          class = "plyxp_on_failure",
+          parent = cnd,
+          plyxp_on_call = .caller,
+          call = this_call
+        )
+      }
+    )
+    se
+  }
+  plyxp(.data, .f = inner_function, ..., .caller = .caller)
+}
+
+case_call <- function(x, ...) {
+  env <- parent.frame(1)
+  if (is.call(x)) {
+    call_arg <- as_label(x[[1]])
+    dots <- enexprs(...)
+    expr <- expr(switch(!!call_arg, !!!dots))
+    eval(expr, envir = env)
+  }
+}
+
+find_func <- function(func, .caller = caller_env()) {
+  try_fetch(match.fun(func), error = function(cnd) {
+    abort(sprintf("could not match %s()", func), parent = cnd, call = .caller)
+  })
 }
 
 #' @export
@@ -104,12 +225,7 @@ print.PlySummarizedExperiment <- function(x, ...) {
   if (!missing(j)) {
     type <- paste0(type, "j")
   }
-  se(x) <- switch(type,
-    i = se(x)[i, ],
-    j = se(x)[, j],
-    ij = se(x)[i, j],
-    se(x)
-  )
+  se(x) <- switch(type, i = se(x)[i, ], j = se(x)[, j], ij = se(x)[i, j], se(x))
   x
 }
 
@@ -150,14 +266,19 @@ NULL
 #' @describeIn PlySummarizedExperiment-methods get the assays o the PlySummarizedExperiment object
 #' @export
 setMethod(
-  "assays", "PlySummarizedExperiment",
+  "assays",
+  "PlySummarizedExperiment",
   function(x, withDimnames = TRUE, ...) {
     assays(se(x), withDimnames = withDimnames, ...)
   }
 )
 
 set_assays <- function(
-    x, withDimnames = TRUE, ..., value) {
+  x,
+  withDimnames = TRUE,
+  ...,
+  value
+) {
   plyxp(x, `assays<-`, value = value, withDimnames = withDimnames, ...)
 }
 
@@ -170,17 +291,18 @@ set_assays <- function(
 #' @describeIn PlySummarizedExperiment-methods set the assays of the PlySummarizedExperiment object
 #' @export
 setMethod(
-  "assays<-", c("PlySummarizedExperiment", "list"),
+  "assays<-",
+  c("PlySummarizedExperiment", "list"),
   set_assays
 )
 
 #' @describeIn PlySummarizedExperiment-methods set the assays of the PlySummarizedExperiment object
 #' @export
 setMethod(
-  "assays<-", c("PlySummarizedExperiment", "SimpleList"),
+  "assays<-",
+  c("PlySummarizedExperiment", "SimpleList"),
   set_assays
 )
-
 
 get_assay <- function(x, i, withDimnames = TRUE, ...) {
   assay(se(x), i = i, withDimnames = withDimnames, ...)
@@ -189,7 +311,8 @@ get_assay <- function(x, i, withDimnames = TRUE, ...) {
 #' @describeIn PlySummarizedExperiment-methods get the first assay of the PlySummarizedExperiment object
 #' @export
 setMethod(
-  "assay", c("PlySummarizedExperiment", "missing"),
+  "assay",
+  c("PlySummarizedExperiment", "missing"),
   function(x, i, withDimnames = TRUE, ...) {
     assay(se(x), withDimnames = withDimnames, ...)
   }
@@ -210,7 +333,8 @@ set_assay <- function(x, i, withDimnames = TRUE, ..., value) {
 #' @describeIn PlySummarizedExperiment-methods set assay in a PlySummarizedExperiment object
 #' @export
 setMethod(
-  "assay<-", c("PlySummarizedExperiment", "missing"),
+  "assay<-",
+  c("PlySummarizedExperiment", "missing"),
   function(x, i, withDimnames = TRUE, ..., value = value) {
     plyxp(x, `assay<-`, withDimnames = withDimnames, ..., value = value)
   }
@@ -227,9 +351,9 @@ setMethod("assay<-", c("PlySummarizedExperiment", "character"), set_assay)
 #' @describeIn PlySummarizedExperiment-methods get rowData in a PlySummarizedExperiment object
 #' @export
 setMethod(
-  "rowData", "PlySummarizedExperiment",
-  function(x,
-           use.names = TRUE, ...) {
+  "rowData",
+  "PlySummarizedExperiment",
+  function(x, use.names = TRUE, ...) {
     rowData(se(x), use.names = use.names, ...)
   }
 )
@@ -237,9 +361,13 @@ setMethod(
 #' @describeIn PlySummarizedExperiment-methods set rowData in a PlySummarizedExperiment object
 #' @export
 setMethod(
-  "rowData<-", "PlySummarizedExperiment",
+  "rowData<-",
+  "PlySummarizedExperiment",
   function(
-      x, ..., value) {
+    x,
+    ...,
+    value
+  ) {
     plyxp(x, `rowData<-`, ..., value = value)
   }
 )
@@ -247,7 +375,8 @@ setMethod(
 #' @describeIn PlySummarizedExperiment-methods get colData in a PlySummarizedExperiment object
 #' @export
 setMethod(
-  "colData", "PlySummarizedExperiment",
+  "colData",
+  "PlySummarizedExperiment",
   function(x, ...) {
     colData(se(x), ...)
   }

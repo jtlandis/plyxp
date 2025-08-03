@@ -61,16 +61,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
-    abort(
-      message = c(
-        "Cannot group in `assays` context",
-        "x" = sprintf(
-          "review expression indices %s in dots",
-          paste0(which(err), collapse = ", ")
-        ),
-        "i" = "consider wrapping expressions in rows(...) or cols(...)"
-      )
-    )
+    plyxp_assays_cannot(do = "group_by", review = err)
   }
   nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
@@ -137,7 +128,6 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   .data
 }
 
-
 #' @describeIn group_by Ungroup a PlySummarizedExperiment object
 #'
 #' @param x An object Inheriting from `PlySummarizedExperiment`, the wrapper
@@ -150,8 +140,10 @@ ungroup.PlySummarizedExperiment <- function(x, ...) {
 }
 
 ungroup_se_impl <- function(x, ...) {
-  quos <- plyxp_quos(...,
-    .named = FALSE, .ctx_default = "assays",
+  quos <- plyxp_quos(
+    ...,
+    .named = FALSE,
+    .ctx_default = "assays",
     .ctx_opt = c("rows", "cols")
   )
   curr_groups <- metadata(x)[["group_data"]]
@@ -165,16 +157,7 @@ ungroup_se_impl <- function(x, ...) {
   }
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
-    abort(
-      message = c(
-        "Cannot ungroup in `assays` context",
-        "x" = sprintf(
-          "review expression indices %s in dots",
-          paste0(which(err), collapse = ", ")
-        ),
-        "i" = "consider wrapping expressions in rows(...) or cols(...)"
-      )
-    )
+    plyxp_assays_cannot(do = "ungroup", review = err)
   }
   by_ctx <- split(quos, ctxs)
   update_cols <- update_rows <- NULL
@@ -207,14 +190,13 @@ ungroup_se_impl <- function(x, ...) {
     update_cols <- call2("cols", splice(syms(new_groups)))
     update_ <- paste0(update_, "col")
   }
-  switch(update_,
+  switch(
+    update_,
     rowcol = group_by(x, !!update_rows, !!update_cols),
     row = group_by(x, !!update_rows),
     col = group_by(x, !!update_cols)
   )
 }
-
-
 
 #' @export
 groups.PlySummarizedExperiment <- function(x) {

@@ -1,4 +1,3 @@
-
 #' @name arrange
 #' @title arrange rows or columns of PlySummarizedExperiment
 #' @description
@@ -44,28 +43,20 @@ arrange.PlySummarizedExperiment <- function(.data, ..., .by_group = FALSE) {
 
 arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   .env <- caller_env()
-  quos <- plyxp_quos(...,
-    .ctx_default = "assays",
-    .ctx_opt = c("rows", "cols")
-  )
+  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
   if (.by_group) {
-    quos <- c(plyxp_quos(!!!plyxp_curr_groups(.data),
-      .ctx_default = "assays",
-      .ctx_opt = c("rows", "cols")
-    ), quos)
+    quos <- c(
+      plyxp_quos(
+        !!!plyxp_curr_groups(.data),
+        .ctx_default = "assays",
+        .ctx_opt = c("rows", "cols")
+      ),
+      quos
+    )
   }
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
-    abort(
-      message = c(
-        "Cannot arrange in `assays` context",
-        "x" = sprintf(
-          "review expression indices %s in dots",
-          paste0(which(err), collapse = ", ")
-        ),
-        "i" = "consider wrapping expressions in rows(...) or cols(...)"
-      )
-    )
+    plyxp_assays_cannot(do = "arrange", review = err)
   }
   nms <- names(quos)
   # to make this function consistent
@@ -88,7 +79,8 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
     co <- exec("order", splice(results$cols), method = "radix")
   }
 
-  out <- switch(type,
+  out <- switch(
+    type,
     rowcol = .data[ro, co],
     row = .data[ro, ],
     col = .data[, co],

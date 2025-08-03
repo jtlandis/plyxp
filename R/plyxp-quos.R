@@ -1,4 +1,3 @@
-
 ctx_quo <- function(expr, env, ctx) {
   quo <- new_quosure(expr = expr, env = env)
   attr(quo, "plyxp:::ctx") <- ctx
@@ -7,9 +6,13 @@ ctx_quo <- function(expr, env, ctx) {
 
 enforce_named <- function(exprs) {
   to_update <- FALSE
-  nms <- names(exprs) %||% {to_update <- TRUE; vapply(exprs, rlang::as_label, "")}
+  nms <- names(exprs) %||%
+    {
+      to_update <- TRUE
+      vapply(exprs, rlang::as_label, "")
+    }
   char_len <- nzchar(nms)
-  if (any(to_rename <- char_len==0)) {
+  if (any(to_rename <- char_len == 0)) {
     nms[to_rename] <- vapply(exprs[to_rename], rlang::as_label, "")
     to_update <- TRUE
   }
@@ -22,7 +25,7 @@ enforce_named <- function(exprs) {
 #' @title plyxp quosures
 #' @description
 #' a consistent way to handle `...` for dplyr extensions.
-#' This returns a list of quosures where each quosure 
+#' This returns a list of quosures where each quosure
 #' contains an attribute `plyxp:::ctx` indicating which
 #' mask context it should be evaluate in.
 #' @param ... rlang dots, supports splicing an quoting
@@ -31,7 +34,7 @@ enforce_named <- function(exprs) {
 #' @param .ctx_opt optional contexts to eval within
 #' @return a quosure with attribute `plyxp:::ctx`.
 #' @examples
-#' 
+#'
 #' # in plyxp the default context is "assays"
 #' # and optional contexts are "rows" and "cols"
 #' quos <- plyxp_quos(
@@ -44,9 +47,14 @@ enforce_named <- function(exprs) {
 #' attr(quos[[1]], "plyxp:::ctx")
 #' attr(quos[[2]], "plyxp:::ctx")
 #' attr(quos[[3]], "plyxp:::ctx")
-#' 
+#'
 #' @noRd
-plyxp_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NULL) {
+plyxp_quos <- function(
+  ...,
+  .named = TRUE,
+  .ctx_default = NULL,
+  .ctx_opt = NULL
+) {
   # browser()
   dots <- quos(...) |>
     as.list()
@@ -65,21 +73,23 @@ plyxp_quos <- function(..., .named = TRUE, .ctx_default = NULL, .ctx_opt = NULL)
       ctx_nms <- rlang::names2(ctx_exprs)
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(
-        list(ctx_exprs,
-             name = ctx_nms,
-             is_named = ctx_is_named),
+        list(ctx_exprs, name = ctx_nms, is_named = ctx_is_named),
         plyxp_quo,
         env = .env,
-        ctx = ctx)
+        ctx = ctx
+      )
       dots[[i]] <- splice(ctx_quos)
       next
     }
-    
-    dots[[i]] <- plyxp_quo(.expr, env = .env,
-                              ctx = .ctx_default,
-                              is_named = is_nms[i], 
-                              name = nms[i])
-  } 
+
+    dots[[i]] <- plyxp_quo(
+      .expr,
+      env = .env,
+      ctx = .ctx_default,
+      is_named = is_nms[i],
+      name = nms[i]
+    )
+  }
   out <- do.call(dots_list, c(dots, list(.named = .named)))
   if (.named) {
     # in case the prior expansion
@@ -102,14 +112,25 @@ enforce_matrix <- function(quos, ctxs) {
   quos[is_assay_ctx] <- lapply(
     quos[is_assay_ctx],
     function(quo) {
-      if (is.null(quo_get_expr(quo))) 
+      if (is.null(quo_get_expr(quo))) {
         return(quo)
-      else
-        quo_set_expr(quo,
-                     expr(matrix(!!quo,
-                                 nrow = `plyxp:::ctx:::nrow`,
-                                 ncol = `plyxp:::ctx:::ncol`)))
+      } else {
+        quo <- quo_set_expr(
+          quo,
+          expr(
+            matrix(
+              !!quo,
+              nrow = `plyxp:::ctx:::nrow`,
+              ncol = `plyxp:::ctx:::ncol`
+            )
+          )
+        )
+        if (identical(quo_get_env(quo), empty_env())) {
+          quo <- quo_set_env(quo, base_env())
+        }
+        quo
       }
-    )
+    }
+  )
   quos
 }
