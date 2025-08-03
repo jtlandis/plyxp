@@ -6,11 +6,10 @@ ctx_quo <- function(expr, env, ctx) {
 
 enforce_named <- function(exprs) {
   to_update <- FALSE
-  nms <- names(exprs) %||%
-    {
-      to_update <- TRUE
-      vapply(exprs, rlang::as_label, "")
-    }
+  nms <- names(exprs) %||% {
+    to_update <- TRUE
+    vapply(exprs, rlang::as_label, "")
+  }
   char_len <- nzchar(nms)
   if (any(to_rename <- char_len == 0)) {
     nms[to_rename] <- vapply(exprs[to_rename], rlang::as_label, "")
@@ -50,11 +49,10 @@ enforce_named <- function(exprs) {
 #'
 #' @noRd
 plyxp_quos <- function(
-  ...,
-  .named = TRUE,
-  .ctx_default = NULL,
-  .ctx_opt = NULL
-) {
+    ...,
+    .named = TRUE,
+    .ctx_default = NULL,
+    .ctx_opt = NULL) {
   # browser()
   dots <- quos(...) |>
     as.list()
@@ -65,6 +63,10 @@ plyxp_quos <- function(
   is_nms <- nms != ""
   for (i in seq_along(dots)) {
     quo <- dots[[i]]
+    if (quo_is_missing(quo)) {
+      # skip missing quosures
+      next
+    }
     .env <- quo_get_env(quo)
     .expr <- quo_get_expr(quo)
     if (has_opt_ctx && is_call(.expr, .ctx_opt)) {
@@ -78,6 +80,8 @@ plyxp_quos <- function(
         env = .env,
         ctx = ctx
       )
+      # remove empty arguments from calls
+      ctx_quos <- Filter(Negate(rlang::quo_is_missing), ctx_quos)
       dots[[i]] <- splice(ctx_quos)
       next
     }
@@ -91,6 +95,7 @@ plyxp_quos <- function(
     )
   }
   out <- do.call(dots_list, c(dots, list(.named = .named)))
+  out <- Filter(Negate(is.null), out)
   if (.named) {
     # in case the prior expansion
     # of rows(...) and cols(...) need
