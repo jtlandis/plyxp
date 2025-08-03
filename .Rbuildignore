@@ -12,3 +12,4 @@ README.pdf
 ^pkgdown$
 vignettes/.*_files
 vignettes/.*html
+^\.github$
