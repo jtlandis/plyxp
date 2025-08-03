@@ -40,6 +40,7 @@ poke_ctx_local <- function(name, value) {
 # creating their own top_env, or open a PR to add it here.
 top_env <- new_environment(
   data = list(
+    abort = rlang::abort,
     vec_chop = vctrs::vec_chop,
     vec_chop_assays = vec_chop_assays,
     vec_chop_assays_row = vec_chop_assays_row,
@@ -47,6 +48,7 @@ top_env <- new_environment(
     vec_rep = vctrs::vec_rep,
     vec_rep_each = vctrs::vec_rep_each,
     vec_c = vctrs::vec_c,
+    list_unchop = vctrs::list_unchop,
     splice = splice,
     # skip = skip,
     poke_ctx = poke_ctx,
@@ -60,13 +62,15 @@ top_env <- new_environment(
 
 bot_env <- new.env(parent = top_env)
 
-plyxp_group_ids2 <- function(groups, expanded, relative_to = c("assays","rows","cols")) {
+plyxp_group_ids2 <- function(
+    groups,
+    expanded,
+    relative_to = c("assays", "rows", "cols")) {
   # browser()
   relative_to <- match.arg(relative_to, c("assays","rows","cols"))
   Nr <- nrow(groups$row_groups)
   Nc <- nrow(groups$col_groups)
-  switch (
-    relative_to,
+  switch(relative_to,
     assays = {
       out <- expanded
       list(
@@ -101,7 +105,7 @@ plyxp_group_ids2 <- function(groups, expanded, relative_to = c("assays","rows","
       r_ind <- groups$row_groups[[".indices_group_id"]]
       c_ncol <- vapply(g_col[[".indices"]], length, 1L)
       c_nrow <- vapply(groups$row_groups[[".indices"]], length, 1L)
-      c_nrow <- vec_rep(sum(c_nrow), Nc) #?
+      c_nrow <- vec_rep(sum(c_nrow), Nc) # ?
       c_nsiz <- c_nrow * c_ncol
       list(
         assays = lapply(g_ind, function(i) Nr*(i-1L) + r_ind),
@@ -194,9 +198,9 @@ prepare_shared_ctx_env <- function(groups, expanded) {
 
   shared_ctx_env <- new_environment(
     data = list(
-      #current context
+      # current context
       `plyxp:::ctx` = "assays",
-      #context group id
+      # context group id
       `plyxp:::ctx:::group_id` = 1L,
       # list of all contexts, each contains
       # indices to retrieve data from that context
