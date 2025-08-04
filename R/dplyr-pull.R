@@ -46,6 +46,23 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     "rows" = rowData(.data),
     "cols" = colData(.data)
   )
-  var <- tidyselect::vars_pull(names(data_ctx), !!var)
-  return(data_ctx[[var]])
+  requesting_anno_names <- FALSE
+  var <- try_fetch(
+    tidyselect::vars_select(names(data_ctx), !!var),
+    error = function(cnd) {
+      if (grepl("(.features|.samples)", cnd$message) &&
+        ctxs %in% c("rows", "cols")) {
+        requesting_anno_names <<- TRUE
+        return(rlang::as_label(var))
+      }
+      # rethrow error
+      cnd
+    }
+  )
+
+  if (requesting_anno_names) {
+    rownames(data_ctx) %||% seq_len(nrows(data_ctx))
+  } else {
+    data_ctx[[var]]
+  }
 }
