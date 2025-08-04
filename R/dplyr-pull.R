@@ -52,13 +52,16 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
   var <- try_fetch(
     tidyselect::vars_select(names(data_ctx), !!var),
     error = function(cnd) {
-      if (grepl("(.features|.samples)", cnd$message) &&
-        ctxs %in% c("rows", "cols")) {
+      var <- rlang::as_label(var)
+      if ((var == ".features" && ctxs == "rows") ||
+        (var == ".samples" && ctxs == "cols")) {
         requesting_anno_names <<- TRUE
-        return(rlang::as_label(var))
+        return(var)
       }
       # rethrow error
-      cnd
+      abort(sprintf("failed to pull '%s' from '%s' context", var, ctxs),
+        parent = cnd, call = .env
+      )
     }
   )
 
