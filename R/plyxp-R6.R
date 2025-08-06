@@ -1,5 +1,3 @@
-
-
 #' @export
 .AtNames.plyxp_envs <- function(x, pattern = "") {
   options <- setdiff(names(attributes(x)), c("class", "names"))
@@ -38,48 +36,55 @@
 #'
 #' # example code
 #'
-#' env <- new_environment(list(
-#'   .iris = iris,
-#'   .nrow = 10),
-#'   baseenv())
+#' env <- new_environment(
+#'   list(
+#'     .iris = iris,
+#'     .nrow = 10
+#'   ),
+#'   baseenv()
+#' )
 #' binding_func <- add_bind(
 #'   .expr = quote(lapply(seq_len(.nrow), function(i, x) x[i], x = .iris[[!!name]])),
 #'   .expr_env = env,
-#'   type = "lazy")
+#'   type = "lazy"
+#' )
 #' binding_func("Sepal.Width")
 #' env$Sepal.Width
 #' @noRd
 add_bind <- function(.expr, .env_expr,
                      .env_bind = .env_expr,
-                     type = c("standard", "lazy","active")) {
+                     type = c("standard", "lazy", "active")) {
   # type <- match.arg(type, c("standard", "lazy", "active"))
   fun <- switch(type,
-                standard = expr(env_bind),
-                lazy = expr(env_bind_lazy),
-                active = expr(env_bind_active))
+    standard = expr(env_bind),
+    lazy = expr(env_bind_lazy),
+    active = expr(env_bind_active)
+  )
   name_unquo <- quote(!!name)
   quosure_unquo <- quote(!!quosure)
   if (type == "active") {
     new_function(
-      args = alist(name=),
+      args = alist(name = ),
       body = expr({
         name_sym <- as.name(name)
         actv_fun <- new_function(pairlist(),
-                                 inject(quote(!!.expr)),
-                                 env = !!.env_expr)
+          inject(quote(!!.expr)),
+          env = !!.env_expr
+        )
         # active_fun <- eval_tidy(quosure, data = as_data_mask(base::baseenv()))
         (!!fun)(!!.env_bind, !!name_unquo := actv_fun)
-      }))
+      })
+    )
   } else {
     new_function(
-      args = alist(name=),
+      args = alist(name = ),
       body = expr({
         name_sym <- as.name(name)
         quosure <- new_quosure(expr(!!.expr), env = !!.env_expr)
         (!!fun)(!!.env_bind, !!name_unquo := !!quosure_unquo)
-      }))
+      })
+    )
   }
-
 }
 
 ## due to challenges in passing BiocCheck, no longer documenting non-exported
@@ -118,9 +123,9 @@ add_bind <- function(.expr, .env_expr,
 #' # note: this R6 class is not exported at this moment
 #'
 #' mask <- getNamespace("plyxp")$plyxp_masknew(iris,
-#'                      .env_bot = rlang::env(`plyxp:::ctx:::group_id` = 1L))
+#'   .env_bot = rlang::env(`plyxp:::ctx:::group_id` = 1L)
+#' )
 #' mask$eval(quote(Sepal.Width))
-#'
 #'
 #' @noRd
 plyxp_mask <- R6::R6Class(
@@ -133,9 +138,11 @@ plyxp_mask <- R6::R6Class(
     #'
     #' @param .data a named list like object to create a mask
     #' @param .indices the indices that will be used to chop `.data`
-    #' @param .env_bot an environment that the resulting mask will be built from.
+    #' @param .env_bot an environment that the resulting mask will be built
+    #' from.
     #' @param .env_top an environment that `.env_bot` inherits from
-    initialize = function(.data, .indices = NULL, .env_bot, .env_top = .env_bot) {
+    initialize = function(.data, .indices = NULL,
+                          .env_bot, .env_top = .env_bot) {
       private$.shared_env <- .env_bot
       private$.top_env <- .env_top
       private$.data <- .data
@@ -157,7 +164,6 @@ plyxp_mask <- R6::R6Class(
 
       private$init_environments()
       invisible(self)
-
     },
     #' @description
     #' appends a callback function that is executed after a value is bound
@@ -213,6 +219,14 @@ plyxp_mask <- R6::R6Class(
     #' @param env an environment to search after mask
     eval = function(quo, env = caller_env()) {
       mask <- new_data_mask(private$env_mask_bind, top = private$.top_env)
+      trans <- attr(quo, "plyxp:::data")[["transform"]]
+      if (!is.null(trans)) {
+        exp <- quo_get_expr(quo)
+        quo <- quo_set_expr(
+          quo,
+          expr((!!exp) |> (!!trans)())
+        )
+      }
       eval_tidy(quo, data = mask, env = env)
     }
   ),
@@ -251,43 +265,48 @@ plyxp_mask <- R6::R6Class(
       # normal data ... do we need it to be lazy??
       private$env_data_lazy <- new.env(
         parent = private$env_foreign_data,
-        size = private$.env_size)
+        size = private$.env_size
+      )
       env_bind_lazy(
         private$env_data_lazy,
-        !!! lapply(private$.names, function(x) quo(.data[[!!x]])))
+        !!!lapply(private$.names, function(x) quo(.data[[!!x]]))
+      )
     },
     init_data_chop = function() {
       # chops
       private$env_data_chop <- new.env(
         parent = private$env_data_lazy,
-        size = private$.env_size)
+        size = private$.env_size
+      )
       private$handle_chops(private$.indices)
       env_bind_lazy(
         private$env_data_chop,
-        !!! lapply(private$.names, as.name) |>
+        !!!lapply(private$.names, as.name) |>
           lapply(private$chop_data) |>
           lapply(new_quosure,
-                 env = private$env_data_lazy)
+            env = private$env_data_lazy
+          )
       )
     },
     init_mask_bind = function() {
       private$env_mask_bind <- new.env(parent = private$env_data_chop, size = private$.env_size)
       env_bind_active(
         private$env_mask_bind,
-        !!! lapply(private$.names,
-                   function(name, env) {
-                     name <- sym(name)
-                     new_function(
-                       args = pairlist(),
-                       body = expr(.subset2(!!name, `plyxp:::ctx:::group_id`)),
-                       env = env
-                     )
-                   },
-                   env = private$env_data_chop)
+        !!!lapply(private$.names,
+          function(name, env) {
+            name <- sym(name)
+            new_function(
+              args = pairlist(),
+              body = expr(.subset2(!!name, `plyxp:::ctx:::group_id`)),
+              env = env
+            )
+          },
+          env = private$env_data_chop
+        )
       )
     },
     init_environments = function() {
-      out  <- c(
+      out <- c(
         list(private$env_mask_bind),
         env_parents(private$env_mask_bind, private$.shared_env)
       )
@@ -347,10 +366,8 @@ plyxp_mask <- R6::R6Class(
       private$.added[name] <- name
       private$.ptype[[name]] <- vec_slice(value[[1]], 0L)
       invisible(needs_unbind)
-
     },
     .on_bind = list(),
-
     # data input
     .data = NULL,
     # list of indices
@@ -359,9 +376,9 @@ plyxp_mask <- R6::R6Class(
     .grouped = NULL,
     .ngroups = NULL,
     .environments = NULL,
-    #names of `.data`
+    # names of `.data`
     .names = NULL,
-    #size 0 vectors of `.data`
+    # size 0 vectors of `.data`
     .ptype = NULL,
     # newly added names
     .added = character(),
@@ -374,7 +391,6 @@ plyxp_mask <- R6::R6Class(
     # initial size of environments
     # number of elements of `.data` + 20L
     .env_size = NULL,
-
     .shared_env = NULL,
     .top_env = NULL, # should at least inherit from `baseenv()`
     #' holds grouping information
@@ -420,9 +436,6 @@ plyxp_assay <- R6::R6Class(
       )
       private$.nrow <- .nrow
       private$.ncol <- .ncol
-
-
-
     },
     #' @description
     #' unchop data within the mask, returns a matrix
@@ -436,7 +449,9 @@ plyxp_assay <- R6::R6Class(
           indices = private$.indices
         )
       }
-      if (is.null(unchopped)) return(unchopped)
+      if (is.null(unchopped)) {
+        return(unchopped)
+      }
       matrix(
         unchopped,
         nrow = private$.nrow,
@@ -456,8 +471,7 @@ plyxp_assay <- R6::R6Class(
       } else {
         type <- attr(.indices, "type")
         private$.ngroups <- nrow(.indices)
-        fun <- switch(
-          type,
+        fun <- switch(type,
           rowcol = function(name) {
             name <- enexpr(name)
             expr(vec_chop_assays(!!name, .indices))

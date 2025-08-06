@@ -1,4 +1,3 @@
-
 #' @name select
 #' @title select assays, rowData, and colData names
 #' @description
@@ -33,19 +32,29 @@
 #' select(se_simple, rows(where(is.numeric)))
 #'
 #' # Note on `where()` clause, all data is available within select
-#' select(se_simple, rows(where(~any(grepl("-", .x)))))
+#' select(se_simple, rows(where(~ any(grepl("-", .x)))))
 #'
 #' # within an `across()`, only a zero-length slice avialble, so the
 #' # `where()` predicate cannot access the data
-#' mutate(se_simple,
-#'        rows(
-#'         across(where(~any(grepl("-", .x))),
-#'                ~sprintf("%s foo", .x))))
+#' mutate(
+#'   se_simple,
+#'   rows(
+#'     across(
+#'       where(~ any(grepl("-", .x))),
+#'       ~ sprintf("%s foo", .x)
+#'     )
+#'   )
+#' )
 #' # here is an acceptable usage of the `where()` predicate
-#' mutate(se_simple,
-#'        rows(
-#'         across(where(is.character),
-#'                ~sprintf("%s foo", .x))))
+#' mutate(
+#'   se_simple,
+#'   rows(
+#'     across(
+#'       where(is.character),
+#'       ~ sprintf("%s foo", .x)
+#'     )
+#'   )
+#' )
 #'
 #' @export
 select.PlySummarizedExperiment <- function(.data, ...) {
@@ -53,13 +62,12 @@ select.PlySummarizedExperiment <- function(.data, ...) {
 }
 
 select_se_impl <- function(.data, ...) {
-
   .env <- caller_env()
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::dplyr_verb", "select")
-  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  nms  <- names(quos)
+  nms <- names(quos)
 
 
   selected <- plyxp_eval_select(
@@ -72,13 +80,11 @@ select_se_impl <- function(.data, ...) {
   colData(.data) <- colData(.data)[selected[["cols"]]]
 
   .data
-
 }
 
 # underlying selection function. This may need to be an S3 generic
 # for when `plyxp` extends to other classes
 plyxp_eval_select <- function(quos, ctxs, data) {
-
   out <- vector("list", length(quos))
   .data <- list(
     assays = as.list(assays(data)),
@@ -92,11 +98,10 @@ plyxp_eval_select <- function(quos, ctxs, data) {
     out[[i]] <- tidyselect::eval_select(quo, .data[[ctx]])
   }
 
-  ctxs <- factor(ctxs, levels = c("assays","rows","cols"))
+  ctxs <- factor(ctxs, levels = c("assays", "rows", "cols"))
   split(out, ctxs) |>
     map(function(.x) {
       unlist(.x) |>
         unique()
     })
-
 }

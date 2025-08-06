@@ -43,7 +43,7 @@ arrange.PlySummarizedExperiment <- function(.data, ..., .by_group = FALSE) {
 
 arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   .env <- caller_env()
-  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   if (.by_group) {
     quos <- c(
       plyxp_quos(
