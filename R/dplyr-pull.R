@@ -48,15 +48,13 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     "rows" = rowData(.data),
     "cols" = colData(.data)
   )
-  requesting_anno_names <- FALSE
   var <- try_fetch(
-    tidyselect::vars_select(names(data_ctx), !!var),
+    tidyselect::vars_pull(names(data_ctx), !!var),
     error = function(cnd) {
       var <- rlang::as_label(var)
       if ((var == ".features" && ctxs == "rows") ||
         (var == ".samples" && ctxs == "cols")) {
-        requesting_anno_names <- TRUE
-        return(var)
+        return(NULL)
       }
       # rethrow error
       abort(sprintf("failed to pull '%s' from '%s' context", var, ctxs),
@@ -65,7 +63,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     }
   )
 
-  if (requesting_anno_names) {
+  if (is.null(var)) {
     rownames(data_ctx) %||% seq_len(nrow(data_ctx))
   } else {
     data_ctx[[var]]

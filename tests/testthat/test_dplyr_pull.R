@@ -38,7 +38,8 @@ test_that("pull from rows", {
     pull(se_simple, rows(-1))
   )
 
-  expect_error(
+  expect_identical(
+    rownames(rowData(se(se_simple))),
     pull(se_simple, rows(.features))
   )
 })
@@ -60,7 +61,8 @@ test_that("pull from rows", {
     pull(se_simple, cols(-1))
   )
 
-  expect_error(
+  expect_identical(
+    rownames(colData(se(se_simple))),
     pull(se_simple, cols(.samples))
   )
 })

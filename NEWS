@@ -1,7 +1,23 @@
+## plyxp 1.2.5
+
+* `pull.PlySummarizedExperiment()` now uses `tidyselect::vars_pull()` under the
+  hood, which should have more consistent behavior to the original.
+
+## plyxp 1.2.4
+
+* dplyr functions on plyxp objects now allow for empty arguments, which will be
+  ignored.
+* `pull.PlySummarizedExperiment()` now allows for pulling the names of the
+  rowData or colData by specifying `rows(.features)` and `cols(.samples)`
+  respectively.
+
+## plyxp 1.2.0
+
+* Bioconductor 3.21 release
 
 ## plyxp 1.1.1
 
-* added `plyxp_on()` as a way to have further interior mutability on the 
+* added `plyxp_on()` as a way to have further interior mutability on the
   SummarizedExperiment class.
 
 ## plyxp 1.0.0
