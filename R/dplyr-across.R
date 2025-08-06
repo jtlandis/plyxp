@@ -58,7 +58,7 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
   expressions <- vector(mode = "list", n_vars * n_fns)
   columns <- character(n_vars * n_fns)
   k <- 1L
-  trans <- attr(quo, "plyxp:::data")[["transform"]]
+  trans <- attr(quo, "plyxp:::transform")
   for (i in seq_vars) {
     var <- vars[[i]]
     for (j in seq_fns) {
@@ -71,7 +71,7 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
         name = name,
         is_named = TRUE,
         column = var,
-        transform = trans
+        trans = trans
       )
       k <- k + 1L
     }

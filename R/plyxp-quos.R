@@ -99,12 +99,12 @@ plyxp_quos <- function(
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(
         list(ctx_exprs,
-          name = ctx_nms, is_named = ctx_is_named,
-          transform = .trans[[ctx]]
+          name = ctx_nms, is_named = ctx_is_named
         ),
         plyxp_quo,
         env = .env,
-        ctx = ctx
+        ctx = ctx,
+        trans = .trans[[ctx]]
       )
       # remove empty arguments from calls
       ctx_quos <- Filter(Negate(rlang::quo_is_missing), ctx_quos)
@@ -118,7 +118,7 @@ plyxp_quos <- function(
       ctx = .ctx_default,
       is_named = is_nms[i],
       name = nms[i],
-      transform = .trans[[.ctx_default]]
+      trans = .trans[[.ctx_default]]
     )
   }
   out <- do.call(dots_list, c(dots, list(.named = .named)))
@@ -132,9 +132,10 @@ plyxp_quos <- function(
   out
 }
 
-plyxp_quo <- function(expr, env, ctx, ...) {
+plyxp_quo <- function(expr, env, ctx, trans, ...) {
   quo <- new_quosure(expr = expr, env = env)
   attr(quo, "plyxp:::ctx") <- ctx
+  attr(quo, "plyxp:::transform") <- trans
   attr(quo, "plyxp:::data") <- list2(...)
   quo
 }

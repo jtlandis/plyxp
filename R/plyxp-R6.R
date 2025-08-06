@@ -219,7 +219,7 @@ plyxp_mask <- R6::R6Class(
     #' @param env an environment to search after mask
     eval = function(quo, env = caller_env()) {
       mask <- new_data_mask(private$env_mask_bind, top = private$.top_env)
-      trans <- attr(quo, "plyxp:::data")[["transform"]]
+      trans <- attr(quo, "plyxp:::transform")
       if (!is.null(trans)) {
         exp <- quo_get_expr(quo)
         quo <- quo_set_expr(
