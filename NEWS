@@ -1,3 +1,8 @@
+## plyxp 1.2.5
+
+* `pull.PlySummarizedExperiment()` now uses `tidyselect::vars_pull()` under the
+  hood, which should have more consistent behavior to the original.
+
 ## plyxp 1.2.4
 
 * dplyr functions on plyxp objects now allow for empty arguments, which will be
@@ -5,8 +10,6 @@
 * `pull.PlySummarizedExperiment()` now allows for pulling the names of the
   rowData or colData by specifying `rows(.features)` and `cols(.samples)`
   respectively.
-* `pull.PlySummarizedExperiment()` now uses `tidyselect::vars_pull()` under the
-  hood, which should have more consistent behavior to the original.
 
 ## plyxp 1.2.0
 
