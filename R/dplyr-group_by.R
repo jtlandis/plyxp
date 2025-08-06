@@ -52,7 +52,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   .env <- caller_env()
   # to maintain consistency with dplyr
   # force any computations to occur on ungrouped data
-  .groups <- metadata(.data)[["group_data"]]
+  # .groups <- metadata(.data)[["group_data"]]
   metadata(.data)[["group_data"]] <- NULL
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)
@@ -190,8 +190,7 @@ ungroup_se_impl <- function(x, ...) {
     update_cols <- call2("cols", splice(syms(new_groups)))
     update_ <- paste0(update_, "col")
   }
-  switch(
-    update_,
+  switch(update_,
     rowcol = group_by(x, !!update_rows, !!update_cols),
     row = group_by(x, !!update_rows),
     col = group_by(x, !!update_cols)

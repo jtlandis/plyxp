@@ -33,7 +33,7 @@ method(vec_rep, class_s4_vctrs) <- function(x, times, ...,
                                             times_arg = "times") {
 
   times <- vctrs::vec_cast(times, integer(1), x_arg = times_arg)
-  if (length(length) != 1L) abort("`times` must be a single number")
+  if (length(length) != 1L) rlang::abort("`times` must be a single number")
   rep(x, times)
 }
 
@@ -60,6 +60,6 @@ method(vec_rep_each, class_s4_vctrs) <- function(x, times, ...,
                                                 times_arg = "times") {
   
   times <- vctrs::vec_cast(times, integer(1), x_arg = times_arg)
-  if (length(length) != 1L) abort("`times` must be a single number")
+  if (length(length) != 1L) rlang::abort("`times` must be a single number")
   rep(x, each = times)
 }

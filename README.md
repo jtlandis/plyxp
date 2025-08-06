@@ -10,7 +10,7 @@ We also aim for optimized implementations in `plyxp` to power some functionality
 within the `tidySummarizedExperiment` package, which also offers a dplyr-like
 interface to *SummarizedExperiment*. These two packages can easily be used in
 parallel, by casting objects with the `new_plyxp` constructor to enable
-`plxyp`-driven functionality.
+`plyxp`-driven functionality.
 
 `plyxp` uses
 [data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html)

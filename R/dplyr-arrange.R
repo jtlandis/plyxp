@@ -69,6 +69,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
   results <- mask$results()
   type <- ""
+  ro <- co <- NULL
   if (!is_empty(results$rows)) {
     type <- "row"
     ro <- exec("order", splice(results$rows), method = "radix")
@@ -79,8 +80,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
     co <- exec("order", splice(results$cols), method = "radix")
   }
 
-  out <- switch(
-    type,
+  out <- switch(type,
     rowcol = .data[ro, co],
     row = .data[ro, ],
     col = .data[, co],
@@ -88,7 +88,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   )
 
   if (!is.null(groups)) {
-    if (!is_empty(groups$row_groups)) {
+    if (!is_empty(groups$row_groups) && !is.null(ro)) {
       group_inds <- group_ind(groups$row_groups$.indices, nrow(.data))
       new_id <- vctrs::vec_slice(group_inds, ro)
       new_grps <- vec_group_loc(new_id)
@@ -97,7 +97,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
       groups$row_groups$.indices <- inds
     }
 
-    if (!is_empty(groups$col_groups)) {
+    if (!is_empty(groups$col_groups) && !is.null(co)) {
       group_inds <- group_ind(groups$col_groups$.indices, ncol(.data))
       new_id <- vctrs::vec_slice(group_inds, co)
       new_grps <- vec_group_loc(new_id)

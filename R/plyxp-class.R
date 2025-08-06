@@ -90,7 +90,7 @@ plyxp <- function(.data, .f, ..., .caller = caller_env()) {
   out <- try_fetch(
     .f(se(.data), ...),
     plyxp_on_failure = function(cnd) {
-      abort(class = "plyxp_failure", parent = cnd, call = NULL)
+      rlang::abort(class = "plyxp_failure", parent = cnd, call = NULL)
     },
     error = function(cnd) {
       message <- NULL
@@ -106,7 +106,7 @@ plyxp <- function(.data, .f, ..., .caller = caller_env()) {
           cnd$call[[1]] <- plyxp_function
         }
       }
-      abort(
+      rlang::abort(
         message = message,
         class = "plyxp_failure",
         parent = cnd,
@@ -141,9 +141,10 @@ plyxp <- function(.data, .f, ..., .caller = caller_env()) {
 #' `SummarizedExperiment` Class.
 #' @examples
 #' plyxp_on(se_simple,
-#'         .f = lapply, # function to call on `.on` args,
-#'         .on = rowData, # data `.f` will be used on
-#'          paste, "foo") # arguments for `.f`
+#'   .f = lapply, # function to call on `.on` args,
+#'   .on = rowData, # data `.f` will be used on
+#'   paste, "foo"
+#' ) # arguments for `.f`
 #' @export
 plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
   .on_sub <- substitute(.on)
@@ -181,7 +182,7 @@ plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
             message <- sprintf("error in `%s(se(.data)) <- value`", .on_name)
           }
         )
-        abort(
+        rlang::abort(
           message = message,
           class = "plyxp_on_failure",
           parent = cnd,
@@ -200,14 +201,16 @@ case_call <- function(x, ...) {
   if (is.call(x)) {
     call_arg <- as_label(x[[1]])
     dots <- enexprs(...)
-    expr <- expr(switch(!!call_arg, !!!dots))
+    expr <- expr(switch(!!call_arg,
+      !!!dots
+    ))
     eval(expr, envir = env)
   }
 }
 
 find_func <- function(func, .caller = caller_env()) {
   try_fetch(match.fun(func), error = function(cnd) {
-    abort(sprintf("could not match %s()", func), parent = cnd, call = .caller)
+    rlang::abort(sprintf("could not match %s()", func), parent = cnd, call = .caller)
   })
 }
 
@@ -225,7 +228,12 @@ print.PlySummarizedExperiment <- function(x, ...) {
   if (!missing(j)) {
     type <- paste0(type, "j")
   }
-  se(x) <- switch(type, i = se(x)[i, ], j = se(x)[, j], ij = se(x)[i, j], se(x))
+  se(x) <- switch(type,
+    i = se(x)[i, ],
+    j = se(x)[, j],
+    ij = se(x)[i, j],
+    se(x)
+  )
   x
 }
 
@@ -274,11 +282,10 @@ setMethod(
 )
 
 set_assays <- function(
-  x,
-  withDimnames = TRUE,
-  ...,
-  value
-) {
+    x,
+    withDimnames = TRUE,
+    ...,
+    value) {
   plyxp(x, `assays<-`, value = value, withDimnames = withDimnames, ...)
 }
 
@@ -364,10 +371,9 @@ setMethod(
   "rowData<-",
   "PlySummarizedExperiment",
   function(
-    x,
-    ...,
-    value
-  ) {
+      x,
+      ...,
+      value) {
     plyxp(x, `rowData<-`, ..., value = value)
   }
 )

@@ -70,7 +70,7 @@ summarize_se_impl <- function(.data, ...,
   quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (!"assays" %in% ctxs) {
-    abort(
+    rlang::abort(
       message = c(
         "No assay context expression detected",
         "!" = "at least one assay context expression required",

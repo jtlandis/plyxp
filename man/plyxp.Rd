@@ -51,7 +51,8 @@ as quosures and will be evaluated in the environment they were quoted.
 \examples{
 plyxp(se_simple, function(x) x)
 plyxp_on(se_simple,
-        .f = lapply, # function to call on `.on` args,
-        .on = rowData, # data `.f` will be used on
-         paste, "foo") # arguments for `.f`
+  .f = lapply, # function to call on `.on` args,
+  .on = rowData, # data `.f` will be used on
+  paste, "foo"
+) # arguments for `.f`
 }

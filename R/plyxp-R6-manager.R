@@ -1,5 +1,5 @@
 abort_invalid_quo <- function() {
-  abort("`plyxp_manager$eval()` requires quosure from `plyxp_quosures()`",
+  rlang::abort("`plyxp_manager$eval()` requires quosure from `plyxp_quosures()`",
     class = "plyxp_invalid_quo"
   )
 }

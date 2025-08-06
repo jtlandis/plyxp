@@ -37,8 +37,10 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     .ctx_default = "assays",
     .ctx_opt = c("rows", "cols")
   )
-  if (length(quos) > 1) abort("`var` can only pull one object")
-  if (!is.null(name)) warn("arg `name` is not used in pull.SummarizedExperiment()")
+  if (length(quos) > 1) rlang::abort("`var` can only pull one object")
+  if (!is.null(name)) {
+    rlang::warn("arg `name` is not used in pull.SummarizedExperiment()")
+  }
   var <- quos[[1]]
   ctxs <- attr(var, which = "plyxp:::ctx")
   data_ctx <- switch(ctxs,
@@ -46,6 +48,24 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     "rows" = rowData(.data),
     "cols" = colData(.data)
   )
-  var <- tidyselect::vars_pull(names(data_ctx), !!var)
-  return(data_ctx[[var]])
+  var <- try_fetch(
+    tidyselect::vars_pull(names(data_ctx), !!var),
+    error = function(cnd) {
+      var <- rlang::as_label(var)
+      if ((var == ".features" && ctxs == "rows") ||
+        (var == ".samples" && ctxs == "cols")) {
+        return(NULL)
+      }
+      # rethrow error
+      abort(sprintf("failed to pull '%s' from '%s' context", var, ctxs),
+        parent = cnd, call = .env
+      )
+    }
+  )
+
+  if (is.null(var)) {
+    rownames(data_ctx) %||% seq_len(nrow(data_ctx))
+  } else {
+    data_ctx[[var]]
+  }
 }
