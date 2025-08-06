@@ -38,6 +38,7 @@ Suggests:
     airway,
     IRanges,
     here
+LazyData: true
 URL: https://github.com/jtlandis/plyxp, https://jtlandis.github.io/plyxp
 BugReports: https://www.github.com/jtlandis/plyxp/issues
 biocViews: Annotation, GenomeAnnotation, Transcriptomics
