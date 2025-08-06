@@ -55,7 +55,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
       var <- rlang::as_label(var)
       if ((var == ".features" && ctxs == "rows") ||
         (var == ".samples" && ctxs == "cols")) {
-        requesting_anno_names <<- TRUE
+        requesting_anno_names <- TRUE
         return(var)
       }
       # rethrow error
