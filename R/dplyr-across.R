@@ -59,14 +59,33 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
   columns <- character(n_vars * n_fns)
   k <- 1L
   trans <- attr(quo, "plyxp:::transform")
+  pronoun <- NULL
+  if (setup$ctx_swap) {
+    pronoun <- switch(setup$ctx,
+      assays = ".assays",
+      rows = ".rows",
+      cols = ".cols"
+    )
+    if (setup$is_asis) {
+      pronoun <- paste0(pronoun, "_asis")
+    }
+    pronoun <- sym(pronoun)
+  }
   for (i in seq_vars) {
     var <- vars[[i]]
     for (j in seq_fns) {
       var <- sym(var)
       fn <- fns[[j]]
-      fn_call <- as_across_expr(fn, var)
+      # should be some function -
+      # if it doesnt have an environment, it is
+      # considered an inline function
+      fn_call <- as_across_expr(fn) # no-lint
+      if (!is.null(pronoun)) {
+        var <- substitute(pronoun$var)
+      }
       name <- names[[k]]
-      expressions[[k]] <- plyxp_quo(fn_call,
+      expressions[[k]] <- plyxp_quo(
+        substitute(var |> (fn_call)()),
         ctx = ctx, env = env,
         name = name,
         is_named = TRUE,
@@ -76,21 +95,21 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
       k <- k + 1L
     }
   }
-  if (setup$ctx_swap) {
-    ctx_swap <- switch(setup$ctx_swap,
-      assays = expr(assay_ctx),
-      rows = expr(row_ctx),
-      cols = expr(col_ctx)
-    )
-    for (k in seq_along(expressions)) {
-      quo <- expressions[[k]]
-      expr_ <- quo_get_expr(quo)
-      expressions[[k]] <- quo_set_expr(
-        quo,
-        expr((!!expr_) |> (!!ctx_swap)())
-      )
-    }
-  }
+  # if (setup$ctx_swap) {
+  #   ctx_swap <- switch(setup$ctx,
+  #     assays = expr(assay_ctx),
+  #     rows = expr(row_ctx),
+  #     cols = expr(col_ctx)
+  #   )
+  #   for (k in seq_along(expressions)) {
+  #     quo <- expressions[[k]]
+  #     expr_ <- quo_get_expr(quo)
+  #     expressions[[k]] <- quo_set_expr(
+  #       quo,
+  #       expr((!!expr_) |> (!!ctx_swap)())
+  #     )
+  #   }
+  # }
   names(expressions) <- names
   expressions
 }
@@ -123,10 +142,21 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
   ## suppose we are in rows_ctx, but want
   ## to do something across the assays...
   ctx_swap <- FALSE
-  if (quo_is_call(cols, c("assays", "rows", "cols"), n = 0)) {
+  is_asis <- FALSE
+  ctxs <- c("assays", "rows", "cols")
+  if (quo_is_call(cols, c(ctxs, paste0(ctxs, "_ctx")))) {
     ctx_swap <- TRUE
-    ctx <- as_label(quo_get_expr(cols)[[1]])
-    cols <- quo_set_expr(cols, expr(everything()))
+    ctx <- as_label(quo_get_expr(cols)[[1]]) |> sub("_ctx$", "", x = _)
+    expr <- quo_get_expr(cols)
+    is_asis <- expr$asis %||% FALSE
+    nargs <- length(expr) - 1
+    if ((nargs - is_asis) == 0) {
+      cols <- quo_set_expr(cols, expr(everything()))
+    } else {
+      expr <- expr[!names2(expr) == "asis"]
+      expr[1] <- call("c")
+      cols <- quo_set_expr(cols, expr)
+    }
   }
 
   if (identical(quo_get_expr(cols), quote(everything())) &&
@@ -179,7 +209,7 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
   )
   list(
     vars = vars, fns = fns, names = names, ctx = ctx,
-    ctx_swap = ctx_swap
+    ctx_swap = ctx_swap, is_asis = is_asis
   )
 }
 
@@ -218,13 +248,22 @@ node_walk_replace <- function(node, old, new) {
 }
 
 # @rdname dplyr_across_internals
-as_across_expr <- function(fn, var) {
+as_across_expr <- function(fn) {
   if (is_inlinable_lambda(fn)) {
     arg <- names(formals(fn))[[1]]
     expr <- body(fn)
-    expr_substitute(expr, sym(arg), sym(var))
+    # replace first arg with
+    # our own arg
+    expr <- do.call(
+      substitute,
+      list(expr,
+        env = list2("{arg}" := sym("..x"))
+      )
+    )
+    # re-write body as a new inline function
+    substitute(\(..x) expr)
   } else {
-    call2(fn, sym(var))
+    fn
   }
 }
 
