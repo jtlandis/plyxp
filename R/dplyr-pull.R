@@ -66,7 +66,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
   )
 
   if (requesting_anno_names) {
-    rownames(data_ctx) %||% seq_len(nrows(data_ctx))
+    rownames(data_ctx) %||% seq_len(nrow(data_ctx))
   } else {
     data_ctx[[var]]
   }
