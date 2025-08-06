@@ -48,7 +48,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
   )
   requesting_anno_names <- FALSE
   var <- try_fetch(
-    tidyselect::vars_select(names(data_ctx), !!var),
+    tidyselect::vars_pull(names(data_ctx), !!var),
     error = function(cnd) {
       var <- rlang::as_label(var)
       if ((var == ".features" && ctxs == "rows") ||
