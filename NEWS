@@ -1,4 +1,30 @@
-## plyxp 1.3.2
+## plyxp 1.3.3
+
+* `across()` now works properly in the "assays" context. Adresses #5
+* Users may use a "context" function in the `.cols` argument of `across()` to specify which context the functions are being apply across. For example:
+
+  ```r
+  se_simple |>
+    mutate(
+      rows(
+        across(
+          assays(),
+          ~ vapply(.x, sum, 1)
+        )
+      )
+    )
+
+  se_simple |>
+    mutate(
+      # within rows
+      rows(
+        across(
+          # across assays
+          assays(asis = TRUE), rowSums
+        )
+      )
+    )
+  ```
 
 
 ## plyxp 1.2.5
