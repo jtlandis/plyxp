@@ -190,11 +190,10 @@ ungroup_se_impl <- function(x, ...) {
     update_cols <- call2("cols", splice(syms(new_groups)))
     update_ <- paste0(update_, "col")
   }
-  switch(
-    update_,
-    rowcol = group_by(x, !!update_rows, !!update_cols),
-    row = group_by(x, !!update_rows),
-    col = group_by(x, !!update_cols)
+  switch(update_,
+    rowcol = group_by_se_impl(x, !!update_rows, !!update_cols),
+    row = group_by_se_impl(x, !!update_rows),
+    col = group_by_se_impl(x, !!update_cols)
   )
 }
 
