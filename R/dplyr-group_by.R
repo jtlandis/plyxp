@@ -84,7 +84,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
         names()
       curr <- colData(.data)[curr]
       curr[names(results$cols)] <- results$cols
-      results$rows <- curr
+      results$cols <- curr
     }
   }
   groups <- plyxp_groups(
@@ -162,13 +162,16 @@ ungroup_se_impl <- function(x, ...) {
   by_ctx <- split(quos, ctxs)
   update_cols <- update_rows <- NULL
   update_ <- ""
-  if (!is_empty(by_ctx$rows)) {
-    select(curr_groups$row_groups, -starts_with(".indices")) |>
+  if (!is_empty(by_ctx$rows) || !is.null(curr_groups$row_groups)) {
+    if (is.null(curr_groups$row_groups)) {
+      abort("no row groups to ungroup")
+    }
+    old_groups <- select(curr_groups$row_groups, -starts_with(".indices")) |>
       names()
     select_expr <- call2("c", splice(by_ctx$rows))
     to_remove <- eval_select(
       select_expr,
-      data = as.list(colData(x)),
+      data = as.list(rowData(x)),
       allow_rename = FALSE
     )
     to_remove <- names(to_remove)
@@ -176,7 +179,10 @@ ungroup_se_impl <- function(x, ...) {
     update_rows <- call2("rows", splice(syms(new_groups)))
     update_ <- "row"
   }
-  if (!is_empty(by_ctx$cols)) {
+  if (!is_empty(by_ctx$cols) || !is.null(curr_groups$col_groups)) {
+    if (is.null(curr_groups$col_groups)) {
+      abort("no col groups to ungroup")
+    }
     old_groups <- select(curr_groups$col_groups, -starts_with(".indices")) |>
       names()
     select_expr <- call2("c", splice(by_ctx$cols))
