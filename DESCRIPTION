@@ -1,6 +1,6 @@
 Package: plyxp
 Title: Data masks for SummarizedExperiment enabling dplyr-like manipulation
-Version: 1.2.5
+Version: 1.2.6
 Authors@R: c(
     person("Justin", "Landis", email = "jtlandis314@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0001-5501-4934")),
