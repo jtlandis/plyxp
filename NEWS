@@ -1,5 +1,9 @@
 ## plyxp 1.3.2
 
+## plyxp 1.2.7
+
+* `ungroup()` now properly ungroups the named rows() or cols() columns.
+* `ungroup()` now does not drop groupings in other contexts if they exists.
 
 ## plyxp 1.2.5
 
