@@ -191,9 +191,9 @@ ungroup_se_impl <- function(x, ...) {
     update_ <- paste0(update_, "col")
   }
   switch(update_,
-    rowcol = group_by(x, !!update_rows, !!update_cols),
-    row = group_by(x, !!update_rows),
-    col = group_by(x, !!update_cols)
+    rowcol = group_by_se_impl(x, !!update_rows, !!update_cols),
+    row = group_by_se_impl(x, !!update_rows),
+    col = group_by_se_impl(x, !!update_cols)
   )
 }
 
