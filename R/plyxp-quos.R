@@ -139,3 +139,19 @@ enforce_matrix <- function(quos, ctxs) {
   )
   quos
 }
+
+
+quos_is_named <- function(quos) {
+  lapply(quos, attr, which = "plyxp:::data") |>
+    vapply(`[[`, "is_named", FUN.VALUE = logical(1))
+}
+
+quos_enforce_named <- function(quos, names) {
+  for (i in seq_along(quos)) {
+    data <- attr(quos[[i]], "plyxp:::data")
+    data$is_named <- TRUE
+    data$name <- names[i]
+    attr(quos[[i]], "plyxp:::data") <- data
+  }
+  quos
+}

@@ -1,5 +1,7 @@
 ## plyxp 1.3.2
 
+* `slice()` has been added as a supported function for `PlySummarizedExperiment` objects.
+
 ## plyxp 1.2.7
 
 * `ungroup()` now properly ungroups the named rows() or cols() columns.

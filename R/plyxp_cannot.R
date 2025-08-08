@@ -11,3 +11,14 @@ plyxp_assays_cannot <- function(do, review) {
     call = caller_env()
   )
 }
+
+
+plyxp_should_not_named <- function(fun) {
+  cli::cli_abort(
+    message = c(
+      "Expressions should not be named in {.fun {fun}}",
+      "i" = "did you mean to use `==` instead of `=`?"
+    ),
+    call = caller_env()
+  )
+}
