@@ -48,6 +48,10 @@ dplyr::select
 
 #' @noRd
 #' @export
+dplyr::slice
+
+#' @noRd
+#' @export
 dplyr::pull
 
 #' @noRd
