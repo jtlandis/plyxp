@@ -1,16 +1,15 @@
-
-#' @returns 
+#' @returns
 #' API for using S4 classes with rlang data masks
 #' @keywords internal
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @import rlang 
-#' @importFrom dplyr across 
-#' @importFrom dplyr arrange 
-#' @importFrom dplyr bind_cols 
-#' @importFrom dplyr everything 
-#' @importFrom dplyr filter 
+#' @import rlang
+#' @importFrom dplyr across
+#' @importFrom dplyr arrange
+#' @importFrom dplyr bind_cols
+#' @importFrom dplyr everything
+#' @importFrom dplyr filter
 #' @importFrom dplyr group_by
 #' @importFrom dplyr group_data
 #' @importFrom dplyr group_vars
@@ -23,7 +22,8 @@
 #' @importFrom dplyr rename_with
 #' @importFrom dplyr rows_update
 #' @importFrom dplyr select
-#' @importFrom dplyr summarise 
+#' @importFrom dplyr summarise
+#' @importFrom dplyr slice
 #' @importFrom dplyr ungroup
 #' @importFrom methods new
 #' @importFrom pillar align

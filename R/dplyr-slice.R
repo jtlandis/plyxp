@@ -1,3 +1,9 @@
+#' @name slice
+#' @title Slice a PlySummarizedExperiment
+#' @description
+#' `slice()` selects rows and/or columns by position.
+#' Slice Documentation TO DO
+#' @export
 slice.PlySummarizedExperiment <- function(.data, ..., .preserve = FALSE) {
   plyxp(.data, slice_se_impl, ..., .preserve = .preserve)
 }
