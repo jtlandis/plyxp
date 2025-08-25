@@ -407,3 +407,78 @@ setMethod(
     plyxp(x, `colData<-`, ..., value = value)
   }
 )
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "metadata",
+  c("PlySummarizedExperiment"),
+  function(x, ...) {
+    metadata(se(x), ...)
+  }
+)
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "metadata<-",
+  c("PlySummarizedExperiment"),
+  function(x, ..., value) {
+    plyxp(x, `metadata<-`, ..., value = value)
+  }
+)
+
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "rownames",
+  c("PlySummarizedExperiment"),
+  function(x) {
+    names(se(x))
+  }
+)
+
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "colnames",
+  c("PlySummarizedExperiment"),
+  function(x) {
+    rownames(colData(x))
+  }
+)
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod("nrow", "PlySummarizedExperiment", function(x) length(se(x)))
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod("ncol", "PlySummarizedExperiment", function(x) nrow(colData(se(x))))
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "dimnames", "PlySummarizedExperiment",
+  function(x) {
+    list(rownames(x), colnames(x))
+  }
+)
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "dimnames<-", c("PlySummarizedExperiment", "list"),
+  function(x, value) {
+    plyxp(x, `dimnames<-`, value = value)
+  }
+)
+
+setMethod(
+  "dimnames<-", c("PlySummarizedExperiment", "NULL"),
+  function(x, value) {
+    plyxp(x, `dimnames<-`, value = list(NULL, NULL))
+  }
+)

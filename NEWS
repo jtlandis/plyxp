@@ -1,6 +1,12 @@
 ## plyxp 1.3.2
 
 * `slice()` has been added as a supported function for `PlySummarizedExperiment` objects.
+* Various methods that were not yet implement for `PlySummarizedExperiment` are now available:
+  * metadata/`metadata<-`
+  * rownames/`rownames<-`
+  * colnames/`colnames<-`
+  * dimnames/`dimnames<-`
+  * nrow/ncol
 
 ## plyxp 1.2.7
 
