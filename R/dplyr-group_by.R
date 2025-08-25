@@ -17,6 +17,7 @@ group_data_se_impl <- function(.data) {
   metadata(.data)[["group_data"]]
 }
 
+
 #' @name group_by
 #' @title apply groups to PlySummarizedExperiment
 #' @description

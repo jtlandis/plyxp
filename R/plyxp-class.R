@@ -219,8 +219,29 @@ print.PlySummarizedExperiment <- function(x, ...) {
   show_tidy(se(x), ...)
 }
 
-#' @export
-`[.PlySummarizedExperiment` <- function(x, i, j, ..., drop = TRUE) {
+into_index <- function(indices, .size = NULL, .names = NULL) {
+  switch(typeof(indices),
+    integer = indices,
+    double = indices,
+    character = match(indices, .names, nomatch = 0L),
+    logical = if ((l <- length(indices)) == 0L) {
+      integer()
+    } else if (l <= .size) {
+      seq_len(.size)[indices]
+    } else {
+      stop(sprintf(
+        "logical cannot be longer than %i",
+        .size
+      ), call. = FALSE)
+    },
+    stop(
+      sprintf("cannot convert type '%s' into integer index", typeof(indices)),
+      call. = FALSE
+    )
+  )
+}
+
+plyxp_slice_se <- function(se, i, j, .preserve = FALSE) {
   type <- NULL
   if (!missing(i)) {
     type <- "i"
@@ -228,14 +249,49 @@ print.PlySummarizedExperiment <- function(x, ...) {
   if (!missing(j)) {
     type <- paste0(type, "j")
   }
-  se(x) <- switch(type,
-    i = se(x)[i, ],
-    j = se(x)[, j],
-    ij = se(x)[i, j],
-    se(x)
+  if (!is.null(groups <- group_data_se_impl(se))) {
+    switch(type,
+      i = {
+        groups$row_groups <- slice_group_data(groups$row_groups,
+          indices = into_index(i, .size = nrow(se), .names = rownames(se)),
+          .size = nrow(se), .preserve = .preserve
+        )
+      },
+      j = {
+        groups$col_groups <- slice_group_data(groups$col_groups,
+          indices = into_index(j, .size = ncol(se), .names = colnames(se)),
+          .size = ncol(se), .preserve = .preserve
+        )
+      },
+      ij = {
+        groups$row_groups <- slice_group_data(groups$row_groups,
+          indices = into_index(i, .size = nrow(se), .names = rownames(se)),
+          .size = nrow(se), .preserve = .preserve
+        )
+        groups$col_groups <- slice_group_data(groups$col_groups,
+          indices = into_index(j, .size = ncol(se), .names = colnames(se)),
+          .size = ncol(se), .preserve = .preserve
+        )
+      }
+    )
+    metadata(se)[["group_data"]] <- groups
+  }
+
+  se <- switch(type,
+    i = se[i, ],
+    j = se[, j],
+    ij = se[i, j],
+    se
   )
+  se
+}
+
+
+`[.PlySummarizedExperiment` <- function(x, i, j, ..., drop = TRUE) {
+  se(x) <- plyxp_slice_se(se(x), i, j, ..., .preserve = FALSE)
   x
 }
+
 
 #' @export
 `$.PlySummarizedExperiment` <- function(x, name) {
@@ -370,10 +426,9 @@ setMethod(
 setMethod(
   "rowData<-",
   "PlySummarizedExperiment",
-  function(
-      x,
-      ...,
-      value) {
+  function(x,
+           ...,
+           value) {
     plyxp(x, `rowData<-`, ..., value = value)
   }
 )

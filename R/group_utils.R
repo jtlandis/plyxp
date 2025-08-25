@@ -1,4 +1,3 @@
-
 #' @importFrom dplyr bind_cols reframe across everything group_vars
 
 # faster implementation
@@ -10,14 +9,14 @@ expand_groups2 <- function(.rows, .cols) {
   .rows <- map(.rows, vec_rep, times = .ncol)
   .cols <- map(.cols, vec_rep_each, times = .nrow)
   out <- c(.rows, .cols)
-  n <- .nrow*.ncol
+  n <- .nrow * .ncol
   out[[".nrows"]] <- map_int(out[[".rows::.indices"]], length)
   out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
   attr(out, "row.names") <- c(NA_integer_, -n)
   class(out) <- c("tbl_df", "tbl", "data.frame")
-  
-  # due to this ordering here, I had introduced an unexpected  
-  # column-wise ordering of assays. I have changed it and commented 
+
+  # due to this ordering here, I had introduced an unexpected
+  # column-wise ordering of assays. I have changed it and commented
   # it out and also revered to the original intent of row-wise ordering.
   # o <- order(
   #   out[[".cols::.indices_group_id"]],
@@ -87,13 +86,13 @@ is_grouped_cols <- function(.groups) {
 #' like in [dplyr::group_vars()] will get character strings for
 #' groupings with the exection of the return value
 #' being a list for each grouped context
-#' 
+#'
 #' @param x PlySummarizedExperiment
 #' @examples
-#' 
+#'
 #' out <- group_by(se_simple, rows(direction))
 #' group_vars(out)
-#' 
+#'
 #' @return NULL or list containing names of grouping columns
 #' @export
 group_vars.PlySummarizedExperiment <- function(x) {
@@ -101,13 +100,17 @@ group_vars.PlySummarizedExperiment <- function(x) {
 }
 
 group_vars_se_impl <- function(x) {
-  map(metadata(x)[["group_data"]],
-      function(x) {
-        grep(x = names(x),
-             pattern = "^.indices",
-             value = TRUE,
-             invert = TRUE)
-      })
+  map(
+    metadata(x)[["group_data"]],
+    function(x) {
+      grep(
+        x = names(x),
+        pattern = "^.indices",
+        value = TRUE,
+        invert = TRUE
+      )
+    }
+  )
 }
 
 
@@ -116,29 +119,34 @@ vec_chop_assays <- function(.data, .indices) {
   map2(
     attr(.indices, "plyxp:::row_chop_ind"),
     attr(.indices, "plyxp:::col_chop_ind"),
-    function(.x, .y, .data) .data[.x, .y, drop = FALSE], .data = .data
+    function(.x, .y, .data) .data[.x, .y, drop = FALSE],
+    .data = .data
   )
 }
 
 vec_chop_assays_row <- function(.data, .indices) {
   map(attr(.indices, "plyxp:::row_chop_ind"),
-      function(.i, .data) .data[.i,,drop = FALSE],
-      .data = .data)
+    function(.i, .data) .data[.i, , drop = FALSE],
+    .data = .data
+  )
 }
 
 vec_chop_assays_col <- function(.data, .indices) {
   map(attr(.indices, "plyxp:::col_chop_ind"),
-      function(.i, .data) .data[,.i,drop = FALSE],
-      .data = .data)
+    function(.i, .data) .data[, .i, drop = FALSE],
+    .data = .data
+  )
 }
 
 
 create_groups <- function(.data, .rename = ".indices") {
   # check if length > 0
-  if (is_empty(.data)) return(NULL)
+  if (is_empty(.data)) {
+    return(NULL)
+  }
   # check first index has length > 0
   # assumes all others have similar length (probably not always true)
-  if (length(.data[[1]])==0) {
+  if (length(.data[[1]]) == 0) {
     .data <- as_tibble(.data)
     .data[[.rename]] <- list()
     .data[[sprintf("%s_group_id", .rename)]] <- integer()
@@ -166,7 +174,9 @@ plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
   }
   class(out) <- "plyxp_groups"
   attr(out, "type") <- type
-  if (type=="") return(NULL)
+  if (type == "") {
+    return(NULL)
+  }
   out
 }
 
@@ -174,10 +184,11 @@ get_group_indices <- function(
     .groups,
     .details,
     type = c("assays", "rowData", "colData")) {
-  if (is.null(attr(.groups, "type"))) return(NULL)
+  if (is.null(attr(.groups, "type"))) {
+    return(NULL)
+  }
   type <- match.arg(type, c("assays", "rowData", "colData"))
-  switch(
-    type,
+  switch(type,
     assays = {
       # browser()
       out <- map2(
@@ -185,11 +196,13 @@ get_group_indices <- function(
         .details[[".cols::.indices"]],
         .f = function(row, col, n) {
           mat_index(row, col, nrows = n)
-        }, n = attr(.groups, "obj_dim")[1])
+        }, n = attr(.groups, "obj_dim")[1]
+      )
       attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
       attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
       attr(out, "type") <- attr(.groups, "type")
-      out},
+      out
+    },
     rowData = .groups$row_groups$.indices,
     colData = .groups$col_groups$.indices
   )
@@ -197,7 +210,9 @@ get_group_indices <- function(
 
 group_type <- function(obj) {
   result <- attr(obj, "type")
-  if (is.null(result)) return("none")
+  if (is.null(result)) {
+    return("none")
+  }
   result
 }
 
@@ -232,4 +247,21 @@ group_ind <- function(x, n) {
     int[x[[i]]] <- i
   }
   int
+}
+
+slice_group_data <- function(groups, indices, .size, .preserve = FALSE) {
+  if (is.null(groups)) {
+    return(groups)
+  }
+  group_inds <- group_ind(groups$.indices, .size)
+  new_id <- vctrs::vec_slice(group_inds, indices)
+  new_grps <- vctrs::vec_group_loc(new_id)
+  inds <- lapply(seq_len(nrow(groups)), function(i) integer())
+  inds[new_grps$key] <- new_grps$loc
+  groups$.indices <- inds
+  if (!.preserve) {
+    groups <- groups[new_grps$key, ]
+    groups$.indices_group_id <- seq_len(nrow(groups))
+  }
+  groups
 }

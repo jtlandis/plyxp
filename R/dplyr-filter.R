@@ -85,55 +85,10 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
       reduce(`&`)
     filter_ <- paste0(filter_, "col")
   }
-  .data <- switch(
-    filter_,
-    rowcol = .data[row_logic, col_logic],
-    row = .data[row_logic, ],
-    col = .data[, col_logic],
+  switch(filter_,
+    rowcol = plyxp_slice_se(.data, row_logic, col_logic, .preserve = .preserve),
+    row = plyxp_slice_se(.data, row_logic, .preserve = .preserve),
+    col = plyxp_slice_se(.data, , col_logic, .preserve = .preserve),
     .data
   )
-  current_groups <- metadata(.data)[["group_data"]]
-  if (is.null(current_groups)) {
-    return(.data)
-  }
-  row_select <- grep(
-    "^.indices",
-    names(current_groups[["row_groups"]]),
-    value = TRUE,
-    invert = TRUE
-  )
-  row_groups <- row_select %|!|%
-    as_tibble(rowData(.data), rownames = ".features")[row_select]
-  col_select <- grep(
-    "^.indices",
-    names(current_groups[["col_groups"]]),
-    value = TRUE,
-    invert = TRUE
-  )
-  col_groups <- col_select %|!|%
-    as_tibble(colData(.data), rownames = ".samples")[col_select]
-  new_groups <- plyxp_groups(
-    row_groups = row_groups,
-    col_groups = col_groups
-  )
-  if (.preserve) {
-    if (!is_empty(current_groups$row_groups)) {
-      current_groups$row_groups$.indices[] <- list(integer())
-      new_groups$row_groups <- rows_update(
-        current_groups$row_groups,
-        new_groups$row_groups,
-        by = row_select
-      )
-    }
-    if (!is_empty(current_groups$col_groups)) {
-      current_groups$col_groups$.indices[] <- list(integer())
-      new_groups$col_groups <- rows_update(
-        current_groups$col_groups,
-        new_groups$col_groups,
-        by = col_select
-      )
-    }
-  }
-  metadata(.data)[["group_data"]] <- new_groups
-  .data
 }

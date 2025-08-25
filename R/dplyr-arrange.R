@@ -80,34 +80,10 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
     co <- exec("order", splice(results$cols), method = "radix")
   }
 
-  out <- switch(type,
-    rowcol = .data[ro, co],
-    row = .data[ro, ],
-    col = .data[, co],
+  switch(type,
+    rowcol = plyxp_slice_se(.data, ro, co),
+    row = plyxp_slice_se(.data, ro),
+    col = plyxp_slice_se(.data, , co),
     .data
   )
-
-  if (!is.null(groups)) {
-    if (!is_empty(groups$row_groups) && !is.null(ro)) {
-      group_inds <- group_ind(groups$row_groups$.indices, nrow(.data))
-      new_id <- vctrs::vec_slice(group_inds, ro)
-      new_grps <- vec_group_loc(new_id)
-      inds <- vector("list", nrow(groups$row_groups))
-      inds[new_grps$key] <- new_grps$loc
-      groups$row_groups$.indices <- inds
-    }
-
-    if (!is_empty(groups$col_groups) && !is.null(co)) {
-      group_inds <- group_ind(groups$col_groups$.indices, ncol(.data))
-      new_id <- vctrs::vec_slice(group_inds, co)
-      new_grps <- vec_group_loc(new_id)
-      inds <- vector("list", nrow(groups$col_groups))
-      inds[new_grps$key] <- new_grps$loc
-      groups$col_groups$.indices <- inds
-    }
-
-    metadata(out)[["group_data"]] <- groups
-  }
-
-  out
 }

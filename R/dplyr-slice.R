@@ -61,12 +61,21 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   switch(length(which_ctx),
     `1` = {
       switch(which_ctx,
-        rows = .data[results$rows[[".plyxp:::index"]], ],
-        cols = .data[, results$cols[[".plyxp:::index"]]]
+        rows = plyxp_slice_se(.data, results$rows[[".plyxp:::index"]],
+          .preserve = .preserve
+        ),
+        cols = plyxp_slice_se(.data, , results$cols[[".plyxp:::index"]],
+          .preserve = .preserve
+        )
       )
     },
     `2` = {
-      .data[results$rows[[".plyxp:::index"]], results$cols[[".plyxp:::index"]]]
+      plyxp_slice_se(
+        .data,
+        results$rows[[".plyxp:::index"]],
+        results$cols[[".plyxp:::index"]],
+        .preserve = .preserve
+      )
     }
   )
 }
