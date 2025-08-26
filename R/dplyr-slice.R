@@ -41,7 +41,10 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   which_ctx <- NULL
   if ("rows" %in% ctxs) {
     ri <- expr(c(!!!syms(nms[ctxs %in% "rows"])))
-    slice_quos <- plyxp_quos(rows(`.plyxp:::index` = `.plyxp:::index`[!!ri]),
+    slice_quos <- plyxp_quos(
+      rows(`.plyxp:::index` = {
+        \(x) if (length(x) == 0) 0 else x
+      }(`.plyxp:::index`[!!ri])),
       .ctx_default = "assays", .ctx_opt = "rows"
     )
     which_ctx <- "rows"
@@ -50,21 +53,24 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
     ci <- expr(c(!!!syms(nms[ctxs %in% "cols"])))
     slice_quos <- c(
       slice_quos,
-      plyxp_quos(cols(`.plyxp:::index` = `.plyxp:::index`[!!ci]),
+      plyxp_quos(
+        cols(`.plyxp:::index` = {
+          \(x) if (length(x) == 0) 0 else x
+        }(`.plyxp:::index`[!!ci])),
         .ctx_default = "assays", .ctx_opt = "cols"
       )
     )
     which_ctx <- c(which_ctx, "cols")
   }
   mask <- plyxp_evaluate(mask, slice_quos, which_ctx, names(slice_quos), .env)
-  results <- mask$results()
+  results <- mask$result(".plyxp:::index")
   switch(length(which_ctx),
     `1` = {
       switch(which_ctx,
-        rows = plyxp_slice_se(.data, results$rows[[".plyxp:::index"]],
+        rows = plyxp_slice_se(.data, results$rows,
           .preserve = .preserve
         ),
-        cols = plyxp_slice_se(.data, , results$cols[[".plyxp:::index"]],
+        cols = plyxp_slice_se(.data, , results$cols,
           .preserve = .preserve
         )
       )

@@ -66,6 +66,11 @@ plyxp_manager <- R6::R6Class(
       invisible(self)
     },
     #' @description
+    #' collections the envaluated result of a given name
+    result = function(name) {
+      lapply(private$.masks, function(m, name) m$result(name), name = name)
+    },
+    #' @description
     #' collects the evaluated results with plyxps
     #' @return named list for each mask containing named list of evaluated
     #' expressions.
