@@ -84,13 +84,13 @@ pillar_shaft.vec_phantom <- function(x, ...) {
 #' @param ... other arguments passed from [`pillar_shaft`][pillar::pillar_shaft]
 #' @examples
 #'
-#' if(require("IRanges")) {
-#'   ilist <- IRanges::IntegerList(list(c(1L,2L,3L),c(5L,6L)))
+#' if (require("IRanges")) {
+#'   ilist <- IRanges::IntegerList(list(c(1L, 2L, 3L), c(5L, 6L)))
 #'   phantom <- vec_phantom(ilist)
 #'   pillar::pillar_shaft(phantom)
 #'
 #'   plyxp_pillar_format.CompressedIntegerList <- function(x) {
-#'    sprintf("Int: [%i]", lengths(x))
+#'     sprintf("Int: [%i]", lengths(x))
 #'   }
 #'   print(pillar::pillar_shaft(phantom))
 #'   rm(plyxp_pillar_format.CompressedIntegerList)
@@ -124,7 +124,9 @@ plyxp_pillar_format.default <- function(x, ...) {
 }
 
 maybe_phantom <- function(x) {
-  if (isS4(x)) return(vec_phantom(x))
+  if (isS4(x)) {
+    return(vec_phantom(x))
+  }
   x
 }
 
@@ -231,13 +233,12 @@ format.plyxp_pillar_rid_shaft <- function(x, width, ...) {
 
 #' @export
 ctl_new_rowid_pillar.SE_abstraction <- function(
-  controller,
-  x,
-  width,
-  ...,
-  title = NULL,
-  type = NULL
-) {
+    controller,
+    x,
+    width,
+    ...,
+    title = NULL,
+    type = NULL) {
   if (val <- attr(controller, "plyxp:::has_break_at")) {
     #
     template <- names(
@@ -302,8 +303,9 @@ tbl_sum.SE_abstraction <- function(x) {
   if (!is.null(groups <- metadata(se)[["group_data"]])) {
     gv <- group_vars_se_impl(se)
     vars <- c(
-      if (!is_empty(gv$row_groups))
-        sprintf("rows(%s)", collapse(gv$row_groups)),
+      if (!is_empty(gv$row_groups)) {
+        sprintf("rows(%s)", collapse(gv$row_groups))
+      },
       if (!is_empty(gv$col_groups)) sprintf("cols(%s)", collapse(gv$col_groups))
     )
     out <- c(out, sprintf("Groups: %s", collapse(vars)))
@@ -313,14 +315,13 @@ tbl_sum.SE_abstraction <- function(x) {
 
 #' @export
 tbl_format_setup.SE_abstraction <- function(
-  x,
-  width,
-  ...,
-  n,
-  max_extra_cols,
-  max_footer_lines,
-  focus
-) {
+    x,
+    width,
+    ...,
+    n,
+    max_extra_cols,
+    max_footer_lines,
+    focus) {
   # pillar 1.10.0 now passes 'setup' as NULL on first call
   # If we fail to check, the setup$body will always be NULL
   dots_setup <- ...names() %in% "setup"
@@ -351,12 +352,11 @@ tbl_format_setup.SE_abstraction <- function(
 
 #' @export
 ctl_new_pillar.SE_abstraction <- function(
-  controller,
-  x,
-  width,
-  ...,
-  title = NULL
-) {
+    controller,
+    x,
+    width,
+    ...,
+    title = NULL) {
   if (inherits(x, "sep!")) {
     p <- pillar(x, title = "|", ...)
     class(p$title[[1]]) <- "blank_pillar_title"

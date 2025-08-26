@@ -1,11 +1,10 @@
-
 #' @title plyxp contexts
 #' @name plyxp-context
 #' @description
 #' Contextual user-facing helper function for dplyr verbs with SummarizedExperiment
 #' objects. These functions are intended to be used as the top level call to
 #' any dplyr verbs `...` argument, similar to that of `across()`/`if_any()`/`if_all()`.
-#' 
+#'
 #' @param x,... expressions to evaluate within its associated context
 #' @param asis asis = FALSE (the default) will indicate using active bindings
 #' that attempt to coerce the underlying data into a format that is appropriate
@@ -13,27 +12,28 @@
 #' as is.
 #' @return function called for its side-effects
 #' @examples
-#' 
+#'
 #' # cols
 #' mutate(se_simple,
-#'        cols(is_drug = condition=="drug"),
-#'        #bind a different context
-#'        effect = col_ctx(counts + (is_drug * rbinom(n(), 20, .3))))
-#' 
+#'   cols(is_drug = condition == "drug"),
+#'   # bind a different context
+#'   effect = col_ctx(counts + (is_drug * rbinom(n(), 20, .3)))
+#' )
+#'
 NULL
 
-#' @rdname plyxp-context 
+#' @rdname plyxp-context
 #' @description
-#' Specifies that the following expressions should be evaluated within the 
+#' Specifies that the following expressions should be evaluated within the
 #' colData context.
 #' @export
 cols <- function(...) {
   rlang::abort("`cols()` is a sentinal function for SummarizedExperiment dplyr verbs")
 }
 
-#' @rdname plyxp-context 
+#' @rdname plyxp-context
 #' @description
-#' Specifies that the following expressions should be evaluated within the 
+#' Specifies that the following expressions should be evaluated within the
 #' rowData context.
 #' @export
 rows <- function(...) {
@@ -44,13 +44,13 @@ rows <- function(...) {
 #' @rdname plyxp-context
 #' @description
 #' Specify a single expression to evaluate in another context
-#' 
+#'
 #' @export
 col_ctx <- function(x, asis = FALSE) {
   env <- peek_ctx("plyxp:::caller_env")
   biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
-  if (ctx=="cols") rlang::abort("`col_ctx()` within cols(...) is redunant")
+  if (ctx == "cols") rlang::abort("`col_ctx()` within cols(...) is redunant")
   quo <- new_quosure(enexpr(x), env = env)
   bot_env <- biocmanager$extended[["cols"]]
   if (asis) {
@@ -63,13 +63,13 @@ col_ctx <- function(x, asis = FALSE) {
 #' @rdname plyxp-context
 #' @description
 #' Specify a single expression to evaluate in another context
-#' 
+#'
 #' @export
 row_ctx <- function(x, asis = FALSE) {
   env <- peek_ctx("plyxp:::caller_env")
   biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
-  if (ctx=="rows") rlang::abort("`row_ctx()` within rows(...) is redunant")
+  if (ctx == "rows") rlang::abort("`row_ctx()` within rows(...) is redunant")
   quo <- new_quosure(enexpr(x), env = env)
   bot_env <- biocmanager$extended[["rows"]]
   if (asis) {
@@ -82,13 +82,13 @@ row_ctx <- function(x, asis = FALSE) {
 #' @rdname plyxp-context
 #' @description
 #' Specify a single expression to evaluate in another context
-#' 
+#'
 #' @export
 assay_ctx <- function(x, asis = FALSE) {
   env <- peek_ctx("plyxp:::caller_env")
   biocmanager <- peek_ctx("plyxp:::manager")
   ctx <- biocmanager$ctx
-  if (ctx=="assays") rlang::abort("`assay_ctx()` at top level ... is redundant")
+  if (ctx == "assays") rlang::abort("`assay_ctx()` at top level ... is redundant")
   quo <- new_quosure(enexpr(x), env = env)
   bot_env <- biocmanager$extended[["assays"]]
   if (asis) {
@@ -103,20 +103,22 @@ assay_ctx <- function(x, asis = FALSE) {
 #' @title contextual plyxp pronouns
 #' @description
 #' `plyxp` utilizes its own version of `rlang::.data` pronouns. These may be
-#' used to gain access to other evaluation contexts for a managed set of 
+#' used to gain access to other evaluation contexts for a managed set of
 #' data-masks.
-#' 
-#' Similar to `rlang::.data`, `plyxp::.assays` and other exported pronouns 
+#'
+#' Similar to `rlang::.data`, `plyxp::.assays` and other exported pronouns
 #' are exported to pass R CMD Checks. When using a `plyxp` within your package,
-#' import the associated pronoun from `plyxp` but only use the fully unqualified 
+#' import the associated pronoun from `plyxp` but only use the fully unqualified
 #' name, `.assays`, `.assays_asis`, etc.
 #' @return access to specific values behind the rlang pronoun
 #' @examples
-#' mutate(se_simple,
-#'        # access via pronoun
-#'        rows(sum = rowSums(.assays_asis$counts)),
-#'        cols(sum = vapply(.assays$counts, sum, numeric(1))))
-#' 
+#' mutate(
+#'   se_simple,
+#'   # access via pronoun
+#'   rows(sum = rowSums(.assays_asis$counts)),
+#'   cols(sum = vapply(.assays$counts, sum, numeric(1)))
+#' )
+#'
 NULL
 
 #' @rdname dot-pronouns
