@@ -61,7 +61,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   nms <- names(quos)
   # to make this function consistent
   groups <- group_data_se_impl(.data)
-  metadata(.data)[["group_data"]] <- NULL
+  group_data_se_impl(.data) <- NULL
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
@@ -78,6 +78,9 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   if (!is_empty(results$cols)) {
     type <- paste0(type, "col")
     co <- exec("order", splice(results$cols), method = "radix")
+  }
+  if (!is.null(groups)) {
+    group_data_se_impl(.data) <- groups
   }
 
   switch(type,

@@ -17,6 +17,11 @@ group_data_se_impl <- function(.data) {
   metadata(.data)[["group_data"]]
 }
 
+`group_data_se_impl<-` <- function(.data, value) {
+  metadata(.data)[["group_data"]] <- value
+  .data
+}
+
 
 #' @name group_by
 #' @title apply groups to PlySummarizedExperiment
