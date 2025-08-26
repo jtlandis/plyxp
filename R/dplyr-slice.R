@@ -2,7 +2,19 @@
 #' @title Slice a PlySummarizedExperiment
 #' @description
 #' `slice()` selects rows and/or columns by position.
-#' Slice Documentation TO DO
+#' @param .data a PlySummarizedExperiment object
+#' @param ... expressions that resolve to integer values to slice, .data by.
+#' Note that only the `rows()` and `cols()` contexts are available here.
+#' @param .preserve Logical value. When FALSE, the default, group combinations
+#' are recomputed based on the resulting data. When TRUE, group combinations
+#' are retained, despite any groups being empty.
+#' @examples
+#' gse <- group_by(se_simple, rows(direction), cols(condition))
+#' sgse <- slice(gse, rows(which(direction == "-")))
+#' group_data(gse)
+#' group_data(sgse)
+#' sgse2 <- slice(gse, rows(which(direction == "-")), .peserve = TRUE)
+#' group_data(sgse2)
 #' @export
 slice.PlySummarizedExperiment <- function(.data, ..., .preserve = FALSE) {
   plyxp(.data, slice_se_impl, ..., .preserve = .preserve)
