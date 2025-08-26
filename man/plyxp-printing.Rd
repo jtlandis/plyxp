@@ -58,13 +58,13 @@ use the S3 generic \code{show_tidy(...)}.
 
 \examples{
 
-if(require("IRanges")) {
-  ilist <- IRanges::IntegerList(list(c(1L,2L,3L),c(5L,6L)))
+if (require("IRanges")) {
+  ilist <- IRanges::IntegerList(list(c(1L, 2L, 3L), c(5L, 6L)))
   phantom <- vec_phantom(ilist)
   pillar::pillar_shaft(phantom)
 
   plyxp_pillar_format.CompressedIntegerList <- function(x) {
-   sprintf("Int: [\%i]", lengths(x))
+    sprintf("Int: [\%i]", lengths(x))
   }
   print(pillar::pillar_shaft(phantom))
   rm(plyxp_pillar_format.CompressedIntegerList)

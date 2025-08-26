@@ -50,10 +50,12 @@ import the associated pronoun from \code{plyxp} but only use the fully unqualifi
 name, \code{.assays}, \code{.assays_asis}, etc.
 }
 \examples{
-mutate(se_simple,
-       # access via pronoun
-       rows(sum = rowSums(.assays_asis$counts)),
-       cols(sum = vapply(.assays$counts, sum, numeric(1))))
+mutate(
+  se_simple,
+  # access via pronoun
+  rows(sum = rowSums(.assays_asis$counts)),
+  cols(sum = vapply(.assays$counts, sum, numeric(1)))
+)
 
 }
 \keyword{datasets}

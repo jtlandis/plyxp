@@ -7,7 +7,24 @@
 \usage{
 \method{slice}{PlySummarizedExperiment}(.data, ..., .preserve = FALSE)
 }
+\arguments{
+\item{.data}{a PlySummarizedExperiment object}
+
+\item{...}{expressions that resolve to integer values to slice, .data by.
+Note that only the \code{rows()} and \code{cols()} contexts are available here.}
+
+\item{.preserve}{Logical value. When FALSE, the default, group combinations
+are recomputed based on the resulting data. When TRUE, group combinations
+are retained, despite any groups being empty.}
+}
 \description{
 \code{slice()} selects rows and/or columns by position.
-Slice Documentation TO DO
+}
+\examples{
+gse <- group_by(se_simple, rows(direction), cols(condition))
+sgse <- slice(gse, rows(which(direction == "-")))
+group_data(gse)
+group_data(sgse)
+sgse2 <- slice(gse, rows(which(direction == "-")), .peserve = TRUE)
+group_data(sgse2)
 }

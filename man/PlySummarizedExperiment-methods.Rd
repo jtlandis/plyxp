@@ -20,6 +20,14 @@
 \alias{colData,PlySummarizedExperiment-method}
 \alias{colData<-,PlySummarizedExperiment,DataFrame-method}
 \alias{colData<-,PlySummarizedExperiment,NULL-method}
+\alias{metadata,PlySummarizedExperiment-method}
+\alias{metadata<-,PlySummarizedExperiment-method}
+\alias{rownames,PlySummarizedExperiment-method}
+\alias{colnames,PlySummarizedExperiment-method}
+\alias{nrow,PlySummarizedExperiment-method}
+\alias{ncol,PlySummarizedExperiment-method}
+\alias{dimnames,PlySummarizedExperiment-method}
+\alias{dimnames<-,PlySummarizedExperiment,list-method}
 \title{PlySummarizedExperiment Methods}
 \usage{
 se(x)
@@ -57,6 +65,22 @@ se(x) <- value
 \S4method{colData}{PlySummarizedExperiment,DataFrame}(x, ...) <- value
 
 \S4method{colData}{PlySummarizedExperiment,NULL}(x, ...) <- value
+
+\S4method{metadata}{PlySummarizedExperiment}(x, ...)
+
+\S4method{metadata}{PlySummarizedExperiment}(x, ...) <- value
+
+\S4method{rownames}{PlySummarizedExperiment}(x)
+
+\S4method{colnames}{PlySummarizedExperiment}(x)
+
+\S4method{nrow}{PlySummarizedExperiment}(x)
+
+\S4method{ncol}{PlySummarizedExperiment}(x)
+
+\S4method{dimnames}{PlySummarizedExperiment}(x)
+
+\S4method{dimnames}{PlySummarizedExperiment,list}(x) <- value
 }
 \arguments{
 \item{x}{PlySummarizedExperiment object}

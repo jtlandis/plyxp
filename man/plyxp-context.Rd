@@ -51,8 +51,9 @@ Specify a single expression to evaluate in another context
 
 # cols
 mutate(se_simple,
-       cols(is_drug = condition=="drug"),
-       #bind a different context
-       effect = col_ctx(counts + (is_drug * rbinom(n(), 20, .3))))
+  cols(is_drug = condition == "drug"),
+  # bind a different context
+  effect = col_ctx(counts + (is_drug * rbinom(n(), 20, .3)))
+)
 
 }
