@@ -286,7 +286,7 @@ plyxp_slice_se <- function(se, i, j, .preserve = FALSE) {
   se
 }
 
-
+#' @export
 `[.PlySummarizedExperiment` <- function(x, i, j, ..., drop = TRUE) {
   se(x) <- plyxp_slice_se(se(x), i, j, ..., .preserve = FALSE)
   x
