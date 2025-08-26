@@ -68,14 +68,27 @@ plyxp_manager <- R6::R6Class(
     #' @description
     #' collections the envaluated result of a given name
     result = function(name) {
-      lapply(private$.masks, function(m, name) m$result(name), name = name)
+      self$apply(function(m, name) m$unchop(name), name = name)
     },
     #' @description
     #' collects the evaluated results with plyxps
+    #' @param .from_masks index vector from which masks to collect results.
+    #' a missing argument will collect all results.
     #' @return named list for each mask containing named list of evaluated
     #' expressions.
-    results = function() {
-      lapply(private$.masks, function(m) m$results())
+
+    results = function(.from_masks) {
+      self$apply(function(m) m$results(), .on_masks = .from_masks)
+    },
+    #' @description
+    #' apply a function to each mask this object manages
+    #' @param .f a function to apply to the managed masks
+    #' @param ... additional arguments to pass to `.f`
+    #' @param .on_masks index vector indicating which masks to apply `.f` to.
+    #' a missing argument will collect all results.
+    #' @return named list containing the results of each function
+    apply = function(.f, ..., .on_masks) {
+      lapply(private$.masks[.on_masks], .f, ...)
     }
   ),
   active = list(

@@ -197,25 +197,27 @@ plyxp_mask <- R6::R6Class(
       }
       invisible(value)
     },
+    #' @param name name of binding to retrieve chopped
+    get_chop = function(name) {
+      private$env_data_chop[[name]]
+    },
     #' @param name name of binding to retrieve and unchop
     unchop = function(name) {
+      data <- self$get_chop(name)
+      if (is.null(data)) {
+        return(NULL)
+      }
       if (is.null(private$.indices)) {
-        .subset2(private$env_data_chop[[name]], 1L)
+        .subset2(data, 1L)
       } else {
         list_unchop(
-          private$env_data_chop[[name]],
+          data,
           indices = private$.indices
         )
       }
     },
-    #' @return a single result unchopped
-    result = function(name) {
-      if (name %in% private$.added) {
-        self$unchop(name)
-      } else {
-        NULL
-      }
-    },
+    #' @description
+    #' finds all newly added values and returns an unchopped result
     #' @return named list of evaluated expression, unchopped
     results = function() {
       added <- private$.added
@@ -443,11 +445,12 @@ plyxp_assay <- R6::R6Class(
     #' unchop data within the mask, returns a matrix
     #' @param name name of binding to retrieve and unchop
     unchop = function(name) {
+      data <- self$get_chop(name)
       unchopped <- if (is.null(private$.indices)) {
-        .subset2(private$env_data_chop[[name]], 1L)
+        .subset2(data, 1L)
       } else {
         list_unchop(
-          lapply(private$env_data_chop[[name]], as.vector),
+          lapply(data, as.vector),
           indices = private$.indices
         )
       }
