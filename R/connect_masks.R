@@ -193,7 +193,7 @@ connect_rows_to_cols <- function(mask_rows, mask_cols) {
   fun_asis <- add_bind(
     # row data may be grouped. use vctrs::vec_c to concatenate vectors
     quote({
-      # browser();vec_c(splice(.subset(!!name_sym, `plyxp:::rows:::current_chops`)))
+      # ;vec_c(splice(.subset(!!name_sym, `plyxp:::rows:::current_chops`)))
       chops <- `plyxp:::rows:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
       as_is <- vec_c(splice(data_chop))
@@ -239,7 +239,7 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
   fun_asis <- add_bind(
     # col data may be grouped. use vctrs::vec_c to concatenate vectors
     quote({
-      # browser();vec_c(splice(.subset(!!name_sym, `plyxp:::cols:::current_chops`))))
+      # ;vec_c(splice(.subset(!!name_sym, `plyxp:::cols:::current_chops`))))
       chops <- `plyxp:::cols:::current_chops`
       data_chop <- .subset(!!name_sym, chops)
       as_is <- vec_c(splice(data_chop))

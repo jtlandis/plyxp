@@ -183,11 +183,11 @@ show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
     list(sep_(nn)),
     col_
   )
-  # browser()
+  #
   attr(out, "row.names") <- c(NA_integer_, -nn)
   class(out) <- c("SE_abstraction", "tbl_df", "tbl", "data.frame")
 
-  # browser()
+  #
   sub_seq <- if (nn < 2 * top_n) {
     seq_len(nn)
   } else {
@@ -239,7 +239,7 @@ ctl_new_rowid_pillar.SE_abstraction <- function(
   type = NULL
 ) {
   if (val <- attr(controller, "plyxp:::has_break_at")) {
-    # browser()
+    #
     template <- names(
       ctl_new_pillar(controller, vector(), width, title = title)
     )

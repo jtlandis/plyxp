@@ -29,7 +29,7 @@ mutate.PlySummarizedExperiment <- function(.data, ...) {
 }
 
 mutate_se_impl <- function(.data, ...) {
-  # browser()
+  #
   .env <- caller_env()
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)

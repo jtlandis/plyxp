@@ -30,7 +30,7 @@ pull.PlySummarizedExperiment <- function(.data, var = -1, name = NULL, ...) {
 }
 
 pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
-  # browser()
+  #
   rlang::check_dots_empty()
   .env <- caller_env()
   quos <- plyxp_quos({{ var }},

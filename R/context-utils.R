@@ -145,7 +145,7 @@ NULL
 .cols_asis <- NULL
 
 # rows = function(...) {
-#   # browser()
+#   #
 #   mask_manager <- peek_ctx("SE:::mask_manager")
 #   fn <- peek_ctx("SE:::dplyr_function")
 #   env <- peek_ctx("SE:::caller_env")

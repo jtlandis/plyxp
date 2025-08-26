@@ -29,7 +29,7 @@ expand_groups2 <- function(.rows, .cols) {
 
 # inefficient and possibly defunct
 # expand_groups <- function(.rows, .cols) {
-#   # browser()
+#   #
 #   .nrow <- nrow(.rows)
 #   .ncol <- nrow(.cols)
 #   bind_cols(
@@ -190,7 +190,7 @@ get_group_indices <- function(
   type <- match.arg(type, c("assays", "rowData", "colData"))
   switch(type,
     assays = {
-      # browser()
+      #
       out <- map2(
         .details[[".rows::.indices"]],
         .details[[".cols::.indices"]],

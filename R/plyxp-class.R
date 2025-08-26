@@ -84,7 +84,7 @@ setMethod("se<-", "PlySummarizedExperiment", function(x, value) {
 #' plyxp(se_simple, function(x) x)
 #' @export
 plyxp <- function(.data, .f, ..., .caller = caller_env()) {
-  # browser()
+  #
   plyxp_function <- substitute(.f)
   .f <- rlang::as_function(.f)
   out <- try_fetch(

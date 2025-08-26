@@ -49,7 +49,7 @@ group_by.PlySummarizedExperiment <- function(.data, ..., .add = FALSE) {
 }
 
 group_by_se_impl <- function(.data, ..., .add = FALSE) {
-  # browser()
+  #
   .env <- caller_env()
   # to maintain consistency with dplyr
   # force any computations to occur on ungrouped data
