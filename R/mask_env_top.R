@@ -141,7 +141,7 @@ env_group_id <- function(env) {
 # contexts should collect certain data. Most of this headache is to support
 # grouping operations.
 prepare_shared_ctx_env <- function(groups, expanded) {
-  ind_d <- attr(groups, "obj_dim")
+  # ind_d <- attr(groups, "obj_dim")
 
   inf_assay <- plyxp_group_ids2(groups, expanded, "assays")
   inf_rows <- plyxp_group_ids2(groups, expanded, "rows")
