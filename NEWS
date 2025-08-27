@@ -7,6 +7,9 @@
   * colnames/`colnames<-`
   * dimnames/`dimnames<-`
   * nrow/ncol
+* Corrected issue in which across was not working in the default `assays` context.
+* can now use `cols()`, `rows()` or `assays()` as the first argument of `across()` to specify
+  which cols from potentially different contexts to pull data from.
 
 ## plyxp 1.2.7
 

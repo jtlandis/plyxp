@@ -56,7 +56,7 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
   seq_vars <- seq_len(n_vars)
   seq_fns <- seq_len(n_fns)
   expressions <- vector(mode = "list", n_vars * n_fns)
-  columns <- character(n_vars * n_fns)
+  # columns <- character(n_vars * n_fns)
   k <- 1L
   for (i in seq_vars) {
     var <- vars[[i]]

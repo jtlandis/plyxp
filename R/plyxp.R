@@ -79,11 +79,11 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   )
 }
 
-plyxp_evaluate <- function(mask, quos, ctxs, nams, env, .matrix = FALSE) {
+plyxp_evaluate <- function(mask, quos, ctxs, nams, env) {
   .call <- caller_call()
-  if (.matrix) {
-    quos <- enforce_matrix(quos, ctxs)
-  }
+  # if (.matrix) {
+  #   quos <- enforce_matrix(quos, ctxs)
+  # }
   n_quo <- length(quos)
   curr_quo <- NULL
   try_fetch(

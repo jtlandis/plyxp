@@ -67,7 +67,7 @@ summarize_se_impl <- function(.data, ...,
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "summarise")
-  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (!"assays" %in% ctxs) {
     rlang::abort(

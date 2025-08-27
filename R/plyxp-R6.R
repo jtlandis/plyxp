@@ -141,9 +141,11 @@ plyxp_mask <- R6::R6Class(
     #'
     #' @param .data a named list like object to create a mask
     #' @param .indices the indices that will be used to chop `.data`
-    #' @param .env_bot an environment that the resulting mask will be built from.
+    #' @param .env_bot an environment that the resulting mask will be built
+    #' from.
     #' @param .env_top an environment that `.env_bot` inherits from
-    initialize = function(.data, .indices = NULL, .env_bot, .env_top = .env_bot) {
+    initialize = function(.data, .indices = NULL,
+                          .env_bot, .env_top = .env_bot) {
       private$.shared_env <- .env_bot
       private$.top_env <- .env_top
       private$.data <- .data
@@ -230,6 +232,14 @@ plyxp_mask <- R6::R6Class(
     #' @param env an environment to search after mask
     eval = function(quo, env = caller_env()) {
       mask <- new_data_mask(private$env_mask_bind, top = private$.top_env)
+      trans <- attr(quo, "plyxp:::transform")
+      if (!is.null(trans)) {
+        exp <- quo_get_expr(quo)
+        quo <- quo_set_expr(
+          quo,
+          expr((!!exp) |> (!!trans)())
+        )
+      }
       eval_tidy(quo, data = mask, env = env)
     }
   ),
@@ -371,7 +381,6 @@ plyxp_mask <- R6::R6Class(
       invisible(needs_unbind)
     },
     .on_bind = list(),
-
     # data input
     .data = NULL,
     # list of indices

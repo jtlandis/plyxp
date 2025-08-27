@@ -21,6 +21,18 @@ enforce_named <- function(exprs) {
   exprs
 }
 
+as_trans_fn <- function(fn) {
+  if (is_call(fn)) {
+    if (identical(fn[[1]], quote(`function`))) {
+      return(fn)
+    }
+  }
+  if (is_function(fn)) {
+    return(fn)
+  }
+  NULL
+}
+
 #' @title plyxp quosures
 #' @description
 #' a consistent way to handle `...` for dplyr extensions.
@@ -29,8 +41,15 @@ enforce_named <- function(exprs) {
 #' mask context it should be evaluate in.
 #' @param ... rlang dots, supports splicing an quoting
 #' @param .named should resulting expressions be named?
-#' @param .ctx_default default context to eval within
-#' @param .ctx_opt optional contexts to eval within
+#' @param .ctx A character string of availablecontexts. The first
+#' element is considered to be the default context, whereas the
+#' rest are considered optional.
+#' @param .ctx_trans A list of functions to eventually apply to
+#' the expressions depending on their context. The names of the list
+#' elements should match the contexts names provided by `.ctx`. These
+#' functions will be quoted and in-lined into the expressions and thus
+#' cannot rely on the environments the functions are constructed.
+#' These functions are quoted
 #' @return a quosure with attribute `plyxp:::ctx`.
 #' @examples
 #'
@@ -51,13 +70,17 @@ enforce_named <- function(exprs) {
 plyxp_quos <- function(
     ...,
     .named = TRUE,
-    .ctx_default = NULL,
-    .ctx_opt = NULL) {
-  #
+    .ctx = NULL,
+    .trans = list()) {
+  # browser()
   dots <- quos(...) |>
     as.list()
-  .ctx_default <- .ctx_default %||% rlang::abort("`.ctx_default` must be specified!")
-  has_opt_ctx <- !is.null(.ctx_opt)
+  if (is.null(.ctx)) rlang::abort("`.ctx` must be specified!")
+  if (!is.list(.trans)) rlang::abort("`.trans` must be a list!")
+  .trans <- lapply(.trans, as_trans_fn)
+  .ctx_default <- .ctx[1] %||% rlang::abort("`.ctx` have at least 1 element!")
+  .ctx_opt <- .ctx[-1]
+  has_opt_ctx <- length(.ctx_opt) > 0
   # ctx_opt <- c("cols", "rows")
   nms <- rlang::names2(dots)
   is_nms <- nms != ""
@@ -75,10 +98,13 @@ plyxp_quos <- function(
       ctx_nms <- rlang::names2(ctx_exprs)
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(
-        list(ctx_exprs, name = ctx_nms, is_named = ctx_is_named),
+        list(ctx_exprs,
+          name = ctx_nms, is_named = ctx_is_named
+        ),
         plyxp_quo,
         env = .env,
-        ctx = ctx
+        ctx = ctx,
+        trans = .trans[[ctx]]
       )
       # remove empty arguments from calls
       ctx_quos <- Filter(Negate(rlang::quo_is_missing), ctx_quos)
@@ -91,7 +117,8 @@ plyxp_quos <- function(
       env = .env,
       ctx = .ctx_default,
       is_named = is_nms[i],
-      name = nms[i]
+      name = nms[i],
+      trans = .trans[[.ctx_default]]
     )
   }
   out <- do.call(dots_list, c(dots, list(.named = .named)))
@@ -105,9 +132,10 @@ plyxp_quos <- function(
   out
 }
 
-plyxp_quo <- function(expr, env, ctx, ...) {
+plyxp_quo <- function(expr, env, ctx, trans, ...) {
   quo <- new_quosure(expr = expr, env = env)
   attr(quo, "plyxp:::ctx") <- ctx
+  attr(quo, "plyxp:::transform") <- trans
   attr(quo, "plyxp:::data") <- list2(...)
   quo
 }

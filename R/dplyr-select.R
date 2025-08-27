@@ -65,7 +65,7 @@ select_se_impl <- function(.data, ...) {
   .env <- caller_env()
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::dplyr_verb", "select")
-  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   # nms  <- names(quos)
 

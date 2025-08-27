@@ -56,7 +56,7 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "filter")
-  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
     plyxp_assays_cannot(do = "filter", review = err)
