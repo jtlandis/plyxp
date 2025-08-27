@@ -2,8 +2,7 @@ quos <- plyxp:::plyxp_quos(
   foo,
   ctx2(foo),
   ctx3(foo),
-  .ctx_default = "ctx1",
-  .ctx_opt = c("ctx2", "ctx3")
+  .ctx = c("ctx1", "ctx2", "ctx3")
 )
 foo_sym <- quote(foo)
 
@@ -31,8 +30,10 @@ test_that("quosures contain correct context attribute", {
     )
     expect(
       ok = act$attr == expected,
-      sprintf("%s's `%s` attribute was %s, expected %s", act$lab, attr,
-              act$attr, expected)
+      sprintf(
+        "%s's `%s` attribute was %s, expected %s", act$lab, attr,
+        act$attr, expected
+      )
     )
     invisible(act$val)
   }

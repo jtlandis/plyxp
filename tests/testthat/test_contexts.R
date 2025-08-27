@@ -1,7 +1,7 @@
 is_pronoun <- function(x) inherits(x, "rlang_data_pronoun")
 plyxp_eval_ctx <- function(..., .ctx, .data, .results = c("chops", "results")) {
   bm <- plyxp:::new_plyxp_manager(se(.data))
-  quos <- plyxp:::plyxp_quos(..., .ctx_default = .ctx)
+  quos <- plyxp:::plyxp_quos(..., .ctx = .ctx)
   bm$ctx <- .ctx
   lapply(quos, bm$eval)
   .results <- match.arg(.results, choices = c("chops", "results"))

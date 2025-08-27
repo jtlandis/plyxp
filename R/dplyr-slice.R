@@ -25,7 +25,7 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   # then use that to slice the original data at the end
   # .slice_data <- .data
   .env <- caller_env()
-  quos <- plyxp_quos(..., .ctx_default = "assays", .ctx_opt = c("rows", "cols"))
+  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
 
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {

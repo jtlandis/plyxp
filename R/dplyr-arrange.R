@@ -48,8 +48,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
     quos <- c(
       plyxp_quos(
         !!!plyxp_curr_groups(.data),
-        .ctx_default = "assays",
-        .ctx_opt = c("rows", "cols")
+        .ctx = c("assays", "rows", "cols")
       ),
       quos
     )

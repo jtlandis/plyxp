@@ -33,10 +33,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
   #
   rlang::check_dots_empty()
   .env <- caller_env()
-  quos <- plyxp_quos({{ var }},
-    .ctx_default = "assays",
-    .ctx_opt = c("rows", "cols")
-  )
+  quos <- plyxp_quos({{ var }}, .ctx = c("assays", "rows", "cols"))
   if (length(quos) > 1) rlang::abort("`var` can only pull one object")
   if (!is.null(name)) {
     rlang::warn("arg `name` is not used in pull.SummarizedExperiment()")

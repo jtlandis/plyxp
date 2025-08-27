@@ -12,8 +12,7 @@ test_that("evaluation works", {
     foo = rep(1L, n()),
     rows(foo = rep(1L, n())),
     cols(foo = rep(1L, n())),
-    .ctx_default = "assays",
-    .ctx_opt = c("rows", "cols")
+    .ctx = c("assays", "rows", "cols")
   )
   bm$eval(quo[[1]])
   bm$ctx <- "rows"

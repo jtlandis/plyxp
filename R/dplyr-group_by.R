@@ -149,8 +149,7 @@ ungroup_se_impl <- function(x, ...) {
   quos <- plyxp_quos(
     ...,
     .named = FALSE,
-    .ctx_default = "assays",
-    .ctx_opt = c("rows", "cols")
+    .ctx = c("assays", "rows", "cols")
   )
   curr_groups <- metadata(x)[["group_data"]]
   if (is_empty(curr_groups)) {
