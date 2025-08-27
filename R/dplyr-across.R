@@ -69,7 +69,8 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
         ctx = ctx, env = env,
         name = name,
         is_named = TRUE,
-        column = var
+        column = var,
+        trans = NULL
       )
       k <- k + 1L
     }
