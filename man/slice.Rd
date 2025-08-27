@@ -25,6 +25,6 @@ gse <- group_by(se_simple, rows(direction), cols(condition))
 sgse <- slice(gse, rows(which(direction == "-")))
 group_data(gse)
 group_data(sgse)
-sgse2 <- slice(gse, rows(which(direction == "-")), .peserve = TRUE)
+sgse2 <- slice(gse, rows(which(direction == "-")), .preserve = TRUE)
 group_data(sgse2)
 }
