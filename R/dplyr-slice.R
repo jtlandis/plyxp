@@ -117,10 +117,11 @@ flatten_slice_chops <- function(chops, groups = NULL) {
     ctx_group = groups %||% list(NULL, NULL)
   ) |>
     lapply(function(by_expr) {
+      # browser()
       if (is.list(by_expr)) {
         by_expr <- do.call("c", by_expr)
       }
-      if (!is.numeric(by_expr)) {
+      if (!(is.numeric(by_expr) || is.null(by_expr))) {
         stop("`slice` should resolve numeric slices")
       }
       by_expr

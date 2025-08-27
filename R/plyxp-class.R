@@ -531,6 +531,8 @@ setMethod(
   }
 )
 
+#' @rdname PlySummarizedExperiment-methods
+#' @export
 setMethod(
   "dimnames<-", c("PlySummarizedExperiment", "NULL"),
   function(x, value) {
