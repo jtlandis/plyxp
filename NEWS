@@ -1,6 +1,8 @@
 ## plyxp 1.3.5
 
 * Corrected issue where using `group_by(xp, rows(foo = some_scalar))` would not create proper groupings
+* Corrected issue where scalars would capture an empty evaluation environment, which would cause any context specific transforms to fail.
+  This was corrected by checking if the quo also has a transformation set, and if so, changes the environment (if empty) to the calling env.
 
 ## plyxp 1.3.2
 
