@@ -58,7 +58,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   .env <- caller_env()
   # to maintain consistency with dplyr
   # force any computations to occur on ungrouped data
-  # .groups <- metadata(.data)[["group_data"]]
+  .groups <- metadata(.data)[["group_data"]]
   metadata(.data)[["group_data"]] <- NULL
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)
@@ -93,44 +93,40 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
       results$cols <- curr
     }
   }
-  groups <- plyxp_groups(
-    row_groups = results$rows,
-    col_groups = results$cols
-  )
-  metadata(.data)[["group_data"]] <- groups
-  nms <- names(results$rows)
-  if (".features" %in% nms) {
+
+  rnms <- names(results$rows)
+  if (".features" %in% rnms) {
     rownames(.data) <- results$rows$.features
     results$rows$.features <- NULL
-    nms <- names(results$rows)
+    rnms <- names(results$rows)
   }
-  if (length(nms)) {
+  if (length(rnms)) {
     row_data <- rowData(.data)
-    row_data[nms] <- results$rows
+    row_data[rnms] <- results$rows
     # push nms to the front
-    row_data <- row_data[c(nms, setdiff(names(row_data), nms))]
+    row_data <- row_data[c(rnms, setdiff(names(row_data), rnms))]
     rowData(.data) <- row_data
   }
 
-  # for (i in seq_along(results$rows)) {
-  #   rowData(.data)[[nms[i]]] <- results$rows[[i]]
-  # }
-  nms <- names(results$cols)
-  if (".samples" %in% nms) {
+
+  cnms <- names(results$cols)
+  if (".samples" %in% cnms) {
     colnames(.data) <- results$cols$.samples
     results$cols$.samples <- NULL
-    nms <- names(results$cols)
+    cnms <- names(results$cols)
   }
-  if (length(nms)) {
+  if (length(cnms)) {
     col_data <- colData(.data)
-    col_data[nms] <- results$cols
+    col_data[cnms] <- results$cols
     # push nms to the front
-    col_data <- col_data[c(nms, setdiff(names(col_data), nms))]
+    col_data <- col_data[c(cnms, setdiff(names(col_data), cnms))]
     colData(.data) <- col_data
   }
-  # for (i in seq_along(results$cols)) {
-  #   colData(.data)[[nms[i]]] <- results$cols[[i]]
-  # }
+  groups <- plyxp_groups(
+    row_groups = rowData(.data)[rnms],
+    col_groups = colData(.data)[cnms]
+  )
+  metadata(.data)[["group_data"]] <- groups
   .data
 }
 
