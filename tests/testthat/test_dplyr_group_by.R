@@ -98,3 +98,10 @@ test_that("groups change on slice augment", {
   expect_identical(gdata_$row_groups$.indices, list(1:2, integer()))
   expect_identical(gdata$col_groups, gdata_$col_groups)
 })
+
+test_that("scalars provide appropriate indices", {
+  se <- se_simple |> group_by(rows(foo = 6L))
+
+  expect_identical(rowData(se)$foo, rep(6L, 5L))
+  expect_identical(group_data(se)$row_groups$.indices, list(1:5))
+})
