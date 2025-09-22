@@ -239,6 +239,9 @@ plyxp_mask <- R6::R6Class(
           quo,
           expr((!!exp) |> (!!trans)())
         )
+        if (identical(emptyenv(), quo_get_env(quo))) {
+          quo <- quo_set_env(quo, env)
+        }
       }
       eval_tidy(quo, data = mask, env = env)
     }
