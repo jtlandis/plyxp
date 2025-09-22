@@ -15,6 +15,11 @@ test_that("mutate works - no groups", {
   expect_identical(colData(res)[["foo"]], 1:4)
 })
 
+test_that("mutate works with scalars in assays ctx", {
+  expect_no_error(res <- se_simple |> mutate(foo = 1L))
+  expect_identical(unname(assay(res, "foo")), matrix(1L, 5L, 4L))
+})
+
 test_that("mutate works - with groups", {
   gse <- group_by(se_simple, rows(direction), cols(condition))
 
