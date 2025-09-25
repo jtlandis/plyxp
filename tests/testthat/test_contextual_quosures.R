@@ -46,13 +46,11 @@ test_that("quosures contain correct context attribute", {
 
 test_that("`:=` works within contexts", {
   foo <- "bar"
-  expect_no_error(
-    quos <- plyxp:::plyxp_quos(
-      "{foo}" := foo,
-      ctx2("{foo}" := foo),
-      ctx3("{foo}" := !!foo),
-      .ctx = c("ctx1", "ctx2", "ctx3")
-    )
+  quos <- plyxp:::plyxp_quos(
+    "{foo}" := foo,
+    ctx2("{foo}" := foo),
+    ctx3("{foo}" := !!foo),
+    .ctx = c("ctx1", "ctx2", "ctx3")
   )
 
   expect_identical(names(quos), c("bar", "bar", "bar"))

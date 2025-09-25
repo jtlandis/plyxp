@@ -97,7 +97,7 @@ plyxp_quos <- function(
       ctx_exprs <- as.list(.expr[-1])
       # recapture the inner arguments allowing for dynamic
       # dots and using `"{foo}" := bar` notation
-      ctx_exprs <- rlang::inject(exprs(!!!ctx_exprs))
+      ctx_exprs <- rlang::inject(exprs(!!!ctx_exprs), env = .env)
       ctx_nms <- rlang::names2(ctx_exprs)
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(
