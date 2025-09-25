@@ -1,4 +1,4 @@
-## plyxp 1.3.6
+## plyxp 1.3.7
 
 * dynamic dots are now permitted within context functions. Namely doing something like
   `rows("{foo}" := bar)` where `foo` is some character string, will now work properly
