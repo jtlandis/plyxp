@@ -29,6 +29,13 @@ A set of S7 classes and Class unions that help establish S7 method dispatch.
 These classes were made to re-export several \code{vctrs} functions such that
 internals for \code{plyxp} were consistent with room for optimization.
 }
+\examples{
+# used for defining methods on S7 generics
+
+S7::method(vec_slice, class_vctrs)
+S7::method(vec_slice, class_s4_vctrs)
+
+}
 \seealso{
 \code{\link[=vec_rep]{vec_rep()}},\code{\link[=vec_recycle]{vec_recycle()}},\code{\link[=vec_slice]{vec_slice()}}
 }

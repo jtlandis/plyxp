@@ -43,18 +43,28 @@ select(se_simple, rows(everything()))
 select(se_simple, rows(where(is.numeric)))
 
 # Note on `where()` clause, all data is available within select
-select(se_simple, rows(where(~any(grepl("-", .x)))))
+select(se_simple, rows(where(~ any(grepl("-", .x)))))
 
 # within an `across()`, only a zero-length slice avialble, so the
 # `where()` predicate cannot access the data
-mutate(se_simple,
-       rows(
-        across(where(~any(grepl("-", .x))),
-               ~sprintf("\%s foo", .x))))
+mutate(
+  se_simple,
+  rows(
+    across(
+      where(~ any(grepl("-", .x))),
+      ~ sprintf("\%s foo", .x)
+    )
+  )
+)
 # here is an acceptable usage of the `where()` predicate
-mutate(se_simple,
-       rows(
-        across(where(is.character),
-               ~sprintf("\%s foo", .x))))
+mutate(
+  se_simple,
+  rows(
+    across(
+      where(is.character),
+      ~ sprintf("\%s foo", .x)
+    )
+  )
+)
 
 }
