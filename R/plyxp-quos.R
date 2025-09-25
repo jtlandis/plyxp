@@ -95,6 +95,9 @@ plyxp_quos <- function(
     if (has_opt_ctx && is_call(.expr, .ctx_opt)) {
       ctx <- as_label(.expr[[1]])
       ctx_exprs <- as.list(.expr[-1])
+      # recapture the inner arguments allowing for dynamic
+      # dots and using `"{foo}" := bar` notation
+      ctx_exprs <- rlang::inject(exprs(!!!ctx_exprs))
       ctx_nms <- rlang::names2(ctx_exprs)
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(

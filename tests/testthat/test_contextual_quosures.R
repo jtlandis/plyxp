@@ -41,3 +41,22 @@ test_that("quosures contain correct context attribute", {
   expect_attr_val(quos[[2]], "plyxp:::ctx", "ctx2")
   expect_attr_val(quos[[3]], "plyxp:::ctx", "ctx3")
 })
+
+
+
+test_that("`:=` works within contexts", {
+  foo <- "bar"
+  quos <- expect_no_error(
+    plyxp:::plyxp_quos(
+      "{foo}" := foo,
+      ctx2("{foo}" := foo),
+      ctx3("{foo}" := !!foo),
+      .ctx = c("ctx1", "ctx2", "ctx3")
+    )
+  )
+
+  expect_identical(names(quos), c("bar", "bar", "bar"))
+  expect_identical(rlang::quo_get_expr(quos[[1]]), foo_sym)
+  expect_identical(rlang::quo_get_expr(quos[[2]]), foo_sym)
+  expect_identical(rlang::quo_get_expr(quos[[3]]), "bar")
+})
