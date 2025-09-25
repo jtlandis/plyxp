@@ -8,7 +8,6 @@
 #' @examples
 #' # used for defining methods on S7 generics
 #'
-#' S7::method(vec_slice, class_vctrs)
 #' S7::method(vec_slice, class_s4_vctrs)
 #'
 #' @return S7 class union or base class

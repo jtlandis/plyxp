@@ -32,7 +32,6 @@ internals for \code{plyxp} were consistent with room for optimization.
 \examples{
 # used for defining methods on S7 generics
 
-S7::method(vec_slice, class_vctrs)
 S7::method(vec_slice, class_s4_vctrs)
 
 }
