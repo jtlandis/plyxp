@@ -71,12 +71,14 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   ro <- co <- NULL
   if (!is_empty(results$rows)) {
     type <- "row"
-    ro <- exec("order", splice(results$rows), method = "radix")
+    rows <- lapply(results$rows, vec_recycle, size = nrow(.data))
+    ro <- exec("order", splice(rows), method = "radix")
   }
 
   if (!is_empty(results$cols)) {
     type <- paste0(type, "col")
-    co <- exec("order", splice(results$cols), method = "radix")
+    cols <- lapply(results$cols, vec_recycle, size = ncol(.data))
+    co <- exec("order", splice(cols), method = "radix")
   }
   if (!is.null(groups)) {
     group_data_se_impl(.data) <- groups
