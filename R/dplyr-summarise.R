@@ -81,7 +81,8 @@ summarize_se_impl <- function(.data, ...,
 
   nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
-  assay_chops <- mask_pull_chops(mask$masks[["assays"]])
+  chops <- mask$apply(\(m) lapply(m$added, m$get_chop))
+  assay_chops <- chops$assays
   group_vars_ <- group_vars_se_impl(.data)
   row_data <- col_data <- NULL
   .nrow <- .ncol <- 1L
@@ -91,13 +92,15 @@ summarize_se_impl <- function(.data, ...,
   grouped_cols <- is_grouped_cols(.groups)
   if (grouped_rows || "rows" %in% ctxs) {
     # get all chop data, groups and evaled
-    row_chops <- mask_pull_chops(
-      mask$masks[["rows"]],
-      union(
-        group_vars_$row_groups,
-        mask$masks[["rows"]]$added
+    row_chops <- chops$rows
+    if (grouped_rows) {
+      row_group_vars <- group_vars_$row_groups
+      row_group_vars <- row_group_vars[!row_group_vars %in% names(row_chops)]
+      row_chops <- c(
+        .groups$row_groups[row_group_vars],
+        row_chops
       )
-    )
+    }
     # some settings
     if (.retain && !grouped_rows) {
       row_chops_sizes <- .nrow <- nrow(.data)
@@ -127,10 +130,15 @@ summarize_se_impl <- function(.data, ...,
   }
   if (grouped_cols || "cols" %in% ctxs) {
     # get all of the chops, including any groups
-    col_chops <- mask_pull_chops(
-      mask$masks[["cols"]],
-      union(group_vars_$col_groups, mask$masks[["cols"]]$added)
-    )
+    col_chops <- chops$cols
+    if (grouped_cols) {
+      col_group_vars <- group_vars_$col_groups
+      col_group_vars <- col_group_vars[!col_group_vars %in% names(col_chops)]
+      col_chops <- c(
+        .groups$col_groups[col_group_vars],
+        col_chops
+      )
+    }
     # settings
     if (.retain && !grouped_cols) {
       col_chops_sizes <- .ncol <- ncol(.data)
