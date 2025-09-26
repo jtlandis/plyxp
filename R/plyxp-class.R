@@ -39,7 +39,7 @@ setClass(
 #' @export
 PlySummarizedExperiment <- function(se) {
   obj <- new("PlySummarizedExperiment")
-  obj@se <- se
+  obj@se <- se(se)
   obj
 }
 
@@ -66,9 +66,17 @@ setGeneric("se<-", function(x, value) standardGeneric("se<-"))
 #' @describeIn PlySummarizedExperiment-methods set the se slot of the PlySummarizedExperiment object
 #' @export
 setMethod("se<-", "PlySummarizedExperiment", function(x, value) {
-  x@se <- value
+  x@se <- se(value)
   x
 })
+
+#' @describeIn PlySummarizedExperiment-methods get the SummarizedExperiment object
+#' @export
+setMethod("se", "SummarizedExperiment", function(x) x)
+
+#' @describeIn PlySummarizedExperiment-methods get the SummarizedExperiment object
+#' @export
+setMethod("se<-", "SummarizedExperiment", function(x, value) se(value))
 
 #' @name plyxp
 #' @title Modify SummarizedExperiment Object
