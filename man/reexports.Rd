@@ -33,6 +33,7 @@ colData(se_simple)
 \code{\link[=arrange]{arrange()}} \code{\link[=mutate]{mutate()}} \code{\link[=filter]{filter()}}
 \code{\link[=summarize]{summarize()}} \code{\link[=select]{select()}} \code{\link[=pull]{pull()}} \code{\link[=group_by]{group_by()}}
 \code{\link[=group_data]{group_data()}} \code{\link[=group_vars]{group_vars()}} \code{\link[=ungroup]{ungroup()}}
+\code{\link[=group_split]{group_split()}}
 
 \link{PlySummarizedExperiment-methods}
 }

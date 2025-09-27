@@ -1,3 +1,5 @@
+#' @include vctrs-S4-chop.R
+
 # `skip!` <- structure(list(), class = "skip")
 # skip <- function() {
 #   `skip!`
@@ -37,7 +39,7 @@ poke_ctx_local <- function(name, value) {
 top_env <- new_environment(
   data = list(
     abort = rlang::abort,
-    vec_chop = vctrs::vec_chop,
+    vec_chop = vec_chop,
     vec_chop_assays = vec_chop_assays,
     vec_chop_assays_row = vec_chop_assays_row,
     vec_chop_assays_col = vec_chop_assays_col,

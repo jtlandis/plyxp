@@ -3,6 +3,9 @@
 * dynamic dots are now permitted within context functions. Namely doing something like
   `rows("{foo}" := bar)` where `foo` is some character string, will now work properly
 * allow scalar values in `arrange()` and ungrouped instances.
+* `plyxp` now exports `dplyr::group_split` and a method for `PlySummarizedExperiment` objects
+* `slice.PlySummarizedExperiment` will now remove indices that are outside of each group - more inline
+  with how `dplyr::slice()` works.
 
 ## plyxp 1.3.5
 

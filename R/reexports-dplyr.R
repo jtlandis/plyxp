@@ -9,6 +9,7 @@
 #' @seealso [plyxp::arrange()] [plyxp::mutate()] [plyxp::filter()]
 #' [plyxp::summarize()] [plyxp::select()] [plyxp::pull()] [plyxp::group_by()]
 #' [plyxp::group_data()] [plyxp::group_vars()] [plyxp::ungroup()]
+#' [plyxp::group_split()]
 #' @seealso [plyxp::PlySummarizedExperiment-methods]
 #'
 #' @examples
@@ -69,3 +70,7 @@ dplyr::group_vars
 #' @noRd
 #' @export
 dplyr::ungroup
+
+#' @noRd
+#' @export
+dplyr::group_split

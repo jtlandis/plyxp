@@ -230,3 +230,89 @@ plyxp_curr_groups <- function(x) {
   }
   c(row_v, col_v)
 }
+
+#' @name group_split
+#' @title Split a PlySummarizedExperiment based on groups
+#'
+#' @description
+#' Splits a grouped PlySummarizedExperiment based on groups. Note the elements
+#' of the return value are ungrouped PlySummarizedExperiment objects.
+#'
+#' @param .tbl a PlySummarizedExperiment object
+#' @param ... ignored if the `.tbl` is grouped, otherwise it is passed to
+#' [plyxp::group_by].
+#' @param .keep logical indicating of grouping variables should be kept
+#' @returns A list of PlySummarizedExperiment objects
+#' @examples
+#'
+#' gse <- group_by(se_simple, rows(direction), cols(condition))
+#' gse |> group_split()
+#' gse |> group_split(.keep = FALSE)
+#'
+#' @export
+group_split.PlySummarizedExperiment <- function(.tbl, ..., .keep = TRUE) {
+  groups <- group_data_se_impl(.tbl)
+
+  quos <- rlang::enquos(...)
+  if (!is_empty(quos)) {
+    if (!is.null(groups)) {
+      rlang::warn("... is ignored when `.tbl` is grouped")
+    } else {
+      .tbl <- group_by(.tbl, !!!quos)
+      groups <- group_data_se_impl(.tbl)
+    }
+  }
+  # grab groups
+  group_vars <- group_vars_se_impl(.tbl)
+
+  # always ungroups resulting data
+  group_data_se_impl(.tbl) <- NULL
+  grouped_rows <- is_grouped_rows(group_vars)
+  grouped_cols <- is_grouped_cols(group_vars)
+  is_grouped <- grouped_rows || grouped_cols
+
+
+  if (!.keep && !is_empty(group_vars)) {
+    if (grouped_rows) {
+      rowData(.tbl) <- rowData(.tbl)[,
+        setdiff(
+          names(rowData(.tbl)),
+          group_vars$row_groups
+        ),
+        drop = FALSE
+      ]
+    }
+    if (grouped_cols) {
+      colData(.tbl) <- colData(.tbl)[,
+        setdiff(
+          names(colData(.tbl)),
+          group_vars$col_groups
+        ),
+        drop = FALSE
+      ]
+    }
+  }
+  type <- paste0(
+    c("rows", "cols")[c(grouped_rows, grouped_cols)],
+    collapse = ""
+  )
+  switch(type,
+    rows = lapply(
+      groups$row_groups$.indices,
+      \(i, .data) new_plyxp(.data[i, ]),
+      .data = se(.tbl)
+    ),
+    cols = lapply(
+      groups$col_groups$.indices,
+      \(j, .data) new_plyxp(.data[, j]),
+      .data = se(.tbl)
+    ),
+    rowscols = map2(
+      vctrs::vec_rep(groups$row_groups$.indices, nrow(groups$col_groups)),
+      vctrs::vec_rep_each(groups$col_groups$.indices, nrow(groups$row_groups)),
+      \(i, j, .data) new_plyxp(.data[i, j]),
+      .data = se(.tbl)
+    ),
+    list(.tbl)
+  )
+}

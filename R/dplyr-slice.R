@@ -25,7 +25,17 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   # then use that to slice the original data at the end
   # .slice_data <- .data
   .env <- caller_env()
-  quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
+  # slice in dplyr only keeps indices that are within the current group
+  # we will add a post transfrom to filter each evaluated expression.
+  in_bounds <- quote(\(.x) base::Filter(x = .x, \(x) x <= `plyxp:::ctx:::n`))
+  quos <- plyxp_quos(
+    ...,
+    .ctx = c("assays", "rows", "cols"),
+    .trans = list(
+      rows = in_bounds,
+      cols = in_bounds
+    )
+  )
 
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {

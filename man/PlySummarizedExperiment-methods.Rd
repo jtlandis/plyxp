@@ -5,6 +5,8 @@
 \alias{se,PlySummarizedExperiment-method}
 \alias{se<-}
 \alias{se<-,PlySummarizedExperiment-method}
+\alias{se,SummarizedExperiment-method}
+\alias{se<-,SummarizedExperiment-method}
 \alias{PlySummarizedExperiment-methods}
 \alias{assays,PlySummarizedExperiment-method}
 \alias{assays<-,PlySummarizedExperiment,list-method}
@@ -38,6 +40,10 @@ se(x)
 se(x) <- value
 
 \S4method{se}{PlySummarizedExperiment}(x) <- value
+
+\S4method{se}{SummarizedExperiment}(x)
+
+\S4method{se}{SummarizedExperiment}(x) <- value
 
 \S4method{assays}{PlySummarizedExperiment}(x, withDimnames = TRUE, ...)
 
@@ -111,6 +117,10 @@ Methods from SummarizedExperiment package re-implemented for PlySummarizedExperi
 \item \code{se(x) <- value}: set the se slot of the PlySummarizedExperiment object
 
 \item \code{se(PlySummarizedExperiment) <- value}: set the se slot of the PlySummarizedExperiment object
+
+\item \code{se(SummarizedExperiment)}: get the SummarizedExperiment object
+
+\item \code{se(SummarizedExperiment) <- value}: get the SummarizedExperiment object
 
 \item \code{assays(PlySummarizedExperiment)}: get the assays o the PlySummarizedExperiment object
 

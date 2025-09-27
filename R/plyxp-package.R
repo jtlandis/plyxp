@@ -78,7 +78,6 @@
 #' @importFrom vctrs obj_is_list
 #' @importFrom vctrs vec_c
 #' @importFrom vctrs vec_check_size
-#' @importFrom vctrs vec_chop
 #' @importFrom vctrs vec_group_loc
 #' @importFrom vctrs vec_ptype
 #' @importFrom vctrs vec_ptype_abbr
