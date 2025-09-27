@@ -5,7 +5,7 @@
 \alias{group_split.PlySummarizedExperiment}
 \title{Split a PlySummarizedExperiment based on groups}
 \usage{
-group_split.PlySummarizedExperiment(.tbl, ..., .keep = TRUE)
+\method{group_split}{PlySummarizedExperiment}(.tbl, ..., .keep = TRUE)
 }
 \arguments{
 \item{.tbl}{a PlySummarizedExperiment object}

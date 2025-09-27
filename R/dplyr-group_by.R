@@ -242,7 +242,7 @@ plyxp_curr_groups <- function(x) {
 #' @param ... ignored if the `.tbl` is grouped, otherwise it is passed to
 #' [plyxp::group_by].
 #' @param .keep logical indicating of grouping variables should be kept
-#' @returns A list of PlySummarizedExperiment objects
+#' @return A list of PlySummarizedExperiment objects
 #' @examples
 #'
 #' gse <- group_by(se_simple, rows(direction), cols(condition))
