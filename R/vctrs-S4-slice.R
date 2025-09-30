@@ -1,3 +1,5 @@
+#' @include vctrs-S4-.R
+
 #' @title Get observations of a vector
 #' @name vctrs_slice
 #' @description

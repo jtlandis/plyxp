@@ -1,4 +1,6 @@
 #' @include vctrs-S4-chop.R
+#' @include vctrs-S4-unchop.R
+#' @include vctrs-S4-rep.R
 
 # `skip!` <- structure(list(), class = "skip")
 # skip <- function() {
@@ -43,10 +45,10 @@ top_env <- new_environment(
     vec_chop_assays = vec_chop_assays,
     vec_chop_assays_row = vec_chop_assays_row,
     vec_chop_assays_col = vec_chop_assays_col,
-    vec_rep = vctrs::vec_rep,
-    vec_rep_each = vctrs::vec_rep_each,
-    vec_c = vctrs::vec_c,
-    list_unchop = vctrs::list_unchop,
+    vec_rep = vec_rep,
+    vec_rep_each = vec_rep_each,
+    vec_c = vec_c,
+    list_unchop = list_unchop,
     splice = splice,
     # skip = skip,
     poke_ctx = poke_ctx,

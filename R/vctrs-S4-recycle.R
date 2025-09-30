@@ -1,3 +1,5 @@
+#' @include vctrs-S4-.R
+
 
 #' @title Recycle a vector
 #' @name vctrs-vec_recycle
@@ -9,13 +11,15 @@
 #' @examples
 #' vec_recycle(1L, size = 5L)
 #' vec_recycle(S4Vectors::Rle(1L), size = 5L)
-#' 
+#'
 #' @export
-vec_recycle <- new_generic("vec_recycle", dispatch_args = "x",
-                           function(x, size, ..., x_arg = "",
-                                    call = caller_env()) {
-                             S7_dispatch()
-                           })
+vec_recycle <- new_generic("vec_recycle",
+  dispatch_args = "x",
+  function(x, size, ..., x_arg = "",
+           call = caller_env()) {
+    S7_dispatch()
+  }
+)
 
 method(vec_recycle, class_vctrs) <- function(x, size, ..., x_arg = "",
                                              call = caller_env()) {
@@ -24,7 +28,6 @@ method(vec_recycle, class_vctrs) <- function(x, size, ..., x_arg = "",
 
 method(vec_recycle, class_s4_vctrs) <- function(x, size, ..., x_arg = "",
                                                 call = caller_env()) {
-  
   if (length(size) != 1L) rlang::abort("argument `size` should be length 1L")
   if (!is.numeric(size)) rlang::abort("argument `size` should be integer-ish")
   vec_len <- length(x)
@@ -35,6 +38,7 @@ method(vec_recycle, class_s4_vctrs) <- function(x, size, ..., x_arg = "",
       `1` = vec_slice(x, vctrs::vec_rep(1L, size)),
       `2` = x,
       rlang::abort(glue::glue("Can't recycle inpute of size {vec_len} to size {size}."),
-            call = call)
+        call = call
+      )
     )
 }

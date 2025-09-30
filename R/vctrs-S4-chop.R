@@ -30,16 +30,6 @@ method(
   }
 
 
-method(
-  vec_chop,
-  S7::class_data.frame
-) <-
-  function(x,
-           ...,
-           sizes = NULL,
-           indices = NULL) {
-    vctrs::vec_chop(x = x, ..., indices = indices, sizes = sizes)
-  }
 
 # method(
 #   vec_chop,
