@@ -32,6 +32,6 @@ function to allow \code{S4Vectors}.
 }
 \examples{
 vec_chop(1L)
-vec_chop(S4Vectors::Rle(c(rep(1,3),rep(4,5)), indices = list(c(2,3,4), c(1,5:8)))
+vec_chop(S4Vectors::Rle(c(rep(1, 3), rep(4, 5))), indices = list(c(2, 3, 4), c(1, 5:8)))
 
 }
