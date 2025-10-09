@@ -360,8 +360,9 @@ se_simple |>
 
 while `plyxp` takes inspiration from the data masks used in `dplyr`, they
 are unfortunately more complex. This means there is some overhead in creating
-the evaluation mask per dplyr verb. Try to reduce the number of `dplyr` verb calls
-and instead increase the content of each verb. For example instead of doing:
+the evaluation mask per dplyr verb. Try to reduce the number of `dplyr` verb
+calls and instead increase the content of each verb. For example instead of
+doing:
 
 ```{r eval=FALSE}
 .data |>

@@ -23,7 +23,11 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
           },
           error = function(cnd) {
             if (!inherits(data_chop[[1]], "matrix")) {
-              abort("could not reconstruct 'asis' representation. underlying data was not a matrix",
+              abort(
+                paste(
+                  "could not reconstruct 'asis' representation.",
+                  "Underlying data was not a matrix."
+                ),
                 call = NULL
               )
             }
@@ -39,7 +43,12 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(lapply(seq_len(`plyxp:::ctx:::n`), function(i, x) x[i, , drop = TRUE], x = !!name_sym)),
+    quote(
+      lapply(seq_len(`plyxp:::ctx:::n`),
+        function(i, x) x[i, , drop = TRUE],
+        x = !!name_sym
+      )
+    ),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -79,7 +88,11 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
           },
           error = function(cnd) {
             if (!inherits(data_chop[[1]], "matrix")) {
-              abort("could not reconstruct 'asis' representation. underlying data was not a matrix",
+              abort(
+                paste(
+                  "could not reconstruct 'asis' representation.",
+                  "Underlying data was not a matrix."
+                ),
                 call = NULL
               )
             }
@@ -95,7 +108,12 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
     type = "active"
   )
   fun_mold <- add_bind(
-    quote(lapply(seq_len(`plyxp:::ctx:::n`), function(i, x) x[, i, drop = TRUE], x = !!name_sym)),
+    quote(
+      lapply(seq_len(`plyxp:::ctx:::n`),
+        function(i, x) x[, i, drop = TRUE],
+        x = !!name_sym
+      )
+    ),
     .env_expr = env_asis,
     .env_bind = env_pronoun,
     type = "active"
@@ -278,10 +296,18 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
 connect_masks <- function(mask_assays, mask_rows, mask_cols) {
   col2row <- connect_cols_to_rows(mask_cols = mask_cols, mask_rows = mask_rows)
   row2col <- connect_rows_to_cols(mask_rows = mask_rows, mask_cols = mask_cols)
-  col2assay <- connect_cols_to_assays(mask_cols = mask_cols, mask_assays = mask_assays)
-  row2assay <- connect_rows_to_assays(mask_rows = mask_rows, mask_assays = mask_assays)
-  assay2row <- connect_assays_to_rows(mask_assays = mask_assays, mask_rows = mask_rows)
-  assay2col <- connect_assays_to_cols(mask_assays = mask_assays, mask_cols = mask_cols)
+  col2assay <- connect_cols_to_assays(
+    mask_cols = mask_cols, mask_assays = mask_assays
+  )
+  row2assay <- connect_rows_to_assays(
+    mask_rows = mask_rows, mask_assays = mask_assays
+  )
+  assay2row <- connect_assays_to_rows(
+    mask_assays = mask_assays, mask_rows = mask_rows
+  )
+  assay2col <- connect_assays_to_cols(
+    mask_assays = mask_assays, mask_cols = mask_cols
+  )
 
   list(
     assays = list(

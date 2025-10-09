@@ -3,8 +3,7 @@
 
 #' @title reexports from other packages
 #' @name reexports
-#' @returns
-#' exported functions available from `plyxp`
+#' @returns exported functions available from `plyxp`
 #'
 #' @seealso [plyxp::arrange()] [plyxp::mutate()] [plyxp::filter()]
 #' [plyxp::summarize()] [plyxp::select()] [plyxp::pull()] [plyxp::group_by()]
