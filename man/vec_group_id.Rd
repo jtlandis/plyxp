@@ -10,7 +10,9 @@ vec_group_id(x, ...)
 vec_group_loc(x, ...)
 }
 \arguments{
-\item{x}{A vector}
+\item{x}{a vctrs vector or an S4Vector}
+
+\item{...}{unsued arguments}
 }
 \value{
 either a tibble or DataFrame object

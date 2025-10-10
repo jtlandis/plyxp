@@ -4,7 +4,7 @@
 #' A alternative to [`vctrs::vec_group_id`][vctrs::vec_group_id] and
 #' [`vctrs::vec_group_loc`][vctrs::vec_group_loc] as
 #' an S4 generic function to allow `S4Vectors`.
-#' @inheritParams vctrs::vec_group_id
+#' @param x a vctrs vector or an S4Vector
 #' @param ... unsued arguments
 #' @return either a tibble or DataFrame object
 #' @examples
