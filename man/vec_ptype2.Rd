@@ -13,6 +13,9 @@ vec_ptype2(x, y, ...)
 
 \item{...}{unused arguments}
 }
+\value{
+an object of size 0.
+}
 \description{
 given two objects, \code{vec_ptype2()} finds a common prototype
 }

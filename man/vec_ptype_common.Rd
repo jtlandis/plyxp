@@ -11,6 +11,9 @@ vec_ptype_common(..., .ptype = NULL)
 
 \item{.ptype}{the expected prototype}
 }
+\value{
+an object of size 0.
+}
 \description{
 find the common ptype
 }

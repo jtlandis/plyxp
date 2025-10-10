@@ -16,6 +16,9 @@ list_unchop(x, ptype = NULL, ..., indices = NULL)
 \item{indices}{optional list of integer vectors whose size is equal to that
 of x. This maps the the final index of each element in the output.}
 }
+\value{
+an object of type \code{ptype} or the common ptype of elements of x.
+}
 \description{
 A generic version of \code{\link[vctrs:vec_chop]{vctrs::list_unchop}} meant to
 support S4 Vectors.

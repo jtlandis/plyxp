@@ -10,6 +10,7 @@
 #' @param ... unused arguments
 #' @param indices optional list of integer vectors whose size is equal to that
 #' of x. This maps the the final index of each element in the output.
+#' @return an object of type `ptype` or the common ptype of elements of x.
 #' @export
 list_unchop <- new_generic(
   "list_unchop",
@@ -70,6 +71,7 @@ vec_c <- function(...) {
 #' @param x first object
 #' @param y second object
 #' @param ... unused arguments
+#' @return an object of size 0.
 #' @export
 vec_ptype2 <- new_generic(
   "vec_ptype2",
@@ -142,6 +144,7 @@ method(
 #' find the common ptype
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> a collection of objects
 #' @param .ptype the expected prototype
+#' @return an object of size 0.
 #' @export
 vec_ptype_common <- function(..., .ptype = NULL) {
   vec_ptype_common_list(rlang::list2(...), .ptype = .ptype)
