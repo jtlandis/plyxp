@@ -1,5 +1,15 @@
 #' @include vctrs-S4-.R
 
+#' @title unchop a list of objects
+#' @name list_unchop
+#' @description
+#' A generic version of [`vctrs::list_unchop`][vctrs::list_unchop] meant to
+#' support S4 Vectors.
+#' @param x a list
+#' @param ptype the expected prototype of the output
+#' @param ... unused arguments
+#' @param indices optional list of integer vectors whose size is equal to that
+#' of x. This maps the the final index of each element in the output.
 #' @export
 list_unchop <- new_generic(
   "list_unchop",
@@ -54,7 +64,12 @@ vec_c <- function(...) {
   list_unchop(x = dots, ptype = vec_ptype_common_list(dots, NULL))
 }
 
-
+#' Create a common prototype of two vectors
+#' @description
+#' given two objects, `vec_ptype2()` finds a common prototype
+#' @param x first object
+#' @param y second object
+#' @param ... unused arguments
 #' @export
 vec_ptype2 <- new_generic(
   "vec_ptype2",
@@ -71,6 +86,27 @@ method(
 ) <- function(x, y, ...) {
   vctrs::vec_ptype2(x, y, ...)
 }
+
+method(
+  vec_ptype2,
+  list(
+    S7::class_any,
+    NULL
+  )
+) <- function(x, y, ...) {
+  x[0]
+}
+
+method(
+  vec_ptype2,
+  list(
+    NULL,
+    S7::class_any
+  )
+) <- function(x, y, ...) {
+  y[0]
+}
+
 
 
 attempt_ptype2 <- function(x, y) {
@@ -103,6 +139,9 @@ method(
   )
 ) <- attempt_ptype2
 
+#' find the common ptype
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> a collection of objects
+#' @param .ptype the expected prototype
 #' @export
 vec_ptype_common <- function(..., .ptype = NULL) {
   vec_ptype_common_list(rlang::list2(...), .ptype = .ptype)
@@ -110,9 +149,5 @@ vec_ptype_common <- function(..., .ptype = NULL) {
 
 vec_ptype_common_list <- function(dots, .ptype) {
   dots <- lapply(dots, vec_slice, 0L)
-  if (is.null(.ptype)) {
-    base::Reduce(vec_ptype2, x = dots)
-  } else {
-    base::Reduce(vec_ptyp2, x = dots, init = .ptype)
-  }
+  base::Reduce(vec_ptype2, x = dots, init = .ptype)
 }

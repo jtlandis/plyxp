@@ -1,4 +1,3 @@
-
 #' @title Create Group Indices
 #' @name vec_group_id
 #' @description
@@ -9,7 +8,7 @@
 #' @return either a tibble or DataFrame object
 #' @examples
 #'
-#' data <- DataFrame(
+#' data <- S4Vectors::DataFrame(
 #'   letter = sample(letters, 500, TRUE),
 #'   LETTER = sample(letters, 500, TRUE)
 #' )

@@ -22,7 +22,7 @@ an S4 generic function to allow \code{S4Vectors}.
 }
 \examples{
 
-data <- DataFrame(
+data <- S4Vectors::DataFrame(
   letter = sample(letters, 500, TRUE),
   LETTER = sample(letters, 500, TRUE)
 )
