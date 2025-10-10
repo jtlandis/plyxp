@@ -5,6 +5,7 @@
 #' [`vctrs::vec_group_loc`][vctrs::vec_group_loc] as
 #' an S4 generic function to allow `S4Vectors`.
 #' @inheritParams vctrs::vec_group_id
+#' @param ... unsued arguments
 #' @return either a tibble or DataFrame object
 #' @examples
 #'
@@ -80,8 +81,8 @@ method(
     unname()
 
   S4Vectors::DataFrame(
-    key = I(vec_slice(x, vapply(loc, `[`, 1L, 1L))),
-    loc = I(loc)
+    key = S4Vectors::I(vec_slice(x, vapply(loc, `[`, 1L, 1L))),
+    loc = S4Vectors::I(loc)
   )
 }
 
@@ -94,8 +95,8 @@ method(
     as.data.frame() |>
     vctrs::vec_group_loc()
   S4Vectors::DataFrame(
-    key = I(vec_slice(x, vapply(out$loc, `[`, 1L, 1L))),
-    loc = I(out$loc)
+    key = S4Vectors::I(vec_slice(x, vapply(out$loc, `[`, 1L, 1L))),
+    loc = S4Vectors::I(out$loc)
   )
 }
 
