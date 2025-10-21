@@ -135,10 +135,10 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
     # .features/.samples.
     # These should only be changed
     rm <- switch(ctx,
-      rows = expr(.features),
-      cols = expr(.samples)
+      rows = expr(-.features),
+      cols = expr(-.samples)
     )
-    cols <- quo_set_expr(cols, expr(-(!!rm)))
+    cols <- quo_set_expr(cols, rm)
   }
 
   data <- manager$masks[[ctx]]$ptype
@@ -155,8 +155,13 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
   } else {
     names <- names %||% "{.col}_{.fn}"
   }
-  if (!is.list(fns)) {
-    rlang::abort("Expected a list.", .internal = TRUE)
+  if (!is.list(fns) || length(fns) == 0L) {
+    rlang::abort(
+      c("Unxpected argument for `.fns`. across() expects one of:",
+        i = "a function or lambda function",
+        i = "a non-zero length list of functions or lambda functions"
+      )
+    )
   }
   if (is.null(names(fns))) {
     names_fns <- seq_along(fns)

@@ -69,15 +69,6 @@ summarize_se_impl <- function(.data, ...,
   poke_ctx_local("plyxp:::dplyr_verb", "summarise")
   quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (!"assays" %in% ctxs) {
-    rlang::abort(
-      message = c(
-        "No assay context expression detected",
-        "!" = "at least one assay context expression required",
-        "i" = "consider nesting data via `summarise(se, counts = list(counts))`"
-      )
-    )
-  }
 
   nms <- names(quos)
   mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
