@@ -101,7 +101,7 @@ group_vars.PlySummarizedExperiment <- function(x) {
 
 group_vars_se_impl <- function(x) {
   map(
-    metadata(x)[["group_data"]],
+    group_data_se_impl(x),
     function(x) {
       grep(
         x = names(x),
@@ -113,7 +113,60 @@ group_vars_se_impl <- function(x) {
   )
 }
 
+into_dimlist <- function(assay_ind) {
+  list(
+    unique(attr(assay_ind, "plyxp:::row_chop_ind")) %||% rlang::missing_arg(),
+    unique(attr(assay_ind, "plyxp:::col_chop_ind")) %||% rlang::missing_arg()
+  )
+}
 
+chop_assays_outer <- function(obj, .ind) {
+  dimlist <- into_dimlist(.ind)
+  chop_dims_outer(obj, dimlist)
+}
+
+chop_dims_outer <- function(obj, .dims) {
+  # is_missing <- vapply(.dims, rlang::is_missing, FUN.VALUE = logical(1))
+  n <- length(.dims)
+  nlens <- lengths(.dims)
+  out_size <- Reduce(`*`, nlens, right = TRUE, accumulate = 1L)
+
+  curr_dim <- n
+  obj_slice <- NULL
+  objs <- out <- vector("list", out_size[[1L]])
+  objs[[1L]] <- out[[1L]] <- obj
+  n_obj <- 1L
+  slice_expr <- expr(.slice)
+  dim_args <- vec_rep(list(rlang::missing_arg()), n)
+  while (curr_dim > 0) {
+    .slices <- .dims[[curr_dim]]
+
+    i_seq <- seq_len(nlens[curr_dim])
+    nn <- length(i_seq)
+    n_out <- out_size[curr_dim]
+    out_seq <- seq_len(n_out)
+
+    if (!is_missing(.slices)) {
+      dim_args[[curr_dim]] <- slice_expr
+      e <- inject(expr(obj_slice[!!!dim_args, drop = FALSE]))
+      # out <- vector("list", out_size[curr_dim])
+      for (j in seq_len(n_obj)) {
+        obj_slice <- .subset2(objs, j)
+        shift <- (j - 1L) * nn
+        for (i in i_seq) {
+          .slice <- .subset2(.slices, i)
+          out[[shift + i]] <- eval(e)
+        }
+      }
+      dim_args[[curr_dim]] <- missing_arg()
+    }
+
+    n_obj <- n_out
+    curr_dim <- curr_dim - 1L
+    objs[out_seq] <- out[out_seq]
+  }
+  out
+}
 
 vec_chop_assays <- function(.data, .indices) {
   map2(
@@ -173,7 +226,7 @@ plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
     type <- paste0(type, "col")
   }
   class(out) <- "plyxp_groups"
-  attr(out, "type") <- type
+  # attr(out, "type") <- type
   if (type == "") {
     return(NULL)
   }
@@ -184,7 +237,7 @@ get_group_indices <- function(
     .groups,
     .details,
     type = c("assays", "rowData", "colData")) {
-  if (is.null(attr(.groups, "type"))) {
+  if (is.null(.groups)) {
     return(NULL)
   }
   type <- match.arg(type, c("assays", "rowData", "colData"))
@@ -200,7 +253,7 @@ get_group_indices <- function(
       )
       attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
       attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
-      attr(out, "type") <- attr(.groups, "type")
+      # attr(out, "type") <- attr(.groups, "type")
       out
     },
     rowData = .groups$row_groups$.indices,
@@ -208,24 +261,26 @@ get_group_indices <- function(
   )
 }
 
-group_type <- function(obj) {
-  result <- attr(obj, "type")
-  if (is.null(result)) {
-    return("none")
-  }
-  result
-}
+# group_type <- function(obj) {
+#   result <- attr(obj, "type")
+#   if (is.null(result)) {
+#     return("none")
+#   }
+#   result
+# }
 
-`group_type<-` <- function(obj, value) {
-  value <- match.arg(value, choices = c("rowcol", "row", "col"))
-  attr(obj, "type") <- value
-  obj
-}
+# `group_type<-` <- function(obj, value) {
+#   value <- match.arg(value, choices = c("rowcol", "row", "col"))
+#   attr(obj, "type") <- value
+#   obj
+# }
 
 group_details <- function(obj) {
-  group_data <- metadata(obj)[["group_data"]]
-  group_data$row_groups <- group_data$row_groups %||% tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
-  group_data$col_groups <- group_data$col_groups %||% tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
+  group_data <- group_data_se_impl(obj)
+  group_data$row_groups <- group_data$row_groups %||%
+    tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
+  group_data$col_groups <- group_data$col_groups %||%
+    tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
   # out <- list(
   #   row_groups = row_groups,
   #   col_groups = col_groups
