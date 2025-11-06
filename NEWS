@@ -1,3 +1,7 @@
+## plyxp 1.4.0
+
+* Biocondcutor 3.22 release
+
 ## plyxp 1.3.11
 
 * `summarize.PlySummarizedExperiment` now allows no assay context arguments.
