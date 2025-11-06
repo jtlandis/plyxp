@@ -1,3 +1,15 @@
+## plyxp 1.5.1
+
+### Breaking Changes
+
+* location of group data is no longer stored on the metadata of the `SummarizedExperiment` but instead split between
+  the metadata of the `rowData()` and `colData()` respectively for row and column groupings. This is in preparation of
+  biocmask integration.
+
+## plyxp 1.4.0
+
+* Bioconductor 3.22 release
+
 ## plyxp 1.3.11
 
 * `summarize.PlySummarizedExperiment` now allows no assay context arguments.
