@@ -56,7 +56,8 @@ summarize.PlySummarizedExperiment <- function(.data, ...,
 summarize_se_impl <- function(.data, ...,
                               .retain = c("auto", "ungrouped", "none")) {
   .env <- caller_env()
-  .groups <- metadata(.data)[["group_data"]]
+
+  .groups <- group_data_se_impl(.data)
   .retain <- match.arg(.retain, choices = c("auto", "ungrouped", "none"))
   .retain <- switch(.retain,
     auto = !is.null(.groups),
@@ -81,6 +82,7 @@ summarize_se_impl <- function(.data, ...,
   row_names <- col_names <- NULL
   grouped_rows <- is_grouped_rows(.groups)
   grouped_cols <- is_grouped_cols(.groups)
+  is_grouped <- grouped_rows || grouped_cols
   if (grouped_rows || "rows" %in% ctxs) {
     # get all chop data, groups and evaled
     row_chops <- chops$rows
@@ -175,13 +177,6 @@ summarize_se_impl <- function(.data, ...,
     }
   }
 
-  new_metadata <- metadata(.data)
-  if (group_type(.groups) != "none") {
-    new_metadata$group_data <- plyxp_groups(
-      row_data[group_vars_$row_groups],
-      col_data[group_vars_$col_groups]
-    )
-  }
 
   if (".features" %in% names(row_data)) {
     row_names <- row_data$.features
@@ -210,7 +205,7 @@ summarize_se_impl <- function(.data, ...,
     assays = assay_data,
     rowData = row_data,
     colData = col_data,
-    metadata = new_metadata,
+    metadata = metadata(.data),
     checkDimnames = FALSE
   )
   if (!is.null(row_names)) {
@@ -218,6 +213,12 @@ summarize_se_impl <- function(.data, ...,
   }
   if (!is.null(col_names)) {
     colnames(out) <- col_names
+  }
+  if (is_grouped) {
+    group_data_se_impl(out) <- plyxp_groups(
+      row_data[group_vars_$row_groups],
+      col_data[group_vars_$col_groups]
+    )
   }
   out
 }

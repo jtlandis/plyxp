@@ -282,7 +282,7 @@ plyxp_slice_se <- function(se, i, j, .preserve = FALSE) {
         )
       }
     )
-    metadata(se)[["group_data"]] <- groups
+    group_data_se_impl(se) <- groups
   }
 
   se <- switch(type,
