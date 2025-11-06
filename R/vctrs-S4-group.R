@@ -104,7 +104,7 @@ method(
 # #' create groups
 # #' @export
 # create_groups <- function(.data, .rename = ".indices") {
-#   # browser()
+#   #
 #   # check if length > 0
 #   if (is_empty(.data)) {
 #     return(NULL)
