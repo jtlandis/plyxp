@@ -13,6 +13,7 @@
 group_data.PlySummarizedExperiment <- function(.data) {
   group_data_se_impl(se(.data))
 }
+
 group_data_se_impl <- function(.data) {
   out <- list(
     row_groups = group_data_DF_impl(rowData(.data)),
@@ -24,8 +25,8 @@ group_data_se_impl <- function(.data) {
   structure(out, class = "plyxp_groups")
 }
 
-#' when setting grouping data, if field is absent or NULL
-#' then it will have the effect of removing said group.
+# when setting grouping data, if field is absent or NULL
+# then it will have the effect of removing said group.
 `group_data_se_impl<-` <- function(.data, value) {
   row_groups <- value[["row_groups"]]
   group_data_DF_impl(rowData(.data)) <- row_groups
