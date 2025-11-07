@@ -58,11 +58,11 @@ test_that("summarize works - groups: rows,cols", {
 })
 
 test_that("summarize places assays in correct order", {
-  se_obj <- mutate(se_simple, seq = 1:20)
+  se_obj <- mutate(se_simple, seq = 1L:20L)
   rowse <- group_by(se_obj, rows(grps = 1:5)) |>
-    summarise(seq = colSums(seq))
+    summarise(seq = as.integer(colSums(seq)))
   expect_identical(unname(pull(rowse, seq)), unname(pull(se_obj, seq)))
   colse <- group_by(se_obj, cols(grps = 1:4)) |>
-    summarise(seq = rowSums(seq))
+    summarise(seq = as.integer(rowSums(seq)))
   expect_identical(unname(pull(colse, seq)), unname(pull(se_obj, seq)))
 })
