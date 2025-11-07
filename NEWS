@@ -1,3 +1,16 @@
+## plyxp 1.4.2
+
+* fixed bug when summarizing a plyxp object by the rows and not columns
+  would result in assays not being constructed in the correct order.
+
+## plyxp 1.4.1
+
+* fixed bug with recusion case of `plyxp::list_unchop(list(NULL), ptype = NULL)`
+
+## plyxp 1.4.0
+
+* Biocondcutor 3.22 release
+
 ## plyxp 1.3.11
 
 * `summarize.PlySummarizedExperiment` now allows no assay context arguments.
