@@ -32,9 +32,14 @@ method(
   list_unchop,
   list(x = S7::class_list, ptype = NULL)
 ) <- function(x, ptype, ..., indices = NULL) {
+  ptype <- vec_ptype_common_list(x, NULL)
+  # prevent recusion case
+  if (is.null(ptype)) {
+    return(NULL)
+  }
   list_unchop(
     x,
-    ptype = vec_ptype_common_list(x, NULL),
+    ptype = ptype,
     indices = indices
   )
 }
