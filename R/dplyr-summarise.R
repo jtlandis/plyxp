@@ -83,6 +83,7 @@ summarize_se_impl <- function(.data, ...,
   grouped_rows <- is_grouped_rows(.groups)
   grouped_cols <- is_grouped_cols(.groups)
   is_grouped <- grouped_rows || grouped_cols
+  .byrow <- FALSE
   if (grouped_rows || "rows" %in% ctxs) {
     # get all chop data, groups and evaled
     row_chops <- chops$rows
@@ -98,6 +99,7 @@ summarize_se_impl <- function(.data, ...,
     if (.retain && !grouped_rows) {
       row_chops_sizes <- .nrow <- nrow(.data)
     } else {
+      .byrow <- TRUE
       row_chops_sizes <- .nrow <- 1L
       if (grouped_rows) {
         .nrow <- nrow(.groups$row_groups)
@@ -136,6 +138,7 @@ summarize_se_impl <- function(.data, ...,
     if (.retain && !grouped_cols) {
       col_chops_sizes <- .ncol <- ncol(.data)
     } else {
+      .byrow <- FALSE
       col_chops_sizes <- .ncol <- 1L
       if (grouped_cols) {
         .ncol <- nrow(.groups$col_groups)
@@ -198,7 +201,8 @@ summarize_se_impl <- function(.data, ...,
     map(
       matrix,
       nrow = .nrow,
-      ncol = .ncol
+      ncol = .ncol,
+      byrow = .byrow
     )
 
   out <- SummarizedExperiment(
@@ -227,7 +231,6 @@ summarize_se_impl <- function(.data, ...,
 #' @rdname summarize
 #' @export
 summarise.PlySummarizedExperiment <- summarize.PlySummarizedExperiment
-
 
 
 assert_chops_size <- function(chops, size = 1L) {
