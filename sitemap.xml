@@ -13,8 +13,10 @@
 <url><loc>https://jtlandis.github.io/plyxp/reference/filter.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/group_by.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/group_data.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/group_split.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/group_vars.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/index.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/list_unchop.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/mutate.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/new_plyxp.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/plyxp-context.html</loc></url>
@@ -25,10 +27,15 @@
 <url><loc>https://jtlandis.github.io/plyxp/reference/reexports.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/se_simple.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/select.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/slice.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/summarize.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_chop.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_recycle.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_rep.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs_slice.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/vec_group_id.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/vec_ptype2.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/vec_ptype_common.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vectors.html</loc></url>
 </urlset>
 

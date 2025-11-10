@@ -1,0 +1,206 @@
+# `plyxp`
+
+`plyxp` provides efficient abstractions to *SummarizedExperiment* such
+that using common dplyr functions feels as natural to operating on a
+*data.frame* or *tibble*. `plyxp` makes use of a concise grammar for
+exploring and manipulating annotated matrix data in the form of the
+*SummarizedExperiment*, scaling from simple to complex operations
+spanning one or more tables of data. We also aim for optimized
+implementations in `plyxp` to power some functionality within the
+`tidySummarizedExperiment` package, which also offers a dplyr-like
+interface to *SummarizedExperiment*. These two packages can easily be
+used in parallel, by casting objects with the `new_plyxp` constructor to
+enable `plyxp`-driven functionality.
+
+`plyxp` uses
+[data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html)
+from the `rlang` package in order to connect dplyr functions to
+*SummarizedExperiment* slots in a manner that aims to be intuitive and
+avoiding ambiguity in outcomes.
+
+***Note:*** This package is still under active development. Feel free to
+reach out to the package developers, see *Feedback* section below.
+
+## installing `plyxp`
+
+``` r
+
+# plyxp is available on BiocManager version 3.20
+BiocManager::install("plyxp")
+```
+
+# data masking `SummarizedExperiment`
+
+  
+The `SummarizedExperiment` object contains three main
+components/“contexts” that we mask, the
+[`assays()`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html),
+[`rowData()`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)[^1]
+and
+[`colData()`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html).
+
+![Simplified view of data masking structure. Figure made with
+Biorender](reference/figures/Overview-bindings.png)
+
+Simplified view of data masking structure. Figure made with
+[Biorender](https://biorender.com)
+
+  
+`plyxp` provides variables as-is to data **within their current
+contexts** enabling you to call S4 methods on S4 objects with `dplyr`
+verbs. If you require access to variables *outside the context*, you may
+use pronouns made available through `plyxp` to specify where to find
+those variables.
+
+![Simplified view of reshaping pronouns. Arrows indicates to where the
+pronoun provides access. For each pronoun listed, there is an \_asis
+variant that returns underlying data without reshaping it to fit the
+context. Figure made with
+Biorender](reference/figures/Overview-pronouns.png)
+
+Simplified view of reshaping pronouns. Arrows indicates to where the
+pronoun provides access. For each pronoun listed, there is an `_asis`
+variant that returns underlying data without reshaping it to fit the
+context. Figure made with [Biorender](https://biorender.com)
+
+  
+
+The `.assays`, `.rows` and `.cols` pronouns outputs depends on the
+evaluating context. Users should expect that the underlying data
+returned from `.rows` or `.cols` pronouns in the ***assays context*** is
+a vector, replicated to match size of the assay context.  
+Alternatively, using a pronoun in either the
+[`rows()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+or
+[`cols()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+contexts will likely return a list equal in length to either
+`nrows(rowData())` or `nrows(colData())` respectively.
+
+# Feedback
+
+We would love to hear your feedback. Please post to [Bioconductor
+support site](https://support.bioconductor.org) or the
+`#tidiness_in_bioc` Slack channel on community-bioc for software usage
+help, or post an [Issue on
+GitHub](https://github.com/jtlandis/plyxp/issues), for software
+development questions.
+
+# Funding
+
+`plyxp` was supported by a EOSS cycle 6 grant from The Wellcome Trust.
+
+[^1]: At this moment `rowRanges()` is not supported in `plyxp` but may
+    become its own pronoun in the future.
+
+# Package index
+
+## All functions
+
+- [`se()`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `se<-`() ``](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`assays(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `assays<-`( ``*`<PlySummarizedExperiment>`*`,`*`<list>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `assays<-`( ``*`<PlySummarizedExperiment>`*`,`*`<SimpleList>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`assay(`*`<PlySummarizedExperiment>`*`,`*`<missing>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`assay(`*`<PlySummarizedExperiment>`*`,`*`<numeric>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`assay(`*`<PlySummarizedExperiment>`*`,`*`<character>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `assay<-`( ``*`<PlySummarizedExperiment>`*`,`*`<missing>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `assay<-`( ``*`<PlySummarizedExperiment>`*`,`*`<numeric>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `assay<-`( ``*`<PlySummarizedExperiment>`*`,`*`<character>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`rowData(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `rowData<-`( ``*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`colData(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `colData<-`( ``*`<PlySummarizedExperiment>`*`,`*`<DataFrame>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `colData<-`( ``*`<PlySummarizedExperiment>`*`,`*`<NULL>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`metadata(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `metadata<-`( ``*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`rownames(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`colnames(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`nrow(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`ncol(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`dimnames(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `dimnames<-`( ``*`<PlySummarizedExperiment>`*`,`*`<list>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`` `dimnames<-`( ``*`<PlySummarizedExperiment>`*`,`*`<NULL>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  : PlySummarizedExperiment Methods
+- [`arrange(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/arrange.md)
+  : arrange rows or columns of PlySummarizedExperiment
+- [`as.data.frame(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/as.data.frame.md)
+  : create data.frame
+- [`.assays`](https://jtlandis.github.io/plyxp/reference/dot-pronouns.md)
+  [`.assays_asis`](https://jtlandis.github.io/plyxp/reference/dot-pronouns.md)
+  [`.rows`](https://jtlandis.github.io/plyxp/reference/dot-pronouns.md)
+  [`.rows_asis`](https://jtlandis.github.io/plyxp/reference/dot-pronouns.md)
+  [`.cols`](https://jtlandis.github.io/plyxp/reference/dot-pronouns.md)
+  [`.cols_asis`](https://jtlandis.github.io/plyxp/reference/dot-pronouns.md)
+  : contextual plyxp pronouns
+- [`filter(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/filter.md)
+  : filter PlySummarizedExperiment
+- [`group_by(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/group_by.md)
+  [`ungroup(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/group_by.md)
+  : apply groups to PlySummarizedExperiment
+- [`group_data(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/group_data.md)
+  : get grouping data
+- [`group_split(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/group_split.md)
+  : Split a PlySummarizedExperiment based on groups
+- [`group_vars(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/group_vars.md)
+  : get PlySummarizedExperiment grouping Variables
+- [`list_unchop()`](https://jtlandis.github.io/plyxp/reference/list_unchop.md)
+  : unchop a list of objects
+- [`mutate(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/mutate.md)
+  : Mutate a PlySummarizedExperiment object
+- [`new_plyxp()`](https://jtlandis.github.io/plyxp/reference/new_plyxp.md)
+  [`PlySummarizedExperiment()`](https://jtlandis.github.io/plyxp/reference/new_plyxp.md)
+  : SummarizedExperiment Shell Object
+- [`cols()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+  [`rows()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+  [`col_ctx()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+  [`row_ctx()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+  [`assay_ctx()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+  : plyxp contexts
+- [`vec_phantom()`](https://jtlandis.github.io/plyxp/reference/plyxp-printing.md)
+  [`plyxp_pillar_format()`](https://jtlandis.github.io/plyxp/reference/plyxp-printing.md)
+  [`show_tidy()`](https://jtlandis.github.io/plyxp/reference/plyxp-printing.md)
+  [`use_show_tidy()`](https://jtlandis.github.io/plyxp/reference/plyxp-printing.md)
+  [`use_show_default()`](https://jtlandis.github.io/plyxp/reference/plyxp-printing.md)
+  : Printing within tibble with S4 objects
+- [`plyxp()`](https://jtlandis.github.io/plyxp/reference/plyxp.md)
+  [`plyxp_on()`](https://jtlandis.github.io/plyxp/reference/plyxp.md) :
+  Modify SummarizedExperiment Object
+- [`pull(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/pull.md)
+  : extract data from object
+- [`se_simple`](https://jtlandis.github.io/plyxp/reference/se_simple.md)
+  : Plyxp Simple Example Summarized Experiment
+- [`select(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/select.md)
+  : select assays, rowData, and colData names
+- [`slice(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice.md)
+  : Slice a PlySummarizedExperiment
+- [`summarize(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/summarize.md)
+  [`summarise(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/summarize.md)
+  : Summarize PlySummarizedExperiment
+- [`vec_chop()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_chop.md)
+  : chop a vector
+- [`vec_recycle()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_recycle.md)
+  : Recycle a vector
+- [`vec_rep()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_rep.md)
+  [`vec_rep_each()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_rep.md)
+  : replicate a vector
+- [`vec_slice()`](https://jtlandis.github.io/plyxp/reference/vctrs_slice.md)
+  : Get observations of a vector
+- [`vec_group_id()`](https://jtlandis.github.io/plyxp/reference/vec_group_id.md)
+  [`vec_group_loc()`](https://jtlandis.github.io/plyxp/reference/vec_group_id.md)
+  : Create Group Indices
+- [`vec_ptype2()`](https://jtlandis.github.io/plyxp/reference/vec_ptype2.md)
+  : Create a common prototype of two vectors
+- [`vec_ptype_common()`](https://jtlandis.github.io/plyxp/reference/vec_ptype_common.md)
+  : find the common ptype
+- [`class_vctrs`](https://jtlandis.github.io/plyxp/reference/vectors.md)
+  [`class_s4_vctrs`](https://jtlandis.github.io/plyxp/reference/vectors.md)
+  [`class_DF`](https://jtlandis.github.io/plyxp/reference/vectors.md) :
+  S7 classes for vctrs and S4 Vectors
+
+# Articles
+
+### All vignettes
+
+- [plyxp Usage
+  Guide](https://jtlandis.github.io/plyxp/articles/plyxp.md):
