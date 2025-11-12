@@ -16,7 +16,7 @@ class_vctrs <- S7::new_union(
   S7::class_atomic, S7::class_list,
   S7::class_data.frame, S7::class_factor,
   S7::class_Date, S7::class_POSIXct,
-  S7::new_class("vctrs_vctr")
+  S7::new_S3_class("vctrs_vctr")
 )
 
 #' @rdname vectors
