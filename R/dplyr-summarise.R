@@ -91,7 +91,7 @@ summarize_se_impl <- function(.data, ...,
       row_group_vars <- group_vars_$row_groups
       row_group_vars <- row_group_vars[!row_group_vars %in% names(row_chops)]
       row_chops <- c(
-        .groups$row_groups[row_group_vars],
+        as.list(.groups$row_groups[row_group_vars]),
         row_chops
       )
     }
@@ -130,7 +130,7 @@ summarize_se_impl <- function(.data, ...,
       col_group_vars <- group_vars_$col_groups
       col_group_vars <- col_group_vars[!col_group_vars %in% names(col_chops)]
       col_chops <- c(
-        .groups$col_groups[col_group_vars],
+        as.list(.groups$col_groups[col_group_vars]),
         col_chops
       )
     }
