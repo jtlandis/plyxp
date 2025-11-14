@@ -486,22 +486,14 @@ plyxp_assay <- R6::R6Class(
           expr(list(!!name))
         })
       } else {
-        type <- attr(.indices, "type")
-        private$.ngroups <- nrow(.indices)
-        fun <- switch(type,
-          rowcol = function(name) {
-            name <- enexpr(name)
-            expr(vec_chop_assays(!!name, .indices))
-          },
-          row = function(name) {
-            name <- enexpr(name)
-            expr(vec_chop_assays_row(!!name, .indices))
-          },
-          col = function(name) {
-            name <- enexpr(name)
-            expr(vec_chop_assays_col(!!name, .indices))
-          }
-        )
+        # .indices would have been created by get_group_indices()
+        #
+        # type <- attr(.indices, "type")
+        private$.ngroups <- length(.indices)
+        fun <- function(name) {
+          name <- enexpr(name)
+          expr(chop_assays_outer(!!name, .indices))
+        }
         return(fun)
       }
     },
