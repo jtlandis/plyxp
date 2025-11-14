@@ -43,6 +43,4 @@ group_by(se_simple, rows(direction), cols(condition)) |> group_data()
 #> 
 #> attr(,"class")
 #> [1] "plyxp_groups"
-#> attr(,"type")
-#> [1] "rowcol"
 ```

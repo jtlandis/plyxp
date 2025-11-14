@@ -665,7 +665,7 @@ devtools::session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2025-11-10
+    ##  date     2025-11-14
     ##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.7.32 @ /usr/local/bin/quarto
     ## 
@@ -681,7 +681,7 @@ devtools::session_info()
     ##  DelayedArray           0.36.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
     ##  desc                   1.4.3   2023-12-10 [2] RSPM (R 4.5.0)
     ##  devtools               2.4.6   2025-10-03 [2] RSPM (R 4.5.0)
-    ##  digest                 0.6.37  2024-08-19 [2] RSPM (R 4.5.0)
+    ##  digest                 0.6.38  2025-11-12 [2] RSPM (R 4.5.0)
     ##  dplyr                * 1.1.4   2023-11-17 [1] RSPM (R 4.5.0)
     ##  ellipsis               0.3.2   2021-04-29 [2] RSPM (R 4.5.0)
     ##  evaluate               1.0.5   2025-08-27 [2] RSPM (R 4.5.0)
@@ -708,7 +708,7 @@ devtools::session_info()
     ##  pkgconfig              2.0.3   2019-09-22 [2] RSPM (R 4.5.0)
     ##  pkgdown                2.2.0   2025-11-06 [2] RSPM (R 4.5.0)
     ##  pkgload                1.4.1   2025-09-23 [2] RSPM (R 4.5.0)
-    ##  plyxp                * 1.5.0   2025-11-10 [1] Bioconductor
+    ##  plyxp                * 1.5.4   2025-11-14 [1] Bioconductor
     ##  purrr                  1.2.0   2025-11-04 [2] RSPM (R 4.5.0)
     ##  R6                     2.6.1   2025-02-15 [2] RSPM (R 4.5.0)
     ##  ragg                   1.5.0   2025-09-02 [2] RSPM (R 4.5.0)

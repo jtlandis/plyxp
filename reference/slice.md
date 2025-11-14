@@ -53,8 +53,6 @@ group_data(gse)
 #> 
 #> attr(,"class")
 #> [1] "plyxp_groups"
-#> attr(,"type")
-#> [1] "rowcol"
 group_data(sgse)
 #> Error: object 'sgse' not found
 sgse2 <- slice(gse, rows(which(direction == "-")), .preserve = TRUE)
