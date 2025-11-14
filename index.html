@@ -58,8 +58,10 @@
 <a class="anchor" aria-label="anchor" href="#installing-plyxp"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># plyxp is available on BiocManager version 3.20</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"plyxp"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># plyxp is available on BiocManager version 3.22</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"plyxp"</span><span class="op">)</span></span>
+<span><span class="co"># To use the latest updated version please use the github</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jtlandis/plyxp"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level1">
@@ -90,6 +92,14 @@ Alternatively, using a pronoun in either the <code><a href="reference/plyxp-cont
 <h1 id="funding">Funding<a class="anchor" aria-label="anchor" href="#funding"></a>
 </h1>
 <p><code>plyxp</code> was supported by a EOSS cycle 6 grant from The Wellcome Trust.</p>
+</div>
+<div class="section level1">
+<h1 id="note-to-users">Note to Users<a class="anchor" aria-label="anchor" href="#note-to-users"></a>
+</h1>
+<p><code>plyxp</code> is still under active development. We have recently discovered an error in <code>group_by(xp, rows(foo)) |&gt; summarize(some_assay = &lt;expr&gt;)</code> operations in which the resulting assay matrix was being collected incorrectly. This has been fixed with <a href="https://github.com/jtlandis/plyxp/commit/ee3f3945761b62232df6f4c42d617fef614370f2" class="external-link">this commit</a> and has been pushed to <code>plyxp 1.4.3</code> on Bioconductor version 3.22. With this being said, we cannot update older version of plyxp on Bioconductor 3.21 and 3.20 - however we have cherry-picked this commit into the github branch images.</p>
+<p>Thus if you wish to use <code>plyxp</code> from Bioconductor 3.21 or 3.20, please install from github to ensure you have the latest fixes.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jtlandis/plyxp@RELEASE_3_21"</span><span class="op">)</span></span></code></pre></div>
 </div>
 
 

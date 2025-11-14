@@ -25,8 +25,10 @@ reach out to the package developers, see *Feedback* section below.
 
 ``` r
 
-# plyxp is available on BiocManager version 3.20
+# plyxp is available on BiocManager version 3.22
 BiocManager::install("plyxp")
+# To use the latest updated version please use the github
+remotes::install_github("jtlandis/plyxp")
 ```
 
 # data masking `SummarizedExperiment`
@@ -88,6 +90,26 @@ development questions.
 # Funding
 
 `plyxp` was supported by a EOSS cycle 6 grant from The Wellcome Trust.
+
+# Note to Users
+
+`plyxp` is still under active development. We have recently discovered
+an error in `group_by(xp, rows(foo)) |> summarize(some_assay = <expr>)`
+operations in which the resulting assay matrix was being collected
+incorrectly. This has been fixed with [this
+commit](https://github.com/jtlandis/plyxp/commit/ee3f3945761b62232df6f4c42d617fef614370f2)
+and has been pushed to `plyxp 1.4.3` on Bioconductor version 3.22. With
+this being said, we cannot update older version of plyxp on Bioconductor
+3.21 and 3.20 - however we have cherry-picked this commit into the
+github branch images.
+
+Thus if you wish to use `plyxp` from Bioconductor 3.21 or 3.20, please
+install from github to ensure you have the latest fixes.
+
+``` r
+
+remotes::install_github("jtlandis/plyxp@RELEASE_3_21")
+```
 
 [^1]: At this moment `rowRanges()` is not supported in `plyxp` but may
     become its own pronoun in the future.
