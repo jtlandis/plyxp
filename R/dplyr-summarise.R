@@ -107,7 +107,7 @@ summarize_se_impl <- function(.data, ...,
         row_chops[group_vars_$row_groups] <- map(
           row_chops[group_vars_$row_groups],
           function(group_vec) {
-            map(group_vec, .subset, 1L)
+            map(group_vec, vec_slice, 1L)
           }
         )
       }
@@ -146,7 +146,7 @@ summarize_se_impl <- function(.data, ...,
         col_chops[group_vars_$col_groups] <- map(
           col_chops[group_vars_$col_groups],
           function(group_vec) {
-            map(group_vec, .subset, 1L)
+            map(group_vec, vec_slice, 1L)
           }
         )
       }
