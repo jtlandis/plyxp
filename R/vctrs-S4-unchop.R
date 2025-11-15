@@ -101,7 +101,11 @@ method(
     NULL
   )
 ) <- function(x, y, ...) {
-  x[0]
+  if (methods::is(x, "Vector")) {
+    x[0]
+  } else {
+    vctrs::vec_ptype(x)
+  }
 }
 
 method(
@@ -111,7 +115,11 @@ method(
     S7::class_any
   )
 ) <- function(x, y, ...) {
-  y[0]
+  if (methods::is(y, "Vector")) {
+    y[0]
+  } else {
+    vctrs::vec_ptype(y)
+  }
 }
 
 
@@ -157,8 +165,8 @@ vec_ptype_common <- function(..., .ptype = NULL) {
 vec_ptype_common_list <- function(dots, .ptype) {
   dots <- lapply(dots, vec_slice, 0L)
   ptype <- base::Reduce(vec_ptype2, x = dots, init = .ptype)
-  if (vctrs::is_partial(ptype)) {
-    ptype <- vctrs::vec_ptype_finalise(ptype)
-  }
+  # if (vctrs::is_partial(ptype)) {
+  #   ptype <- vctrs::vec_ptype_finalise(ptype)
+  # }
   ptype
 }
