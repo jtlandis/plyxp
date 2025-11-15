@@ -234,9 +234,10 @@ plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
 }
 
 get_group_indices <- function(
-    .groups,
-    .details,
-    type = c("assays", "rowData", "colData")) {
+  .groups,
+  .details,
+  type = c("assays", "rowData", "colData")
+) {
   if (is.null(.groups)) {
     return(NULL)
   }
@@ -256,8 +257,20 @@ get_group_indices <- function(
       # attr(out, "type") <- attr(.groups, "type")
       out
     },
-    rowData = .groups$row_groups$.indices,
-    colData = .groups$col_groups$.indices
+    rowData = {
+      if (isFALSE(attr(.groups, "grouped_rows"))) {
+        NULL
+      } else {
+        .groups$row_groups$.indices
+      }
+    },
+    colData = {
+      if (isFALSE(attr(.groups, "grouped_cols"))) {
+        NULL
+      } else {
+        .groups$col_groups$.indices
+      }
+    }
   )
 }
 
@@ -277,10 +290,17 @@ get_group_indices <- function(
 
 group_details <- function(obj) {
   group_data <- group_data_se_impl(obj)
-  group_data$row_groups <- group_data$row_groups %||%
-    tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
-  group_data$col_groups <- group_data$col_groups %||%
-    tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
+  if (is.null(group_data$row_groups)) {
+    group_data$row_groups <- tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
+    attr(group_data, "grouped_rows") <- FALSE
+  }
+
+  if (is.null(group_data$col_groups)) {
+    group_data$col_groups <- tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
+
+    attr(group_data, "grouped_cols") <- FALSE
+  }
+
   # out <- list(
   #   row_groups = row_groups,
   #   col_groups = col_groups
