@@ -115,7 +115,6 @@ method(
 }
 
 
-
 attempt_ptype2 <- function(x, y) {
   out <- c(x, y)
   out[0]
@@ -157,5 +156,9 @@ vec_ptype_common <- function(..., .ptype = NULL) {
 
 vec_ptype_common_list <- function(dots, .ptype) {
   dots <- lapply(dots, vec_slice, 0L)
-  base::Reduce(vec_ptype2, x = dots, init = .ptype)
+  ptype <- base::Reduce(vec_ptype2, x = dots, init = .ptype)
+  if (vctrs::is_partial(ptype)) {
+    ptype <- vctrs::vec_ptype_finalise(ptype)
+  }
+  ptype
 }
