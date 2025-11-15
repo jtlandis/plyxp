@@ -1,3 +1,7 @@
+## plyxp 1.5.5
+
+* `plyxp::vec_ptype_common` should now be aware of the vctrs_partial class.
+
 ## plyxp 1.5.1
 
 ### Breaking Changes
