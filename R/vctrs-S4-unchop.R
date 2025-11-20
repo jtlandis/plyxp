@@ -168,5 +168,5 @@ vec_ptype_common_list <- function(dots, .ptype) {
   # if (vctrs::is_partial(ptype)) {
   #   ptype <- vctrs::vec_ptype_finalise(ptype)
   # }
-  ptype
+  vctrs::vec_ptype_finalise(ptype)
 }
