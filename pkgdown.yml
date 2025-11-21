@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   plyxp: plyxp.html
-last_built: 2025-11-15T05:17Z
+last_built: 2025-11-21T06:33Z
 urls:
   reference: https://jtlandis.github.io/plyxp/reference
   article: https://jtlandis.github.io/plyxp/articles

@@ -665,7 +665,7 @@ devtools::session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2025-11-15
+    ##  date     2025-11-21
     ##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.7.32 @ /usr/local/bin/quarto
     ## 
@@ -681,7 +681,7 @@ devtools::session_info()
     ##  DelayedArray           0.36.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
     ##  desc                   1.4.3   2023-12-10 [2] RSPM (R 4.5.0)
     ##  devtools               2.4.6   2025-10-03 [2] RSPM (R 4.5.0)
-    ##  digest                 0.6.38  2025-11-12 [2] RSPM (R 4.5.0)
+    ##  digest                 0.6.39  2025-11-19 [2] RSPM (R 4.5.0)
     ##  dplyr                * 1.1.4   2023-11-17 [1] RSPM (R 4.5.0)
     ##  ellipsis               0.3.2   2021-04-29 [2] RSPM (R 4.5.0)
     ##  evaluate               1.0.5   2025-08-27 [2] RSPM (R 4.5.0)
@@ -708,7 +708,7 @@ devtools::session_info()
     ##  pkgconfig              2.0.3   2019-09-22 [2] RSPM (R 4.5.0)
     ##  pkgdown                2.2.0   2025-11-06 [2] RSPM (R 4.5.0)
     ##  pkgload                1.4.1   2025-09-23 [2] RSPM (R 4.5.0)
-    ##  plyxp                * 1.5.5   2025-11-15 [1] Bioconductor
+    ##  plyxp                * 1.5.6   2025-11-21 [1] Bioconductor
     ##  purrr                  1.2.0   2025-11-04 [2] RSPM (R 4.5.0)
     ##  R6                     2.6.1   2025-02-15 [2] RSPM (R 4.5.0)
     ##  ragg                   1.5.0   2025-09-02 [2] RSPM (R 4.5.0)
@@ -717,11 +717,11 @@ devtools::session_info()
     ##  rmarkdown              2.30    2025-09-28 [2] RSPM (R 4.5.0)
     ##  S4Arrays               1.10.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
     ##  S4Vectors            * 0.48.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
-    ##  S7                     0.2.0   2024-11-07 [1] RSPM (R 4.5.0)
+    ##  S7                     0.2.1   2025-11-14 [1] RSPM (R 4.5.0)
     ##  sass                   0.4.10  2025-04-11 [2] RSPM (R 4.5.0)
     ##  Seqinfo              * 1.0.0   2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
     ##  sessioninfo            1.2.3   2025-02-05 [2] RSPM (R 4.5.0)
-    ##  SparseArray            1.10.1  2025-10-31 [1] Bioconductor 3.22 (R 4.5.2)
+    ##  SparseArray            1.10.2  2025-11-17 [1] Bioconductor 3.22 (R 4.5.2)
     ##  SummarizedExperiment * 1.40.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
     ##  systemfonts            1.3.1   2025-10-01 [2] RSPM (R 4.5.0)
     ##  textshaping            1.0.4   2025-10-10 [2] RSPM (R 4.5.0)
