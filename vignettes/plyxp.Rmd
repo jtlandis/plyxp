@@ -141,12 +141,12 @@ result, which may involve a trade-off between efficiency and verbosity.
 
 ### A Note on `tidySummarizedExperiment`
 
+Some of the optimized routines in `plyxp` for operating on objects are called
+by some of the functions implemented in *tidySummarizedExperiment*.
 `plyxp` and `tidySummarizedExperiment` both provide *dplyr*-style interfaces to
 *SummarizedExperiment* objects, and can easily be loaded and used in the same R
 session without the functions conflicting. By casting objects with the
-`new_plyxp` constructor, users can enable the `plyxp`-driven functionality. We
-plan to also use `plyxp` functions in some cases to speed up or improve
-efficiency of functions implemented in *tidySummarizedExperiment*.
+`new_plyxp` constructor, users can enable the `plyxp`-driven functionality. 
 
 # `plyxp` grammar
 
