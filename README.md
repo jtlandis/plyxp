@@ -1,4 +1,4 @@
-# `plyxp`
+# `plyxp` <a href="https://jtlandis.github.io/plyxp"><img src="man/figures/plyxp_hexsticker2.png" align="right" height="200" alt="plyxp website" style="float:right; height:200px;" /></a>
 
 `plyxp` provides efficient abstractions to *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
