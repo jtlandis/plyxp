@@ -6,7 +6,7 @@ that using common dplyr functions feels as natural to operating on a
 `plyxp` makes use of a concise grammar for exploring and manipulating annotated
 matrix data in the form of the *SummarizedExperiment*, scaling from simple to
 complex operations spanning one or more tables of data.
-We also aim for optimized implementations in `plyxp` to power some functionality
+Some of the optimized implementations in `plyxp` power functionality
 within the `tidySummarizedExperiment` package, which also offers a dplyr-like
 interface to *SummarizedExperiment*. These two packages can easily be used in
 parallel, by casting objects with the `new_plyxp` constructor to enable
