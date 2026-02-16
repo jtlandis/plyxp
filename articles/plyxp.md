@@ -665,7 +665,7 @@ devtools::session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2026-02-15
+    ##  date     2026-02-16
     ##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.7.32 @ /usr/local/bin/quarto
     ## 
@@ -709,7 +709,7 @@ devtools::session_info()
     ##  pkgconfig              2.0.3   2019-09-22 [2] RSPM (R 4.5.0)
     ##  pkgdown                2.2.0   2025-11-06 [2] RSPM (R 4.5.0)
     ##  pkgload                1.5.0   2026-02-03 [2] RSPM (R 4.5.0)
-    ##  plyxp                * 1.5.6   2026-02-15 [1] Bioconductor
+    ##  plyxp                * 1.5.6   2026-02-16 [1] Bioconductor
     ##  purrr                  1.2.1   2026-01-09 [2] RSPM (R 4.5.0)
     ##  R6                     2.6.1   2025-02-15 [2] RSPM (R 4.5.0)
     ##  ragg                   1.5.0   2025-09-02 [2] RSPM (R 4.5.0)
