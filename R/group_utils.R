@@ -14,6 +14,8 @@ expand_groups2 <- function(.rows, .cols) {
   out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
   attr(out, "row.names") <- c(NA_integer_, -n)
   class(out) <- c("tbl_df", "tbl", "data.frame")
+  attr(out, "plyxp:::unique_row_ind") <- seq_len(.nrow)
+  attr(out, "plyxp:::unique_col_ind") <- ((seq_len(.ncol) - 1L) * .nrow) + 1L
 
   # due to this ordering here, I had introduced an unexpected
   # column-wise ordering of assays. I have changed it and commented
@@ -113,10 +115,26 @@ group_vars_se_impl <- function(x) {
   )
 }
 
+
 into_dimlist <- function(assay_ind) {
+  # we should always trust the groups sent to us,
+  # using unique may change the expected number of
+  # groups when constructing the object
+  row_chops <- attr(assay_ind, "plyxp:::row_chop_ind")
+  row_chops <- if (is.null(row_chops)) {
+    rlang::missing_arg()
+  } else {
+    vctrs::vec_slice(row_chops, attr(assay_ind, "plyxp:::unique_row_ind"))
+  }
+  col_chops <- attr(assay_ind, "plyxp:::col_chop_ind")
+  col_chops <- if (is.null(col_chops)) {
+    rlang::missing_arg()
+  } else {
+    vctrs::vec_slice(col_chops, attr(assay_ind, "plyxp:::unique_col_ind"))
+  }
   list(
-    unique(attr(assay_ind, "plyxp:::row_chop_ind")) %||% rlang::missing_arg(),
-    unique(attr(assay_ind, "plyxp:::col_chop_ind")) %||% rlang::missing_arg()
+    row_chops,
+    col_chops
   )
 }
 
@@ -254,6 +272,8 @@ get_group_indices <- function(
       )
       attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
       attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
+      attr(out, "plyxp:::unique_row_ind") <- attr(.details, "plyxp:::unique_row_ind")
+      attr(out, "plyxp:::unique_col_ind") <- attr(.details, "plyxp:::unique_col_ind")
       # attr(out, "type") <- attr(.groups, "type")
       out
     },
