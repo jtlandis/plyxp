@@ -117,24 +117,9 @@ group_vars_se_impl <- function(x) {
 
 
 into_dimlist <- function(assay_ind) {
-  # we should always trust the groups sent to us,
-  # using unique may change the expected number of
-  # groups when constructing the object
-  row_chops <- attr(assay_ind, "plyxp:::row_chop_ind")
-  row_chops <- if (is.null(row_chops)) {
-    rlang::missing_arg()
-  } else {
-    vctrs::vec_slice(row_chops, attr(assay_ind, "plyxp:::unique_row_ind"))
-  }
-  col_chops <- attr(assay_ind, "plyxp:::col_chop_ind")
-  col_chops <- if (is.null(col_chops)) {
-    rlang::missing_arg()
-  } else {
-    vctrs::vec_slice(col_chops, attr(assay_ind, "plyxp:::unique_col_ind"))
-  }
   list(
-    row_chops,
-    col_chops
+    biocmask::unreplicate(assay_ind$rows),
+    biocmask::unreplicate(assay_ind$cols)
   )
 }
 

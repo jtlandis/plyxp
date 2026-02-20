@@ -1,64 +1,65 @@
-# @seealso [plyxp::PlyxpMaskManager]
+expand_groups3 <- function(rows = NULL, cols = NULL, obj) {
+  nr <- nrow(obj)
+  nc <- ncol(obj)
+  row_ind <- rows %||% IndexGrouping(indices = list(seq_len(nr)))
+  col_ind <- cols %||% IndexGrouping(indices = list(seq_len(nc)))
+  nr_grps <- NROW(row_ind)
+  nc_grps <- NROW(col_ind)
+  row_ind <- Replicated(row_ind, nc_grps)
+  col_ind <- Replicated(col_ind, nr_grps, each = TRUE)
+  if (nr_grps > 1 && nc_grps > 1) {
+    rows <- row_ind
+    cols <- col_ind
+  } else {
+    if (!is.null(rows)) rows <- S4Vectors::I(rows)
+    if (!is.null(cols)) cols <- S4Vectors::I(cols)
+  }
+  indices <- map2(
+    as.vector(row_ind)@indices,
+    as.vector(col_ind)@indices,
+    mat_index,
+    nrows = nr
+  )
 
-#' @title New Plyxp mask
-#' @name new_plyxp_manager
-#' @description
-#' Create a plyxp for an object
-#' @param obj Dispatch Object
-#' @param ... Not used
-#' @return a plyxp_manager R6 class object
-#' @keywords internal
-#' @noRd
-#' @examples
-#'
-#' manager <- new_plyxp_manager(se_simple)
-#' manager$ctx
-#' q <- plyxp_quos(
-#'   counts_1 = counts + 1,
-#'   cols(is_drug = condition == "drug"),
-#'   .ctx_default = "assays",
-#'   .ctx_opt = c("rows", "cols")
-#' )
-#' manager$eval(q[[1]])
-#' manager$results()
-#' # evaluating second quo without switching contexts will error
-#' manager$eval(q[[2]]) |> try()
-#' manager$ctx <- "cols"
-#' manager$ctx
-#' manager$eval(q[[2]])
-#' manager$results()
-#'
-new_plyxp_manager <- function(obj, ...) {
-  UseMethod("new_plyxp_manager")
+  IndexGrouping(
+    indices = indices,
+    rows = rows,
+    cols = cols
+  )
 }
 
+
 #' @export
-new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
-  groups <- group_details(obj)
-  expanded <- expand_groups2(groups$row_groups, groups$col_groups)
+new_biocmask_manager.SummarizedExperiment <- function(obj, ...) {
+  groups <- group_data_se_impl(obj)
+  expanded <- expand_groups3(groups$row_groups, groups$col_groups)
   nr <- nrow(obj)
   nc <- ncol(obj)
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
 
-  mask_assay <- plyxp_assay$new(
-    assays(obj),
-    get_group_indices(groups, expanded, "assay"),
-    .nrow = nr,
-    .ncol = nc,
-    .env_bot = shared_ctx_env,
-    .env_top = top_env
+  mask_assay <- biocmask::new_biocmask(
+    obj@assays,
+    .indices = expanded, .top = top_env, .bot = bot_assay_env,
+    .nrow = nr, .ncol = .nc
   )
-  mask_rows <- plyxp_mask$new(
-    prepend_rownames(rowData(obj), column = ".features"),
-    get_group_indices(groups, expanded, "rowData"),
-    .env_bot = shared_ctx_env,
-    .env_top = top_env
+  row_data <- if (methods::is(obj, "RangedSummarizedExperiment") &&
+    require("plyranges")) {
+    .gr <- SummarizedExperiment::rowRanges(obj)
+    mcols(.gr) <- prepend_rownames(mcols(.gr), ".features")
+    .gr
+  } else {
+    prepend_rownames(rowData(obj), ".features")
+  }
+  mask_rows <- biocmask::new_biocmask(
+    row_data,
+    .indices = expanded$cols, .top = top_env,
+    .bot = biocmask::new_bioc_bot_env(context = "rows", parent = top_env)
   )
-  mask_cols <- plyxp_mask$new(
-    prepend_rownames(colData(obj), column = ".samples"),
-    get_group_indices(groups, expanded, "colData"),
-    .env_bot = shared_ctx_env,
-    .env_top = top_env
+
+  mask_cols <- biocmask::new_biocmask(
+    prepend_rownames(colData(obj), ".samples"),
+    .indices = expanded$cols, .top = top_env,
+    .bot = biocmask::new_bioc_bot_env(context = "cols", parent = top_env)
   )
 
   extended_environments <- connect_masks(

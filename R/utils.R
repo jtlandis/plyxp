@@ -1,4 +1,3 @@
-
 as_vec <- function(x) {
   x <- as.vector(x)
   # unintuitively, a matrix of lists does NOT
