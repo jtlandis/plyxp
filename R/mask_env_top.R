@@ -42,9 +42,10 @@ top_env <- new_environment(
   data = list(
     abort = rlang::abort,
     vec_chop = vec_chop,
-    vec_chop_assays = vec_chop_assays,
-    vec_chop_assays_row = vec_chop_assays_row,
-    vec_chop_assays_col = vec_chop_assays_col,
+    chop_assays_outer = chop_assays_outer,
+    # vec_chop_assays = vec_chop_assays,
+    # vec_chop_assays_row = vec_chop_assays_row,
+    # vec_chop_assays_col = vec_chop_assays_col,
     vec_rep = vec_rep,
     vec_rep_each = vec_rep_each,
     vec_c = vec_c,

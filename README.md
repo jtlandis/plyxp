@@ -1,4 +1,4 @@
-# `plyxp`
+# `plyxp` <a href="https://jtlandis.github.io/plyxp"><img src="man/figures/plyxp_hexsticker2.png" align="right" height="200" alt="plyxp website" style="float:right; height:200px;" /></a>
 
 `plyxp` provides efficient abstractions to *SummarizedExperiment* such
 that using common dplyr functions feels as natural to operating on a
@@ -6,7 +6,7 @@ that using common dplyr functions feels as natural to operating on a
 `plyxp` makes use of a concise grammar for exploring and manipulating annotated
 matrix data in the form of the *SummarizedExperiment*, scaling from simple to
 complex operations spanning one or more tables of data.
-We also aim for optimized implementations in `plyxp` to power some functionality
+Some of the optimized implementations in `plyxp` power functionality
 within the `tidySummarizedExperiment` package, which also offers a dplyr-like
 interface to *SummarizedExperiment*. These two packages can easily be used in
 parallel, by casting objects with the `new_plyxp` constructor to enable
@@ -24,8 +24,10 @@ out to the package developers, see *Feedback* section below.
 ## installing `plyxp`
 
 ```r
-# plyxp is available on BiocManager version 3.20
+# plyxp is available on BiocManager version 3.22
 BiocManager::install("plyxp")
+# To use the latest updated version please use the github
+remotes::install_github("jtlandis/plyxp")
 ```
 
 # data masking `SummarizedExperiment`
@@ -73,3 +75,14 @@ for software development questions.
 # Funding
 
 `plyxp` was supported by a EOSS cycle 6 grant from The Wellcome Trust.
+
+
+# Note to Users
+
+`plyxp` is still under active development. We have recently discovered an error in `group_by(xp, rows(foo)) |> summarize(some_assay = <expr>)` operations in which the resulting assay matrix was being collected incorrectly. This has been fixed with [this commit](https://github.com/jtlandis/plyxp/commit/ee3f3945761b62232df6f4c42d617fef614370f2) and has been pushed to `plyxp 1.4.3` on Bioconductor version 3.22. With this being said, we cannot update older version of plyxp on Bioconductor 3.21 and 3.20 - however we have cherry-picked this commit into the github branch images.
+
+Thus if you wish to use `plyxp` from Bioconductor 3.21 or 3.20, please install from github to ensure you have the latest fixes.
+
+```r
+remotes::install_github("jtlandis/plyxp@RELEASE_3_21")
+```

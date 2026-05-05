@@ -32,9 +32,14 @@ method(
   list_unchop,
   list(x = S7::class_list, ptype = NULL)
 ) <- function(x, ptype, ..., indices = NULL) {
+  ptype <- vec_ptype_common_list(x, NULL)
+  # prevent recusion case
+  if (is.null(ptype)) {
+    return(NULL)
+  }
   list_unchop(
     x,
-    ptype = vec_ptype_common_list(x, NULL),
+    ptype = ptype,
     indices = indices
   )
 }
@@ -96,7 +101,11 @@ method(
     NULL
   )
 ) <- function(x, y, ...) {
-  x[0]
+  if (methods::is(x, "Vector")) {
+    x[0]
+  } else {
+    vctrs::vec_ptype(x)
+  }
 }
 
 method(
@@ -106,9 +115,12 @@ method(
     S7::class_any
   )
 ) <- function(x, y, ...) {
-  y[0]
+  if (methods::is(y, "Vector")) {
+    y[0]
+  } else {
+    vctrs::vec_ptype(y)
+  }
 }
-
 
 
 attempt_ptype2 <- function(x, y) {
@@ -152,5 +164,9 @@ vec_ptype_common <- function(..., .ptype = NULL) {
 
 vec_ptype_common_list <- function(dots, .ptype) {
   dots <- lapply(dots, vec_slice, 0L)
-  base::Reduce(vec_ptype2, x = dots, init = .ptype)
+  ptype <- base::Reduce(vec_ptype2, x = dots, init = .ptype)
+  # if (vctrs::is_partial(ptype)) {
+  #   ptype <- vctrs::vec_ptype_finalise(ptype)
+  # }
+  vctrs::vec_ptype_finalise(ptype)
 }

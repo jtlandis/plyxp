@@ -13,12 +13,39 @@
 group_data.PlySummarizedExperiment <- function(.data) {
   group_data_se_impl(se(.data))
 }
+
 group_data_se_impl <- function(.data) {
+  out <- list(
+    row_groups = group_data_DF_impl(rowData(.data)),
+    col_groups = group_data_DF_impl(colData(.data))
+  )
+  if (all(vapply(out, is.null, FUN.VALUE = FALSE))) {
+    return(NULL)
+  }
+  structure(out, class = "plyxp_groups")
+}
+
+# when setting grouping data, if field is absent or NULL
+# then it will have the effect of removing said group.
+`group_data_se_impl<-` <- function(.data, value) {
+  row_groups <- value[["row_groups"]]
+  group_data_DF_impl(rowData(.data)) <- row_groups
+  col_groups <- value[["col_groups"]]
+  group_data_DF_impl(colData(.data)) <- col_groups
+  .data
+}
+
+group_data_DF_impl <- function(.data) {
   metadata(.data)[["group_data"]]
 }
 
-`group_data_se_impl<-` <- function(.data, value) {
-  metadata(.data)[["group_data"]] <- value
+`group_data_DF_impl<-` <- function(.data, value) {
+  if (is.null(value)) {
+    metadata(.data)["group_data"] <- value
+  } else {
+    metadata(.data)[["group_data"]] <- value
+  }
+
   .data
 }
 
@@ -58,8 +85,8 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   .env <- caller_env()
   # to maintain consistency with dplyr
   # force any computations to occur on ungrouped data
-  .groups <- metadata(.data)[["group_data"]]
-  metadata(.data)[["group_data"]] <- NULL
+  .groups <- group_data_se_impl(.data)
+  group_data_se_impl(.data) <- NULL
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
@@ -77,7 +104,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   #   assays(.data, withDimnames = FALSE)[[nms[i]]] <- results$assays[[i]]
   # }
 
-  if (.add && !is_empty(curr_groups <- metadata(.data)[["group_data"]])) {
+  if (.add && !is_empty(curr_groups <- group_data_se_impl(.data))) {
     if (!is_empty(curr_groups$row_groups)) {
       curr <- select(curr_groups$row_groups, -starts_with(".indices")) |>
         names()
@@ -126,7 +153,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
     row_groups = rowData(.data)[rnms],
     col_groups = colData(.data)[cnms]
   )
-  metadata(.data)[["group_data"]] <- groups
+  group_data_se_impl(.data) <- groups
   .data
 }
 
@@ -147,13 +174,13 @@ ungroup_se_impl <- function(x, ...) {
     .named = FALSE,
     .ctx = c("assays", "rows", "cols")
   )
-  curr_groups <- metadata(x)[["group_data"]]
+  curr_groups <- group_data_se_impl(x)
   if (is_empty(curr_groups)) {
     return(x)
   }
   n_quo <- length(quos)
   if (n_quo == 0L) {
-    metadata(x)["group_data"] <- NULL
+    group_data_se_impl(x) <- NULL
     return(x)
   }
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
@@ -272,7 +299,7 @@ group_split.PlySummarizedExperiment <- function(.tbl, ..., .keep = TRUE) {
   is_grouped <- grouped_rows || grouped_cols
 
 
-  if (!.keep && !is_empty(group_vars)) {
+  if (!.keep && is_grouped) {
     if (grouped_rows) {
       rowData(.tbl) <- rowData(.tbl)[,
         setdiff(

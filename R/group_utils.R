@@ -14,6 +14,8 @@ expand_groups2 <- function(.rows, .cols) {
   out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
   attr(out, "row.names") <- c(NA_integer_, -n)
   class(out) <- c("tbl_df", "tbl", "data.frame")
+  attr(out, "plyxp:::unique_row_ind") <- seq_len(.nrow)
+  attr(out, "plyxp:::unique_col_ind") <- ((seq_len(.ncol) - 1L) * .nrow) + 1L
 
   # due to this ordering here, I had introduced an unexpected
   # column-wise ordering of assays. I have changed it and commented
@@ -101,7 +103,7 @@ group_vars.PlySummarizedExperiment <- function(x) {
 
 group_vars_se_impl <- function(x) {
   map(
-    metadata(x)[["group_data"]],
+    group_data_se_impl(x),
     function(x) {
       grep(
         x = names(x),
@@ -114,6 +116,75 @@ group_vars_se_impl <- function(x) {
 }
 
 
+into_dimlist <- function(assay_ind) {
+  # we should always trust the groups sent to us,
+  # using unique may change the expected number of
+  # groups when constructing the object
+  row_chops <- attr(assay_ind, "plyxp:::row_chop_ind")
+  row_chops <- if (is.null(row_chops)) {
+    rlang::missing_arg()
+  } else {
+    vctrs::vec_slice(row_chops, attr(assay_ind, "plyxp:::unique_row_ind"))
+  }
+  col_chops <- attr(assay_ind, "plyxp:::col_chop_ind")
+  col_chops <- if (is.null(col_chops)) {
+    rlang::missing_arg()
+  } else {
+    vctrs::vec_slice(col_chops, attr(assay_ind, "plyxp:::unique_col_ind"))
+  }
+  list(
+    row_chops,
+    col_chops
+  )
+}
+
+chop_assays_outer <- function(obj, .ind) {
+  dimlist <- into_dimlist(.ind)
+  chop_dims_outer(obj, dimlist)
+}
+
+chop_dims_outer <- function(obj, .dims) {
+  # is_missing <- vapply(.dims, rlang::is_missing, FUN.VALUE = logical(1))
+  n <- length(.dims)
+  nlens <- lengths(.dims)
+  out_size <- Reduce(`*`, nlens, right = TRUE, accumulate = 1L)
+
+  curr_dim <- n
+  obj_slice <- NULL
+  objs <- out <- vector("list", out_size[[1L]])
+  objs[[1L]] <- out[[1L]] <- obj
+  n_obj <- 1L
+  slice_expr <- expr(.slice)
+  dim_args <- vec_rep(list(rlang::missing_arg()), n)
+  while (curr_dim > 0) {
+    .slices <- .dims[[curr_dim]]
+
+    i_seq <- seq_len(nlens[curr_dim])
+    nn <- length(i_seq)
+    n_out <- out_size[curr_dim]
+    out_seq <- seq_len(n_out)
+
+    if (!is_missing(.slices)) {
+      dim_args[[curr_dim]] <- slice_expr
+      e <- inject(expr(obj_slice[!!!dim_args, drop = FALSE]))
+      # out <- vector("list", out_size[curr_dim])
+      for (j in seq_len(n_obj)) {
+        obj_slice <- .subset2(objs, j)
+        shift <- (j - 1L) * nn
+        for (i in i_seq) {
+          .slice <- .subset2(.slices, i)
+          out[[shift + i]] <- eval(e)
+        }
+      }
+      dim_args[[curr_dim]] <- missing_arg()
+    }
+
+    n_obj <- n_out
+    curr_dim <- curr_dim - 1L
+    objs[out_seq] <- out[out_seq]
+  }
+  out
+}
 
 vec_chop_assays <- function(.data, .indices) {
   map2(
@@ -173,7 +244,7 @@ plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
     type <- paste0(type, "col")
   }
   class(out) <- "plyxp_groups"
-  attr(out, "type") <- type
+  # attr(out, "type") <- type
   if (type == "") {
     return(NULL)
   }
@@ -181,10 +252,11 @@ plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
 }
 
 get_group_indices <- function(
-    .groups,
-    .details,
-    type = c("assays", "rowData", "colData")) {
-  if (is.null(attr(.groups, "type"))) {
+  .groups,
+  .details,
+  type = c("assays", "rowData", "colData")
+) {
+  if (is.null(.groups)) {
     return(NULL)
   }
   type <- match.arg(type, c("assays", "rowData", "colData"))
@@ -200,32 +272,55 @@ get_group_indices <- function(
       )
       attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
       attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
-      attr(out, "type") <- attr(.groups, "type")
+      attr(out, "plyxp:::unique_row_ind") <- attr(.details, "plyxp:::unique_row_ind")
+      attr(out, "plyxp:::unique_col_ind") <- attr(.details, "plyxp:::unique_col_ind")
+      # attr(out, "type") <- attr(.groups, "type")
       out
     },
-    rowData = .groups$row_groups$.indices,
-    colData = .groups$col_groups$.indices
+    rowData = {
+      if (isFALSE(attr(.groups, "grouped_rows"))) {
+        NULL
+      } else {
+        .groups$row_groups$.indices
+      }
+    },
+    colData = {
+      if (isFALSE(attr(.groups, "grouped_cols"))) {
+        NULL
+      } else {
+        .groups$col_groups$.indices
+      }
+    }
   )
 }
 
-group_type <- function(obj) {
-  result <- attr(obj, "type")
-  if (is.null(result)) {
-    return("none")
-  }
-  result
-}
+# group_type <- function(obj) {
+#   result <- attr(obj, "type")
+#   if (is.null(result)) {
+#     return("none")
+#   }
+#   result
+# }
 
-`group_type<-` <- function(obj, value) {
-  value <- match.arg(value, choices = c("rowcol", "row", "col"))
-  attr(obj, "type") <- value
-  obj
-}
+# `group_type<-` <- function(obj, value) {
+#   value <- match.arg(value, choices = c("rowcol", "row", "col"))
+#   attr(obj, "type") <- value
+#   obj
+# }
 
 group_details <- function(obj) {
-  group_data <- metadata(obj)[["group_data"]]
-  group_data$row_groups <- group_data$row_groups %||% tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
-  group_data$col_groups <- group_data$col_groups %||% tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
+  group_data <- group_data_se_impl(obj)
+  if (is.null(group_data$row_groups)) {
+    group_data$row_groups <- tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
+    attr(group_data, "grouped_rows") <- FALSE
+  }
+
+  if (is.null(group_data$col_groups)) {
+    group_data$col_groups <- tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
+
+    attr(group_data, "grouped_cols") <- FALSE
+  }
+
   # out <- list(
   #   row_groups = row_groups,
   #   col_groups = col_groups

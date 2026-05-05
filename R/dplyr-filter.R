@@ -51,7 +51,7 @@ filter.PlySummarizedExperiment <- function(.data, ..., .preserve = FALSE) {
 
 filter_se_impl <- function(.data, ..., .preserve = FALSE) {
   .env <- caller_env()
-  .groups <- metadata(.data)[["group_data"]]
+  .groups <- group_data_se_impl(.data)
   mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)

@@ -80,7 +80,7 @@ method(vec_slice, getClass("CompressedGRangesList")) <- function(x, i, ...) {
 
   gr <- IRanges::extractROWS(x@unlistData, vctrs::vec_c(rlang::splice(seqs)))
 
-  cgr <- as(gr, "CompressedGRangesList")
+  # cgr <- as(gr, "CompressedGRangesList")
   S4Vectors::new2(
     "CompressedGRangesList",
     unlistData = gr,
