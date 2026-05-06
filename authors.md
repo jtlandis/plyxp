@@ -14,13 +14,13 @@ Source:
 [`DESCRIPTION`](https://github.com/jtlandis/plyxp/blob/devel/DESCRIPTION)
 
 Landis J, Love M (2026). *plyxp: Data masks for SummarizedExperiment
-enabling dplyr-like manipulation*. R package version 1.5.6,
+enabling dplyr-like manipulation*. R package version 1.7.1,
 <https://github.com/jtlandis/plyxp>.
 
     @Manual{,
       title = {plyxp: Data masks for SummarizedExperiment enabling dplyr-like manipulation},
       author = {Justin Landis and Michael Love},
       year = {2026},
-      note = {R package version 1.5.6},
+      note = {R package version 1.7.1},
       url = {https://github.com/jtlandis/plyxp},
     }

@@ -68,10 +68,10 @@ mutate(se_simple,
 #>   5 row_5     col_1    |     18      2.89     18 | g5        37 +         |
 #>   …   …         …             …        …       …    …         … …          
 #> n-4 row_1     col_4    |      9      2.20     13 | g1         1 -         |
-#> n-3 row_2     col_4    |      4      1.39     11 | g2        24 +         |
-#> n-2 row_3     col_4    |     20      3.00     26 | g3        60 +         |
-#> n-1 row_4     col_4    |      3      1.10     10 | g4        39 -         |
-#> n   row_5     col_4    |      5      1.61     12 | g5        37 +         |
+#> n-3 row_2     col_4    |      4      1.39      9 | g2        24 +         |
+#> n-2 row_3     col_4    |     20      3.00     23 | g3        60 +         |
+#> n-1 row_4     col_4    |      3      1.10      8 | g4        39 -         |
+#> n   row_5     col_4    |      5      1.61     15 | g5        37 +         |
 #> # ℹ n = 20
 #> # ℹ 3 more variables: sample <chr>, condition <chr>, is_drug <lgl>
 ```
