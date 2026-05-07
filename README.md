@@ -43,7 +43,7 @@ remotes::install_github("jtlandis/plyxp")
 
 See the [Get started](https://jtlandis.github.io/plyxp/articles/plyxp.html)
 link for the package vignette, and the 
-[Reference])(https://jtlandis.github.io/plyxp/reference/index.html)
+[Reference](https://jtlandis.github.io/plyxp/reference/index.html)
 page for function man pages.
 
 # Data masking SummarizedExperiment
