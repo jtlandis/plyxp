@@ -39,11 +39,13 @@ mutate_se_impl <- function(.data, ...) {
     ...,
     .ctx = c("assays", "rows", "cols"),
     .trans = list(
-      assays = quote(\(.data) matrix(
-        .data,
-        nrow = `plyxp:::ctx:::nrow`,
-        ncol = `plyxp:::ctx:::ncol`
-      ))
+      assays = quote(\(.data) {
+        matrix(
+          .data,
+          nrow = `plyxp:::ctx:::nrow`,
+          ncol = `plyxp:::ctx:::ncol`
+        )
+      })
     )
   )
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
@@ -79,7 +81,11 @@ mutate_se_impl <- function(.data, ...) {
   dim_nms <- dimnames(.data)
   for (i in seq_along(results$assays)) {
     new_assay <- results$assays[[i]]
-    dimnames(new_assay) <- dim_nms
+    if (!is.null(new_assay)) {
+      # could be removing in which we cannot set
+      # this attrib
+      dimnames(new_assay) <- dim_nms
+    }
     assay(.data, nms[i], withDimnames = FALSE) <- new_assay
   }
 

@@ -1,3 +1,11 @@
+## plyxp 1.7.2
+
+* `mutate.PlySummarizedExperiment` can now remove assays with `NULL` in the assays context.
+
+## plyxp 1.6.1
+
+* Corrected regression of 1.4.2
+
 ## plyxp 1.5.5
 
 * `plyxp::vec_ptype_common` should now be aware of the vctrs_partial class.
