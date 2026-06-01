@@ -1,0 +1,8 @@
+bibentry(
+  bibtype = "Article",
+  title = "Efficient and Tidy Manipulation of Annotated Matrix Data with plyxp",
+  author = "Justin T. Landis and Michael I. Love",
+  journal = "bioRxiv",
+  year = 2026,
+  doi = "10.64898/2026.05.06.721669"
+)

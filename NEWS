@@ -1,3 +1,7 @@
+## plyxp 1.7.1
+
+* Added citation for Landis and Love (2026) bioRxiv article to README and vignette.
+
 ## plyxp 1.5.5
 
 * `plyxp::vec_ptype_common` should now be aware of the vctrs_partial class.

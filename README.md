@@ -19,10 +19,7 @@ _plyxp_ uses
 from the _rlang_ package to connect _dplyr_ verbs to _SummarizedExperiment_ 
 slots in an intuitive and unambiguous manner.
 
-**Note:** This package is still under active development. Feel free to reach
-out to the package developers, see *Feedback* section below.
-
-**Note:** The _tidySummarizedExperiment_ package, released with 
+The _tidySummarizedExperiment_ package, released with 
 Bioconductor 3.12 in 2020, also provides _dplyr_-like access to 
 _SummarizedExperiment_ objects within the tidyomics project, allowing 
 datasets to be directly piped into _ggplot2_ plotting functions, 
@@ -41,14 +38,38 @@ remotes::install_github("jtlandis/plyxp")
 
 # Documentation
 
-See the [Get started](https://jtlandis.github.io/plyxp/articles/plyxp.html)
-link for the package vignette, and the 
+See [Get started](https://jtlandis.github.io/plyxp/articles/plyxp.html)
+for the package vignette, and 
 [Reference](https://jtlandis.github.io/plyxp/reference/index.html)
-page for function man pages.
+for function man pages.
 
-# Data masking SummarizedExperiment
+# Citation
 
-\
+If you use _plyxp_ in published research, please cite:
+
+> Landis JT, Love MI (2026). "Efficient and Tidy Manipulation of Annotated Matrix Data with plyxp." *bioRxiv*. 
+> [10.64898/2026.05.06.721669](https://doi.org/10.64898/2026.05.06.721669)
+
+# Feedback
+
+We would love to hear your feedback. Please post to
+[Bioconductor support site](https://support.bioconductor.org)
+or the
+`#tidiness_in_bioc` Slack channel on community-bioc
+for software usage help,
+or post an
+[Issue on GitHub](https://github.com/jtlandis/plyxp/issues),
+for software development questions.
+
+# Funding
+
+_plyxp_ was supported by an EOSS grant from 
+The Wellcome Trust, and NIH NHGRI R01-HG009937.
+
+# How plyxp works
+
+**Data masking a SummarizedExperiment**
+
 The _SummarizedExperiment_ object contains three main components/"contexts" that we mask,
 the `assays()`, `rowData()`[^1] and `colData()`.
 
@@ -76,22 +97,6 @@ size of the assay context.
 Alternatively, using a pronoun in either the `rows()` or `cols()`
 contexts will likely return a list equal in length to either `nrows(rowData())`
 or `nrows(colData())` respectively.
-
-# Feedback
-
-We would love to hear your feedback. Please post to
-[Bioconductor support site](https://support.bioconductor.org)
-or the
-`#tidiness_in_bioc` Slack channel on community-bioc
-for software usage help,
-or post an
-[Issue on GitHub](https://github.com/jtlandis/plyxp/issues),
-for software development questions.
-
-# Funding
-
-_plyxp_ was supported by a EOSS cycle 6 grant from 
-The Wellcome Trust, and an R01 from NHGRI.
 
 # Note on plyxp for Bioc 3.21 or 3.20
 
