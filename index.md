@@ -20,15 +20,12 @@ choose to work with their data. *plyxp* uses
 from the *rlang* package to connect *dplyr* verbs to
 *SummarizedExperiment* slots in an intuitive and unambiguous manner.
 
-**Note:** This package is still under active development. Feel free to
-reach out to the package developers, see *Feedback* section below.
-
-**Note:** The *tidySummarizedExperiment* package, released with
-Bioconductor 3.12 in 2020, also provides *dplyr*-like access to
-*SummarizedExperiment* objects within the tidyomics project, allowing
-datasets to be directly piped into *ggplot2* plotting functions, for
-example. *plyxp* and *tidySummarizedExperiment* can be used in parallel,
-as users engage plyxp functions by casting their SE objects with
+The *tidySummarizedExperiment* package, released with Bioconductor 3.12
+in 2020, also provides *dplyr*-like access to *SummarizedExperiment*
+objects within the tidyomics project, allowing datasets to be directly
+piped into *ggplot2* plotting functions, for example. *plyxp* and
+*tidySummarizedExperiment* can be used in parallel, as users engage
+plyxp functions by casting their SE objects with
 [`new_plyxp()`](https://jtlandis.github.io/plyxp/reference/new_plyxp.md).
 
 # Installing plyxp
@@ -43,15 +40,37 @@ remotes::install_github("jtlandis/plyxp")
 
 # Documentation
 
-See the [Get
-started](https://jtlandis.github.io/plyxp/articles/plyxp.html) link for
-the package vignette, and the
-[Reference](https://jtlandis.github.io/plyxp/reference/index.html) page
-for function man pages.
+See [Get started](https://jtlandis.github.io/plyxp/articles/plyxp.html)
+for the package vignette, and
+[Reference](https://jtlandis.github.io/plyxp/reference/index.html) for
+function man pages.
 
-# Data masking SummarizedExperiment
+# Citation
 
-  
+If you use *plyxp* in published research, please cite:
+
+> Landis JT, Love MI (2026). “Efficient and Tidy Manipulation of
+> Annotated Matrix Data with plyxp.” *bioRxiv*.
+> [10.64898/2026.05.06.721669](https://doi.org/10.64898/2026.05.06.721669)
+
+# Feedback
+
+We would love to hear your feedback. Please post to [Bioconductor
+support site](https://support.bioconductor.org) or the
+`#tidiness_in_bioc` Slack channel on community-bioc for software usage
+help, or post an [Issue on
+GitHub](https://github.com/jtlandis/plyxp/issues), for software
+development questions.
+
+# Funding
+
+*plyxp* was supported by an EOSS grant from The Wellcome Trust, and NIH
+NHGRI R01-HG009937.
+
+# How plyxp works
+
+**Data masking a SummarizedExperiment**
+
 The *SummarizedExperiment* object contains three main
 components/“contexts” that we mask, the
 [`assays()`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html),
@@ -95,20 +114,6 @@ or
 [`cols()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
 contexts will likely return a list equal in length to either
 `nrows(rowData())` or `nrows(colData())` respectively.
-
-# Feedback
-
-We would love to hear your feedback. Please post to [Bioconductor
-support site](https://support.bioconductor.org) or the
-`#tidiness_in_bioc` Slack channel on community-bioc for software usage
-help, or post an [Issue on
-GitHub](https://github.com/jtlandis/plyxp/issues), for software
-development questions.
-
-# Funding
-
-*plyxp* was supported by a EOSS cycle 6 grant from The Wellcome Trust,
-and an R01 from NHGRI.
 
 # Note on plyxp for Bioc 3.21 or 3.20
 

@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>plyxp Usage Guide • plyxp</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="plyxp Usage Guide">
 </head>
@@ -56,7 +56,7 @@ Landis</h4>
                                     <h4 data-toc-skip class="author">Michael
 Love</h4>
                         
-            <h4 data-toc-skip class="date">05/07/2026</h4>
+            <h4 data-toc-skip class="date">06/01/2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/devel/vignettes/plyxp.Rmd" class="external-link"><code>vignettes/plyxp.Rmd</code></a></small>
       <div class="d-none name"><code>plyxp.Rmd</code></div>
@@ -73,7 +73,8 @@ feels as natural to operating on a <em>data.frame</em> or
 <em>tibble</em>. <code>plyxp</code> uses <a href="https://rlang.r-lib.org/reference/topic-data-mask-programming.html" class="external-link">data-masking</a>
 from the <code>rlang</code> package in order to connect dplyr functions
 to <em>SummarizedExperiment</em> slots in a manner that aims to be
-intuitive and avoiding ambiguity in outcomes.</p>
+intuitive and avoiding ambiguity in outcomes. For more details on the
+design and benchmarking of <code>plyxp</code>, see <span class="citation">Landis and Love (<a href="#ref-plyxp">2026</a>)</span>.</p>
 <div class="section level3">
 <h3 id="enabling-dplyr-verbs">Enabling dplyr verbs<a class="anchor" aria-label="anchor" href="#enabling-dplyr-verbs"></a>
 </h3>
@@ -688,7 +689,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  collate  en_US.UTF-8</span></span>
 <span><span class="co">##  ctype    en_US.UTF-8</span></span>
 <span><span class="co">##  tz       UTC</span></span>
-<span><span class="co">##  date     2026-05-07</span></span>
+<span><span class="co">##  date     2026-06-01</span></span>
 <span><span class="co">##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)</span></span>
 <span><span class="co">##  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">## </span></span>
@@ -698,7 +699,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  airway               * 1.30.0  <span style="color: #555555;">2025-10-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.2)</span></span></span>
 <span><span class="co">##  Biobase              * 2.70.0  <span style="color: #555555;">2025-10-29</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.2)</span></span></span>
 <span><span class="co">##  BiocGenerics         * 0.56.0  <span style="color: #555555;">2025-10-29</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.2)</span></span></span>
-<span><span class="co">##  bslib                  0.10.0  <span style="color: #555555;">2026-01-26</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
+<span><span class="co">##  bslib                  0.11.0  <span style="color: #555555;">2026-05-16</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  cachem                 1.1.0   <span style="color: #555555;">2024-05-16</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  cli                    3.6.6   <span style="color: #555555;">2026-04-09</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  DelayedArray           0.36.1  <span style="color: #555555;">2026-03-31</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.2)</span></span></span>
@@ -732,7 +733,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  pkgconfig              2.0.3   <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgdown                2.2.0   <span style="color: #555555;">2025-11-06</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgload                1.5.2   <span style="color: #555555;">2026-04-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
-<span><span class="co">##  plyxp                * 1.7.1   <span style="color: #555555;">2026-05-07</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  plyxp                * 1.7.1   <span style="color: #555555;">2026-06-01</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  purrr                  1.2.2   <span style="color: #555555;">2026-04-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  R6                     2.6.1   <span style="color: #555555;">2025-02-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  ragg                   1.5.2   <span style="color: #555555;">2026-03-23</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
@@ -767,8 +768,15 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">──────────────────────────────────────────────────────────────────────────────</span></span></span></code></pre>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-plyxp" class="csl-entry">
+Landis, Justin T., and Michael I. Love. 2026. <span>“Efficient and Tidy
+Manipulation of Annotated Matrix Data with Plyxp.”</span>
+<em>bioRxiv</em>, ahead of print. <a href="https://doi.org/10.64898/2026.05.06.721669" class="external-link">https://doi.org/10.64898/2026.05.06.721669</a>.
+</div>
+</div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

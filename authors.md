@@ -11,16 +11,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/jtlandis/plyxp/blob/devel/DESCRIPTION)
+[`inst/CITATION`](https://github.com/jtlandis/plyxp/blob/devel/inst/CITATION)
 
-Landis J, Love M (2026). *plyxp: Data masks for SummarizedExperiment
-enabling dplyr-like manipulation*. R package version 1.7.1,
-<https://github.com/jtlandis/plyxp>.
+Landis JT, Love MI (2026). “Efficient and Tidy Manipulation of Annotated
+Matrix Data with plyxp.” *bioRxiv*.
+[doi:10.64898/2026.05.06.721669](https://doi.org/10.64898/2026.05.06.721669).
 
-    @Manual{,
-      title = {plyxp: Data masks for SummarizedExperiment enabling dplyr-like manipulation},
-      author = {Justin Landis and Michael Love},
+    @Article{,
+      title = {Efficient and Tidy Manipulation of Annotated Matrix Data with plyxp},
+      author = {Justin T. Landis and Michael I. Love},
+      journal = {bioRxiv},
       year = {2026},
-      note = {R package version 1.7.1},
-      url = {https://github.com/jtlandis/plyxp},
+      doi = {10.64898/2026.05.06.721669},
     }

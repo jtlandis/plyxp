@@ -8,7 +8,8 @@ a *data.frame* or *tibble*. `plyxp` uses
 [data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html)
 from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and
-avoiding ambiguity in outcomes.
+avoiding ambiguity in outcomes. For more details on the design and
+benchmarking of `plyxp`, see Landis and Love ([2026](#ref-plyxp)).
 
 ### Enabling dplyr verbs
 
@@ -665,7 +666,7 @@ devtools::session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2026-05-07
+    ##  date     2026-06-01
     ##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.7.32 @ /usr/local/bin/quarto
     ## 
@@ -675,7 +676,7 @@ devtools::session_info()
     ##  airway               * 1.30.0  2025-10-30 [1] Bioconductor 3.22 (R 4.5.2)
     ##  Biobase              * 2.70.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
     ##  BiocGenerics         * 0.56.0  2025-10-29 [1] Bioconductor 3.22 (R 4.5.2)
-    ##  bslib                  0.10.0  2026-01-26 [2] RSPM (R 4.5.0)
+    ##  bslib                  0.11.0  2026-05-16 [2] RSPM (R 4.5.0)
     ##  cachem                 1.1.0   2024-05-16 [2] RSPM (R 4.5.0)
     ##  cli                    3.6.6   2026-04-09 [2] RSPM (R 4.5.0)
     ##  DelayedArray           0.36.1  2026-03-31 [1] Bioconductor 3.22 (R 4.5.2)
@@ -709,7 +710,7 @@ devtools::session_info()
     ##  pkgconfig              2.0.3   2019-09-22 [2] RSPM (R 4.5.0)
     ##  pkgdown                2.2.0   2025-11-06 [2] RSPM (R 4.5.0)
     ##  pkgload                1.5.2   2026-04-22 [2] RSPM (R 4.5.0)
-    ##  plyxp                * 1.7.1   2026-05-07 [1] Bioconductor
+    ##  plyxp                * 1.7.1   2026-06-01 [1] Bioconductor
     ##  purrr                  1.2.2   2026-04-10 [2] RSPM (R 4.5.0)
     ##  R6                     2.6.1   2025-02-15 [2] RSPM (R 4.5.0)
     ##  ragg                   1.5.2   2026-03-23 [2] RSPM (R 4.5.0)
@@ -744,6 +745,10 @@ devtools::session_info()
     ## ──────────────────────────────────────────────────────────────────────────────
 
 ## References
+
+Landis, Justin T., and Michael I. Love. 2026. “Efficient and Tidy
+Manipulation of Annotated Matrix Data with Plyxp.” *bioRxiv*, ahead of
+print. <https://doi.org/10.64898/2026.05.06.721669>.
 
 [^1]: At this moment `rowRanges()` is not supported in `plyxp` but may
     become its own pronoun in the future.
