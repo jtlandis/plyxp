@@ -110,8 +110,8 @@ method(vec_slice, class_s4_vctrs) <- function(x, i, ...) {
 method(vec_slice, class_DF) <- function(x, i, ...) {
   x@listData <- purrr::map(x@listData, vec_slice, i = i)
   x@nrows <- length(i)
-  if (!is.null(x@elementMetadata)) {
-    x@elementMetadata <- Recall(x = x@elementMetadata, i = i)
+  if (!is.null(rnames <- rownames(x))) {
+    x@rownames <- vec_slice(rnames, i = i)
   }
   x
 }

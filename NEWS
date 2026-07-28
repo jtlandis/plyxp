@@ -1,3 +1,7 @@
+## plyxp 1.7.3
+
+* `method(vec_slice, class_DF)` now properly slices the rownames instead of the elementMetadata
+
 ## plyxp 1.7.2
 
 * `mutate.PlySummarizedExperiment` can now remove assays with `NULL` in the assays context.
