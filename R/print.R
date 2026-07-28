@@ -25,7 +25,7 @@ vec_phantom <- function(x) {
 vec_restore.vec_phantom <- function(x, to, ...) {
   # cannot make assumptions on what
   # the phantomData is, we use base subset
-  phantom_data <- attr(to, "phantomData")[x]
+  phantom_data <- vec_slice(attr(to, "phantomData"), x)
   vec_phantom(phantom_data)
 }
 
