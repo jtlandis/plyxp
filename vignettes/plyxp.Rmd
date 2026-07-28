@@ -8,6 +8,7 @@ author:
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: rmarkdown::html_document
 bibliography: library.bib
+link-citations: true
 vignette: |
   %\VignetteIndexEntry{plyxp Usage Guide}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,7 +23,8 @@ that using common dplyr functions feels as natural to operating on a
 [data-masking](https://rlang.r-lib.org/reference/topic-data-mask-programming.html)
 from the `rlang` package in order to connect dplyr functions to
 *SummarizedExperiment* slots in a manner that aims to be intuitive and avoiding
-ambiguity in outcomes.
+ambiguity in outcomes. For more details on the design and benchmarking of
+`plyxp`, see @plyxp.
 
 ## Enabling dplyr verbs
 

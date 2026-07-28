@@ -1,6 +1,6 @@
 ## plyxp 1.7.3
 
-* `method(vec_slice, class_DF)` now properly slices the rownames instead of the elementMetadata
+* `method(vec_slice, class_DF)` now properly slices the rownames instead of the elementMetadata 
 
 ## plyxp 1.7.2
 
