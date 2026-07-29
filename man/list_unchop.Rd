@@ -20,6 +20,6 @@ of x. This maps the the final index of each element in the output.}
 an object of type \code{ptype} or the common ptype of elements of x.
 }
 \description{
-A generic version of \code{\link[vctrs:vec_chop]{vctrs::list_unchop}} meant to
+A generic version of \code{\link[vctrs:list_unchop]{vctrs::list_unchop}} meant to
 support S4 Vectors.
 }

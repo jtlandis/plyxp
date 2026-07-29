@@ -41,7 +41,7 @@ You can create your own S4 phantom vector with \code{vec_phantom()}.
 This function is not used outside of printing for \code{plyxp}
 
 The default method for formatting a \code{vec_phantom()} is to call
-\code{\link[S4Vectors:show-utils]{showAsCell()}}.
+\code{\link[S4Vectors:showAsCell]{showAsCell()}}.
 }
 \section{tidy printing}{
 

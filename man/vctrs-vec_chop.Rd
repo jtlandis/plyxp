@@ -12,16 +12,10 @@ vec_chop(x, ..., indices = NULL)
 
 \item{...}{These dots are for future extensions and must be empty.}
 
-\item{indices}{For \code{vec_chop()}, a list of positive integer vectors to
-slice \code{x} with, or \code{NULL}. Can't be used if \code{sizes} is already specified.
-If both \code{indices} and \code{sizes} are \code{NULL}, \code{x} is split into its individual
-elements, equivalent to using an \code{indices} of \code{as.list(vec_seq_along(x))}.
-
-For \code{list_unchop()}, a list of positive integer vectors specifying the
-locations to place elements of \code{x} in. Each element of \code{x} is recycled to
-the size of the corresponding index vector. The size of \code{indices} must
-match the size of \code{x}. If \code{NULL}, \code{x} is combined in the order it is
-provided in, which is equivalent to using \code{\link[vctrs:vec_c]{vec_c()}}.}
+\item{indices}{A list of positive integer vectors to slice \code{x} with, or
+\code{NULL}. Can't be used if \code{sizes} is already specified. If both \code{indices}
+and \code{sizes} are \code{NULL}, \code{x} is split into its individual elements,
+equivalent to using an \code{indices} of \code{as.list(vec_seq_along(x))}.}
 }
 \value{
 a S3 or S4 vector

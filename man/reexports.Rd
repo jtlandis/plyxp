@@ -43,8 +43,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{S4Vectors}{\code{\link[S4Vectors:Annotated-class]{metadata}}, \code{\link[S4Vectors:Annotated-class]{metadata<-}}}
+  \item{S4Vectors}{\code{\link[S4Vectors:metadata]{metadata()}}, \code{\link[S4Vectors:metadata<-]{metadata<-()}}}
 
-  \item{SummarizedExperiment}{\code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assay<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assays}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{assays<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{colData}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{colData<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{rowData}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{rowData<-}}, \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment}}}
+  \item{SummarizedExperiment}{\code{\link[SummarizedExperiment:assay]{assay()}}, \code{\link[SummarizedExperiment:assay<-]{assay<-()}}, \code{\link[SummarizedExperiment:assays]{assays()}}, \code{\link[SummarizedExperiment:assays<-]{assays<-()}}, \code{\link[SummarizedExperiment:colData]{colData()}}, \code{\link[SummarizedExperiment:colData<-]{colData<-()}}, \code{\link[SummarizedExperiment:rowData]{rowData()}}, \code{\link[SummarizedExperiment:rowData<-]{rowData<-()}}, \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment()}}}
 }}
 

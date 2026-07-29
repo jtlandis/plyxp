@@ -18,8 +18,8 @@ vec_group_loc(x, ...)
 either a tibble or DataFrame object
 }
 \description{
-A alternative to \code{\link[vctrs:vec_group]{vctrs::vec_group_id}} and
-\code{\link[vctrs:vec_group]{vctrs::vec_group_loc}} as
+A alternative to \code{\link[vctrs:vec_group_id]{vctrs::vec_group_id}} and
+\code{\link[vctrs:vec_group_loc]{vctrs::vec_group_loc}} as
 an S4 generic function to allow \code{S4Vectors}.
 }
 \examples{

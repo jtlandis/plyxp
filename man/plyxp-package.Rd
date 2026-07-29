@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Justin Landis \email{jtlandis314@gmail.com} (\href{https://orcid.org/0000-0001-5501-4934}{ORCID})
   \item Michael Love \email{michaelisaiahlove@gmail.com} (\href{https://orcid.org/0000-0001-8401-0545}{ORCID})
 }
 

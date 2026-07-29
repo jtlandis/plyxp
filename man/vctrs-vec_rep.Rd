@@ -47,8 +47,8 @@ mentioned in error messages as the source of the error. See the
 a new S3 or S4 vector replicated by specified times
 }
 \description{
-A re-export of \code{\link[vctrs:vec-rep]{vctrs::vec_rep}} and
-\code{\link[vctrs:vec-rep]{vctrs::vec_rep_each}} as an S7 generic
+A re-export of \code{\link[vctrs:vec_rep]{vctrs::vec_rep}} and
+\code{\link[vctrs:vec_rep_each]{vctrs::vec_rep_each}} as an S7 generic
 function to allow \code{S4Vectors}.
 }
 \examples{

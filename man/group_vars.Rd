@@ -14,7 +14,7 @@
 NULL or list containing names of grouping columns
 }
 \description{
-like in \code{\link[dplyr:group_data]{dplyr::group_vars()}} will get character strings for
+like in \code{\link[dplyr:group_vars]{dplyr::group_vars()}} will get character strings for
 groupings with the exection of the return value
 being a list for each grouped context
 }
