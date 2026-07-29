@@ -64,6 +64,19 @@ method(
     merged
   }
 
+method(
+  list_unchop,
+  list(x = S7::class_list, ptype = class_DF)
+) <-
+  function(x, ptype, ..., indices = NULL) {
+    merged <- do.call("rbind", x)
+    if (!is.null(indices)) {
+      indices <- vctrs::list_unchop(indices)
+      merged <- vec_slice(merged, order(indices))
+    }
+    merged
+  }
+
 
 vec_c <- function(...) {
   dots <- rlang::list2(...)
