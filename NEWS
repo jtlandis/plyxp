@@ -3,6 +3,7 @@
 * `method(vec_slice, class_DF)` now properly slices the rownames instead of the elementMetadata
 * Added Preprint to README
 * fixed show_tidy bug with "vec_restore.vec_phantom", now using internal `vec_slice` to extract rows
+* Addining a `vec_size` variant for support of vec_phantom
 
 ## plyxp 1.7.2
 

@@ -15,7 +15,7 @@ class_vec_phantom <- S7::new_S3_class("vec_phantom")
 #' @export
 vec_phantom <- function(x) {
   vctrs::new_vctr(
-    seq_len(length.out = length(x)),
+    seq_len(length.out = vec_size(x)),
     phantomData = x,
     class = "vec_phantom"
   )
