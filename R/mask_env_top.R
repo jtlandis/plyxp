@@ -43,6 +43,7 @@ top_env <- new_environment(
     abort = rlang::abort,
     vec_chop = vec_chop,
     chop_assays_outer = chop_assays_outer,
+    enforce_2d_size = enforce_2d_size,
     # vec_chop_assays = vec_chop_assays,
     # vec_chop_assays_row = vec_chop_assays_row,
     # vec_chop_assays_col = vec_chop_assays_col,
