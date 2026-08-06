@@ -110,11 +110,14 @@ summarize_se_impl <- function(
       row_chops_sizes <- .nrow <- 1L
       if (grouped_rows) {
         .nrow <- nrow(.groups$row_groups)
-        # slice grouped columns
+        # group columns were either included manually,
+        # or computed on. Manual inclusion is expected
+        # to be correct size. if computed, the user
+        # should provide correct size
         row_chops[group_vars_$row_groups] <- map(
           row_chops[group_vars_$row_groups],
           function(group_vec) {
-            map(group_vec, vec_slice, 1L)
+            map(group_vec, identity)
           }
         )
       }
@@ -125,7 +128,7 @@ summarize_se_impl <- function(
       "DFrame",
       listData = map(
         row_chops,
-        vctrs::list_unchop
+        list_unchop
       ),
       nrows = .nrow
     )
@@ -149,11 +152,14 @@ summarize_se_impl <- function(
       col_chops_sizes <- .ncol <- 1L
       if (grouped_cols) {
         .ncol <- nrow(.groups$col_groups)
-        # if grouped, grab only the first instance
+        # group columns were either included manually,
+        # or computed on. Manual inclusion is expected
+        # to be correct size. if computed, the user
+        # should provide correct size
         col_chops[group_vars_$col_groups] <- map(
           col_chops[group_vars_$col_groups],
           function(group_vec) {
-            map(group_vec, vec_slice, 1L)
+            map(group_vec, identity)
           }
         )
       }
@@ -164,7 +170,7 @@ summarize_se_impl <- function(
       "DFrame",
       listData = map(
         col_chops,
-        vctrs::list_unchop
+        list_unchop
       ),
       nrows = .ncol
     )
