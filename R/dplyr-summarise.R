@@ -48,18 +48,25 @@ NULL
 #'   )
 #'
 #' @export
-summarize.PlySummarizedExperiment <- function(.data, ...,
-                                              .retain = c("auto", "ungrouped", "none")) {
+summarize.PlySummarizedExperiment <- function(
+  .data,
+  ...,
+  .retain = c("auto", "ungrouped", "none")
+) {
   plyxp(.data, summarize_se_impl, ..., .retain = .retain)
 }
 
-summarize_se_impl <- function(.data, ...,
-                              .retain = c("auto", "ungrouped", "none")) {
+summarize_se_impl <- function(
+  .data,
+  ...,
+  .retain = c("auto", "ungrouped", "none")
+) {
   .env <- caller_env()
 
   .groups <- group_data_se_impl(.data)
   .retain <- match.arg(.retain, choices = c("auto", "ungrouped", "none"))
-  .retain <- switch(.retain,
+  .retain <- switch(
+    .retain,
     auto = !is.null(.groups),
     ungrouped = TRUE,
     none = FALSE
@@ -162,7 +169,8 @@ summarize_se_impl <- function(.data, ...,
       nrows = .ncol
     )
   } else {
-    col_data <- methods::new("DFrame",
+    col_data <- methods::new(
+      "DFrame",
       listData = set_names(list(), character()),
       nrows = .ncol
     )
@@ -180,7 +188,6 @@ summarize_se_impl <- function(.data, ...,
     }
   }
 
-
   if (".features" %in% names(row_data)) {
     row_names <- row_data$.features
     row_data$.features <- NULL
@@ -192,7 +199,8 @@ summarize_se_impl <- function(.data, ...,
 
   # we should have some type of value to view from
   # assays as it was enforced earlier.
-  assay_data <- assert_chops_size(assay_chops,
+  assay_data <- assert_chops_size(
+    assay_chops,
     size = row_chops_sizes * col_chops_sizes
   ) |>
     map(
