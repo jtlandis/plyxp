@@ -115,7 +115,7 @@ method(
   )
 ) <- function(x, y, ...) {
   if (methods::is(x, "Vector")) {
-    x[0]
+    vec_slice(x, 0)
   } else {
     vctrs::vec_ptype(x)
   }
@@ -129,10 +129,130 @@ method(
   )
 ) <- function(x, y, ...) {
   if (methods::is(y, "Vector")) {
-    y[0]
+    vec_slice(y, 0)
   } else {
     vctrs::vec_ptype(y)
   }
+}
+
+S7::method(
+  vec_ptype2,
+  signature = list(x = S7::class_data.frame, y = S7::class_data.frame)
+) <- function(x, y, ...) {
+  vctrs::vec_ptype2(
+    x = x,
+    y = y,
+    ...,
+    x_arg = "x",
+    y_arg = "y",
+    call = caller_env()
+  )
+}
+
+plyxp_size_common_list <- function(dots) {
+  size <- 1L
+  j <- 0L
+  iseq <- seq_len(length(dots))
+  for (i in iseq) {
+    dot <- .subset2(dots, i)
+    dot_size <- vec_size(dot)
+    if (dot_size != 1L) {
+      if (size == 1L) {
+        size <- dot_size
+        j <- i
+      } else if (size != dot_size) {
+        stop(
+          sprintf(
+            "Can't recycle `..%i` (size %i) to match `..%i` (size %i)",
+            j,
+            size,
+            i,
+            dot_size
+          )
+        )
+      }
+    }
+  }
+  size
+}
+
+
+plyxp_size_common <- function(...) {
+  plyxp_size_common_list(rlang::list2(...))
+}
+
+new_DF <- function(
+  .data,
+  nrows = NULL,
+  rownames = NULL
+) {
+  nrows <- nrows %||% do.call(vec_size_common, .data)
+  S4Vectors::new2(
+    "DFrame",
+    listData = .data,
+    nrows = nrows,
+    rownames = rownames,
+    check = FALSE
+  )
+}
+
+S7::method(
+  vec_ptype2,
+  signature = list(x = class_DF, y = S7::class_data.frame)
+) <- function(x, y, ...) {
+  x <- vec_slice(x, 0L)
+  y <- vctrs::vec_ptype(y, x_arg = "y", call = caller_env())
+  col_names <- union(names(x), names(y))
+  names(col_names) <- col_names
+  lapply(
+    col_names,
+    function(name, x, y) {
+      vec_ptype2(x[[name]], y[[name]])
+    },
+    x = x,
+    y = y
+  ) |>
+    new_DF(nrows = 0L)
+}
+
+
+S7::method(
+  vec_ptype2,
+  signature = list(x = S7::class_data.frame, y = class_DF)
+) <- function(x, y, ...) {
+  x <- vctrs::vec_ptype(x, x_arg = "x", call = caller_env())
+  y <- vec_slice(y, 0L)
+  col_names <- union(names(x), names(y))
+  names(col_names) <- col_names
+  lapply(
+    col_names,
+    function(name, x, y) {
+      vec_ptype2(x[[name]], y[[name]])
+    },
+    x = x,
+    y = y
+  ) |>
+    new_DF(nrows = 0L)
+}
+
+
+S7::method(
+  vec_ptype2,
+  signature = list(x = class_DF, y = class_DF)
+) <- function(x, y, ...) {
+  x <- vec_slice(x, 0L)
+  y <- vec_slice(y, 0L)
+  col_names <- union(names(x), names(y))
+  names(col_names) <- col_names
+  lapply(
+    col_names,
+    function(name, x, y) {
+      vec_ptype2(x[[name]], y[[name]])
+    },
+    x = x,
+    y = y
+  ) |>
+    new_DF(nrows = 0L)
 }
 
 
@@ -181,5 +301,19 @@ vec_ptype_common_list <- function(dots, .ptype) {
   # if (vctrs::is_partial(ptype)) {
   #   ptype <- vctrs::vec_ptype_finalise(ptype)
   # }
-  vctrs::vec_ptype_finalise(ptype)
+  plyxp_ptype_finalise(ptype)
+}
+
+plyxp_ptype_finalise <- new_generic(
+  "plyxp_ptype_finalise",
+  "x",
+  function(x, ...) S7::S7_dispatch()
+)
+
+method(plyxp_ptype_finalise, class_vctrs) <- function(x, ...) {
+  vctrs::vec_ptype_finalise(x)
+}
+
+method(plyxp_ptype_finalise, S7::class_any) <- function(x, ...) {
+  x
 }
