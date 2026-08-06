@@ -258,7 +258,10 @@ get_group_indices <- function(
   .details,
   type = c("assays", "rowData", "colData")
 ) {
-  if (is.null(.groups)) {
+  if (
+    isFALSE(attr(.groups, "grouped_rows")) &&
+      isFALSE(attr(.groups, "grouped_cols"))
+  ) {
     return(NULL)
   }
   type <- match.arg(type, c("assays", "rowData", "colData"))
