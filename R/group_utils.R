@@ -116,30 +116,30 @@ group_vars_se_impl <- function(x) {
 }
 
 
-into_dimlist <- function(assay_ind) {
+into_dimlist <- function(assay_ind, ndims) {
   # we should always trust the groups sent to us,
   # using unique may change the expected number of
   # groups when constructing the object
+  out <- rep(list(rlang::missing_arg()), ndims)
   row_chops <- attr(assay_ind, "plyxp:::row_chop_ind")
-  row_chops <- if (is.null(row_chops)) {
-    rlang::missing_arg()
-  } else {
-    vctrs::vec_slice(row_chops, attr(assay_ind, "plyxp:::unique_row_ind"))
+  if (!is.null(row_chops)) {
+    out[[1L]] <- vctrs::vec_slice(
+      row_chops,
+      attr(assay_ind, "plyxp:::unique_row_ind")
+    )
   }
   col_chops <- attr(assay_ind, "plyxp:::col_chop_ind")
-  col_chops <- if (is.null(col_chops)) {
-    rlang::missing_arg()
-  } else {
-    vctrs::vec_slice(col_chops, attr(assay_ind, "plyxp:::unique_col_ind"))
+  if (!is.null(col_chops)) {
+    out[[2L]] <- vctrs::vec_slice(
+      col_chops,
+      attr(assay_ind, "plyxp:::unique_col_ind")
+    )
   }
-  list(
-    row_chops,
-    col_chops
-  )
+  out
 }
 
 chop_assays_outer <- function(obj, .ind) {
-  dimlist <- into_dimlist(.ind)
+  dimlist <- into_dimlist(.ind, length(dim(obj)))
   chop_dims_outer(obj, dimlist)
 }
 
