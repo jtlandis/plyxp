@@ -196,14 +196,16 @@ vec_chop_assays <- function(.data, .indices) {
 }
 
 vec_chop_assays_row <- function(.data, .indices) {
-  map(attr(.indices, "plyxp:::row_chop_ind"),
+  map(
+    attr(.indices, "plyxp:::row_chop_ind"),
     function(.i, .data) .data[.i, , drop = FALSE],
     .data = .data
   )
 }
 
 vec_chop_assays_col <- function(.data, .indices) {
-  map(attr(.indices, "plyxp:::col_chop_ind"),
+  map(
+    attr(.indices, "plyxp:::col_chop_ind"),
     function(.i, .data) .data[, .i, drop = FALSE],
     .data = .data
   )
@@ -260,7 +262,8 @@ get_group_indices <- function(
     return(NULL)
   }
   type <- match.arg(type, c("assays", "rowData", "colData"))
-  switch(type,
+  switch(
+    type,
     assays = {
       #
       out <- map2(
@@ -268,12 +271,19 @@ get_group_indices <- function(
         .details[[".cols::.indices"]],
         .f = function(row, col, n) {
           mat_index(row, col, nrows = n)
-        }, n = attr(.groups, "obj_dim")[1]
+        },
+        n = attr(.groups, "obj_dim")[1]
       )
       attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
       attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
-      attr(out, "plyxp:::unique_row_ind") <- attr(.details, "plyxp:::unique_row_ind")
-      attr(out, "plyxp:::unique_col_ind") <- attr(.details, "plyxp:::unique_col_ind")
+      attr(out, "plyxp:::unique_row_ind") <- attr(
+        .details,
+        "plyxp:::unique_row_ind"
+      )
+      attr(out, "plyxp:::unique_col_ind") <- attr(
+        .details,
+        "plyxp:::unique_col_ind"
+      )
       # attr(out, "type") <- attr(.groups, "type")
       out
     },
@@ -311,12 +321,18 @@ get_group_indices <- function(
 group_details <- function(obj) {
   group_data <- group_data_se_impl(obj)
   if (is.null(group_data$row_groups)) {
-    group_data$row_groups <- tibble(.indices = list(seq_len(nrow(obj))), .indices_group_id = 1L)
+    group_data$row_groups <- tibble(
+      .indices = list(seq_len(nrow(obj))),
+      .indices_group_id = 1L
+    )
     attr(group_data, "grouped_rows") <- FALSE
   }
 
   if (is.null(group_data$col_groups)) {
-    group_data$col_groups <- tibble(.indices = list(seq_len(ncol(obj))), .indices_group_id = 1L)
+    group_data$col_groups <- tibble(
+      .indices = list(seq_len(ncol(obj))),
+      .indices_group_id = 1L
+    )
 
     attr(group_data, "grouped_cols") <- FALSE
   }
