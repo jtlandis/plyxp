@@ -54,11 +54,15 @@
 #' binding_func("Sepal.Width")
 #' env$Sepal.Width
 #' @noRd
-add_bind <- function(.expr, .env_expr,
-                     .env_bind = .env_expr,
-                     type = c("standard", "lazy", "active")) {
+add_bind <- function(
+  .expr,
+  .env_expr,
+  .env_bind = .env_expr,
+  type = c("standard", "lazy", "active")
+) {
   # type <- match.arg(type, c("standard", "lazy", "active"))
-  fun <- switch(type,
+  fun <- switch(
+    type,
     standard = expr(env_bind),
     lazy = expr(env_bind_lazy),
     active = expr(env_bind_active)
@@ -70,7 +74,8 @@ add_bind <- function(.expr, .env_expr,
       args = alist(name = ),
       body = expr({
         name_sym <- as.name(name)
-        actv_fun <- new_function(pairlist(),
+        actv_fun <- new_function(
+          pairlist(),
           inject(quote(!!.expr)),
           env = !!.env_expr
         )
@@ -144,8 +149,12 @@ plyxp_mask <- R6::R6Class(
     #' @param .env_bot an environment that the resulting mask will be built
     #' from.
     #' @param .env_top an environment that `.env_bot` inherits from
-    initialize = function(.data, .indices = NULL,
-                          .env_bot, .env_top = .env_bot) {
+    initialize = function(
+      .data,
+      .indices = NULL,
+      .env_bot,
+      .env_top = .env_bot
+    ) {
       private$.shared_env <- .env_bot
       private$.top_env <- .env_top
       private$.data <- .data
@@ -274,7 +283,9 @@ plyxp_mask <- R6::R6Class(
       )
     },
     init_foreign_data = function() {
-      private$env_foreign_data <- new.env(parent = private$env_current_group_info)
+      private$env_foreign_data <- new.env(
+        parent = private$env_current_group_info
+      )
     },
     init_data_lazy = function() {
       .data <- private$.data
@@ -299,16 +310,18 @@ plyxp_mask <- R6::R6Class(
         private$env_data_chop,
         !!!lapply(private$.names, as.name) |>
           lapply(private$chop_data) |>
-          lapply(new_quosure,
-            env = private$env_data_lazy
-          )
+          lapply(new_quosure, env = private$env_data_lazy)
       )
     },
     init_mask_bind = function() {
-      private$env_mask_bind <- new.env(parent = private$env_data_chop, size = private$.env_size)
+      private$env_mask_bind <- new.env(
+        parent = private$env_data_chop,
+        size = private$.env_size
+      )
       env_bind_active(
         private$env_mask_bind,
-        !!!lapply(private$.names,
+        !!!lapply(
+          private$.names,
           function(name, env) {
             name <- sym(name)
             new_function(
@@ -376,7 +389,6 @@ plyxp_mask <- R6::R6Class(
         !!name := fun
       )
 
-
       needs_unbind <- name %in% private$.names
       private$.names[name] <- name
       private$.added[name] <- name
@@ -443,8 +455,20 @@ plyxp_assay <- R6::R6Class(
     #' @param .env_bot an environment that the resulting mask will be built from.
     #' @param .env_top an environment that `.env_bot` inherits from
     #' @param .nrow,.ncol the number of rows and columns of each element of `.data` respectively
-    initialize = function(.data, .indices, .env_bot, .env_top = .env_bot, .nrow, .ncol) {
-      super$initialize(.data, .indices = .indices, .env_bot = .env_bot, .env_top = .env_top)
+    initialize = function(
+      .data,
+      .indices,
+      .env_bot,
+      .env_top = .env_bot,
+      .nrow,
+      .ncol
+    ) {
+      super$initialize(
+        .data,
+        .indices = .indices,
+        .env_bot = .env_bot,
+        .env_top = .env_top
+      )
       env_bind(
         private$env_current_group_info,
         .nrow = .nrow,
