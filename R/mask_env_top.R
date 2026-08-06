@@ -65,14 +65,16 @@ top_env <- new_environment(
 bot_env <- new.env(parent = top_env)
 
 plyxp_group_ids2 <- function(
-    groups,
-    expanded,
-    relative_to = c("assays", "rows", "cols")) {
+  groups,
+  expanded,
+  relative_to = c("assays", "rows", "cols")
+) {
   #
   relative_to <- match.arg(relative_to, c("assays", "rows", "cols"))
   Nr <- nrow(groups$row_groups)
   Nc <- nrow(groups$col_groups)
-  switch(relative_to,
+  switch(
+    relative_to,
     assays = {
       out <- expanded
       list(
