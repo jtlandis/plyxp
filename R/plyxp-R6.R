@@ -461,19 +461,19 @@ plyxp_assay <- R6::R6Class(
       unchopped <- if (is.null(private$.indices)) {
         .subset2(data, 1L)
       } else {
-        list_unchop(
-          lapply(data, as.vector),
-          indices = private$.indices
+        unchop_2d(
+          data,
+          row_ind = attr(private$.indices, "plyxp:::row_chop_ind")[attr(
+            private$.indices,
+            "plyxp:::unique_row_ind"
+          )],
+          col_ind = attr(private$.indices, "plyxp:::col_chop_ind")[attr(
+            private$.indices,
+            "plyxp:::unique_col_ind"
+          )]
         )
       }
-      if (is.null(unchopped)) {
-        return(unchopped)
-      }
-      matrix(
-        unchopped,
-        nrow = private$.nrow,
-        ncol = private$.ncol
-      )
+      unchopped
     }
   ),
   private = list(
