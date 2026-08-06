@@ -376,3 +376,33 @@ slice_group_data <- function(groups, indices, .size, .preserve = FALSE) {
   }
   groups
 }
+
+
+unchop_2d <- function(lst, row_ind, col_ind) {
+  dims <- lapply(lst, dim)
+  ndims <- vctrs::vec_size_common(!!!dims)
+  total_size <- sum(vapply(dims, prod, FUN.VALUE = numeric(1)))
+  nrow <- sum(vapply(dims[seq_along(row_ind)], `[`, FUN.VALUE = numeric(1), 1))
+  col_slice <- (seq_along(col_ind) - 1L) * length(row_ind) + 1L
+  ncol <- sum(vapply(dims[col_slice], `[`, FUN.VALUE = numeric(1), 2))
+  dim_args <- c(
+    list(rlang::expr(i)),
+    list(rlang::expr(j)),
+    rep(list(rlang::missing_arg()), ndims - 2L)
+  )
+  exprn <- expr(rlang::inject(out[!!!dim_args] <- lst[[k]]))
+  out <- vector(typeof(lst[[1]]), total_size)
+  out <- if (ndims == 2) {
+    matrix(out, nrow = nrow, ncol = ncol)
+  } else {
+    array(out, dim = c(nrow, ncol, total_size / (nrow * ncol)))
+  }
+  k <- 0L
+  for (j in col_ind) {
+    for (i in row_ind) {
+      k <- k + 1L
+      eval(exprn)
+    }
+  }
+  out
+}
