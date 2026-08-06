@@ -65,4 +65,8 @@ test_that("summarize places assays in correct order", {
   colse <- group_by(se_obj, cols(grps = 1:4)) |>
     summarise(seq = as.integer(rowSums(seq)))
   expect_identical(unname(pull(colse, seq)), unname(pull(se_obj, seq)))
+
+  bothse <- group_by(se_obj, rows(grps = 1:5), cols(grps = 1:4)) |>
+    summarise(seq = seq)
+  expect_identical(unname(pull(colse, seq)), unname(pull(se_obj, seq)))
 })
