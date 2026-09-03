@@ -65,10 +65,14 @@ add_bind <- function(
     type,
     standard = expr(env_bind),
     lazy = expr(env_bind_lazy),
-    active = expr(env_bind_active)
+    active = expr(env_bind_active),
+    stop(sprintf("unsupported `type` argument: %s", type))
   )
   name_unquo <- quote(!!name)
   quosure_unquo <- quote(!!quosure)
+  # removed inlining of .env_expr and .env_bind due to https://github.com/r-lib/coro/issues/36
+  # Note, if the user's expression (.expr) inlines data, then this **can** cause a
+  # memory leak if the output function gets JIT compiled
   fn <- if (type == "active") {
     new_function(
       args = alist(name = ),
