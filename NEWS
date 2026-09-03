@@ -1,3 +1,10 @@
+## plyxp 1.7.5
+
+* now supports DataFrames as columns within the `rowData()` and `colData()` of a `SummarizedExperiment` object.
+* plyxp is less strict about the return type in the assays context. If the object has the correct dimensions no coersion occurs.
+  If the object is 1D scalar, it creates a simple matrix replicated with that value.
+  Otherwise the size is checked to either be equal to the expected 2D (matrix), or a multiple of it (array).
+
 ## plyxp 1.7.4
 
 * `method(vec_slice, class_DF)` now properly slices the rownames instead of the elementMetadata
