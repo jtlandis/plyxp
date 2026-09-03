@@ -69,18 +69,21 @@ add_bind <- function(
   )
   name_unquo <- quote(!!name)
   quosure_unquo <- quote(!!quosure)
-  if (type == "active") {
+  fn <- if (type == "active") {
     new_function(
       args = alist(name = ),
       body = expr({
         name_sym <- as.name(name)
+        this <- base::sys.function()
+        expr_env <- attr(this, "plyxp:::expr_env")
         actv_fun <- new_function(
           pairlist(),
           inject(quote(!!.expr)),
-          env = !!.env_expr
+          env = expr_env
         )
         # active_fun <- eval_tidy(quosure, data = as_data_mask(base::baseenv()))
-        (!!fun)(!!.env_bind, !!name_unquo := actv_fun)
+        binding_env <- this |> attr("plyxp:::binding_env")
+        (!!fun)(binding_env, !!name_unquo := actv_fun)
       })
     )
   } else {
@@ -88,11 +91,17 @@ add_bind <- function(
       args = alist(name = ),
       body = expr({
         name_sym <- as.name(name)
-        quosure <- new_quosure(expr(!!.expr), env = !!.env_expr)
-        (!!fun)(!!.env_bind, !!name_unquo := !!quosure_unquo)
+        this <- base::sys.function()
+        expr_env <- attr(this, "plyxp:::expr_env")
+        quosure <- new_quosure(expr(!!.expr), env = expr_env)
+        binding_env <- attr("plyxp:::binding_env")
+        (!!fun)(binding_env, !!name_unquo := !!quosure_unquo)
       })
     )
   }
+  attr(fn, "plyxp:::expr_env") <- .env_expr
+  attr(fn, "plyxp:::binding_env") <- .env_bind
+  fn
 }
 
 ## due to challenges in passing BiocCheck, no longer documenting non-exported
