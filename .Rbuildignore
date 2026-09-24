@@ -1,5 +1,6 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^CONTRIBUTING\.md$
 ^data-raw$
 presentations
 src
