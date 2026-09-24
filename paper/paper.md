@@ -1,0 +1,144 @@
+---
+title: "plyxp: Efficient and Tidy Manipulation of Annotated Matrix Data in R/Bioconductor"
+tags:
+  - R
+  - Bioconductor
+  - bioinformatics
+  - tidyverse
+  - data masking
+  - SummarizedExperiment
+authors:
+  - name: Justin T. Landis
+    orcid: 0000-0001-5501-4934
+    corresponding: true
+    affiliation: "1, 2"
+  - name: Michael I. Love
+    orcid: 0000-0001-8401-0545
+    affiliation: "2, 3"
+affiliations:
+  - index: 1
+    name: Bioinformatics and Computational Biology Program, University of North Carolina at Chapel Hill, United States
+  - index: 2
+    name: Department of Genetics, University of North Carolina at Chapel Hill, United States
+  - index: 3
+    name: Department of Biostatistics, University of North Carolina at Chapel Hill, United States
+date: 16 September 2026
+bibliography: paper.bib
+---
+
+# Summary
+
+Many biological experiments produce tables of measurements in which each row is a feature, such as a gene, and each column is a sample.
+These measurements are only interpretable together with two further tables of descriptive information: one describing the features (for example, gene length) and one describing the samples (for example, treatment group).
+All three pieces must stay in sync whenever the data are filtered, reordered, or transformed; otherwise a measurement can silently become attached to the wrong gene or sample.
+_plyxp_ is an R package that lets analysts manipulate these annotated matrix data using the widely taught verbs of the _dplyr_ package [@dplyr], such as `mutate()` and `filter()`, while guaranteeing that measurements and descriptions remain aligned.
+It introduces a small, explicit grammar for stating which of the three tables an expression refers to and where its result should be stored.
+_plyxp_ is distributed through Bioconductor and can be installed with `BiocManager::install("plyxp")`; the source code is available at <https://github.com/jtlandis/plyxp>.
+A longer treatment of the design and its internals is available as a preprint [@Landis2026].
+
+# Statement of need
+
+High-throughput omics data are commonly summarized as one or more matrices of counts or abundances across genomic features (rows) and samples or cells (columns).
+Analyses routinely require computations that link the matrix to its metadata, such as dividing RNA-seq counts by transcript length (a row property) or by library size (a column property).
+Data classes such as _ExpressionSet_ [@Gentleman2004] and _SummarizedExperiment_ (SE) [@Huber2015] in R/Bioconductor, and _AnnData_ [@Virshup2024] in Python, keep data and metadata consistent during subsetting, reordering, and binding.
+
+Operating on these objects, however, requires learning domain-specific accessor functions.
+Grouped computations over sets of rows or columns often require explicit loops or less familiar functional programming helpers, which can obscure the purpose of analysis code.
+The _tidyomics_ project [@Hutchison2024] addresses this by bringing the chained, verb-based style of tidy data analysis [@Wickham2014], as implemented in _dplyr_ and the wider _tidyverse_ [@tidyverse], to Bioconductor classes.
+
+_plyxp_ targets Bioconductor users, such as bioinformatics analysts working with bulk or single-cell expression data, who want this tidy style for SE objects but whose computations mix matrix values and metadata and therefore need to remain efficient.
+Instead of converting the object to a long table, _plyxp_ evaluates expressions directly against the matrix and metadata in place, using the data-masking facilities of _rlang_ [@rlang], and returns an object of the same class that was supplied.
+
+# State of the field
+
+Within _tidyomics_, tidy interfaces exist for genomic ranges (_plyranges_) [@Lee2019; @Lee2020], count matrices (_tidybulk_) [@Mangiola2021bulk], and Seurat objects (_tidyseurat_) [@Mangiola2021Seurat].
+The closest existing tool is _tidySummarizedExperiment_, released with Bioconductor 3.12 in 2020, which presents an SE as an abstracted data frame by conceptually unwinding the matrix into a tidy long-form table.
+This design is well suited to exploration and to piping data directly into _ggplot2_, but computations that combine matrix values with metadata pay the cost of that unwinding and of reconstructing the SE afterwards.
+The long-form view also discards information about which table a new variable belongs to and requires rules for resolving name collisions across tables.
+In Python, _AnnData_ provides the data structure, and _pandas_ [@McKinney2022] provides chained table operations, but no comparable grammar connects the two.
+
+These limitations follow from the long-form abstraction itself rather than from its implementation, so they could not be removed by a contribution to _tidySummarizedExperiment_ without changing its user-facing semantics, on which existing users depend.
+We therefore built _plyxp_ as a separate package with its own class, _PlySummarizedExperiment_, which wraps any SE subclass (e.g., _SingleCellExperiment_) by composition.
+Because the class is distinct, _plyxp_ and _tidySummarizedExperiment_ can be loaded together without method conflicts, and the two projects have since converged at the implementation level (see Research impact statement).
+
+# Software design
+
+_plyxp_ defines three evaluation contexts for an object with $n$ rows and $p$ columns: `assays`, one or more $n \times p$ matrices; `rows`, vectors of length $n$ describing features; and `cols`, vectors of length $p$ describing samples.
+Expressions are evaluated in the `assays` context by default, and the sentinel functions `rows()` and `cols()` redirect evaluation to the metadata (\autoref{fig:syntax}A).
+The same syntax determines where results are stored by `mutate()` and which dimension is subset by `filter()`:
+
+```r
+xp <- new_plyxp(se)
+xp |>
+  mutate(
+    log_counts = log10(counts + 1),
+    cols(treated = dex == "trt"),
+    cpbp = counts / .rows$gene_length
+  ) |>
+  filter(rows(gene_biotype == "lincRNA"))
+```
+
+![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax} []{label="fig:syntax"}](application_note_F2_003.png){width="100%"}
+
+Contexts are connected through _rlang_ pronouns, objects that give an unambiguous lookup into another environment [@Wickham2019].
+Each context is reachable through two pronouns (\autoref{fig:syntax}B).
+The reshaped pronoun (e.g., `.rows`, `.assays`) returns data resized to fit the current context, so the row vector `gene_length` above is replicated to the size of the matrix.
+The as-is pronoun (e.g., `.assays_asis`) returns the data exactly as stored, so that optimized routines can operate on its native shape.
+For example, both expressions below add row means to the row metadata, but the first uses the vectorized `rowMeans()` on the matrix, whereas the second receives the matrix reshaped as a list of rows and iterates over it with _purrr_ [@purrr]:
+
+```r
+xp |>
+  mutate(rows(
+    ave  = rowMeans(.assays_asis$counts),
+    ave2 = purrr::map_dbl(.assays$counts, mean)
+  ))
+```
+
+Internally, each context is an _rlang_ data mask, a chain of environments in which object data and pronoun targets are bound lazily, so a cross-context transformation is computed only if the user's expression requests it, and at most once per data mask (\autoref{fig:masks}).
+This avoids eagerly converting the whole object, eliminates name collisions between contexts, and makes the destination of every result unambiguous.
+Grouping follows the same principle: _plyxp_ only permits groupings that partition whole rows or columns, because arbitrary partitions of matrix elements are not guaranteed to form valid sub-matrices.
+
+![Data-mask structure in _plyxp_. The `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by dashed lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_F1_006a.png){width="100%"}
+
+The principal trade-off is a small, fixed overhead: _plyxp_ relies on Bioconductor-native operations such as `[` subsetting and builds its abstraction on every call, so it is not expected to be faster than calling the SE interface directly.
+We accept this cost in exchange for syntactic precision and an efficient way to access data in its native shape (\autoref{tbl:perf}).
+
+# Research impact statement
+
+The strongest evidence of impact is external adoption: as of the Bioconductor 3.22 release (Fall 2025), _tidySummarizedExperiment_ uses _plyxp_ internally for some operations.
+Users of that package therefore benefit from _plyxp_'s evaluation strategy without changing their code, in place of operations that previously required a long-form representation of the data.
+_plyxp_ is itself distributed through both the release and development branches of Bioconductor, where it undergoes the project's automated build and check process.
+
+We benchmarked a representative cross-context task, scaling the counts matrix by gene length, on the _airway_ RNA-seq dataset [@Himes2014] (\autoref{tbl:perf}).
+_plyxp_ was about 19 times faster than unwinding the object to a long table and back, and about four times slower than hand-written native R code.
+Within _plyxp_, choosing the as-is pronoun over the reshaped one reduced the time needed to compute row means roughly tenfold, showing why both access modes are exposed.
+Benchmark code and the package versions used are available in a companion repository [@plyxp_examples].
+
++--------+----------+------------+-----------+
+| | _Dividing counts by length_ |
+| +----------+------------+-----------+
+| | native R | _plyxp_ | unwound |
++========+==========+============+===========+
+| Time | 4.7 ms | 19.2 ms | 372 ms |
++--------+----------+------------+-----------+
+| | _Computing row means_ | |
+| +----------+------------+ |
+| | asis | reshaped | |
++--------+----------+------------+-----------+
+| Time | 14.4 ms | 155 ms | |
++--------+----------+------------+-----------+
+
+: Performance comparison of _plyxp_ and alternative approaches. Run times are medians over repeated evaluations. The "Computing row means" task compares pronoun access options within _plyxp_, not against native R. \label{tbl:perf} []{label="tbl:perf"}
+
+# AI usage disclosure
+
+Generative AI tools were not used in the development of the _plyxp_ software, its documentation, or the authoring of the original manuscript from which this paper is derived.
+An AI assistant (Claude Opus 5, Anthropic) was used solely to restructure and condense that existing manuscript text to meet the Journal of Open Source Software's format and length requirements.
+All resulting text was reviewed, edited, and verified by the human authors, who made all design, analysis, and interpretation decisions.
+
+# Acknowledgements
+
+The authors thank Rachel Sharp, Beatriz Campillo Miñano, Stuart Lee, and Stefano Mangiola for comments on an earlier draft.
+This work is supported in part by an Essential Open Source Software (EOSS) grant from the Wellcome Trust [313919/Z/24/Z] and by the National Institutes of Health grant R01-HG009937.
+
+# References
