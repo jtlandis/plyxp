@@ -114,7 +114,7 @@ _plyxp_ was about 19 times faster than unwinding the object to a long table and 
 Within _plyxp_, choosing the as-is pronoun over the reshaped one reduced the time needed to compute row means roughly tenfold, showing why both access modes are exposed.
 Benchmark code and the package versions used are available in a companion repository [@plyxp_examples].
 
-+--------+----------+------------+-----------+
+<!--+--------+----------+------------+-----------+
 | | _Dividing counts by length_ |
 | +----------+------------+-----------+
 | | native R | _plyxp_ | unwound |
@@ -128,7 +128,7 @@ Benchmark code and the package versions used are available in a companion reposi
 | Time | 14.4 ms | 155 ms | |
 +--------+----------+------------+-----------+
 
-: Performance comparison of _plyxp_ and alternative approaches. Run times are medians over repeated evaluations. The "Computing row means" task compares pronoun access options within _plyxp_, not against native R. \label{tbl:perf} []{label="tbl:perf"}
+: Performance comparison of _plyxp_ and alternative approaches. Run times are medians over repeated evaluations. The "Computing row means" task compares pronoun access options within _plyxp_, not against native R. \label{tbl:perf} []{label="tbl:perf"}-->
 
 # AI usage disclosure
 
