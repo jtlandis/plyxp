@@ -34,7 +34,6 @@ All three pieces must stay in sync whenever the data are filtered, reordered, or
 _plyxp_ is an R package that lets analysts manipulate these annotated matrix data using the widely taught verbs of the _dplyr_ package [@dplyr], such as `mutate()` and `filter()`, while guaranteeing that measurements and descriptions remain aligned.
 It introduces a small, explicit grammar for stating which of the three tables an expression refers to and where its result should be stored.
 _plyxp_ is distributed through Bioconductor and can be installed with `BiocManager::install("plyxp")`; the source code is available at <https://github.com/jtlandis/plyxp>.
-A longer treatment of the design and its internals is available as a preprint [@Landis2026].
 
 # Statement of need
 
