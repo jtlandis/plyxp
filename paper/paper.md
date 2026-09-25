@@ -58,7 +58,7 @@ This design is well suited to exploration and to piping data directly into _ggpl
 The long-form view also discards information about which table a new variable belongs to and requires rules for resolving name collisions across tables.
 In Python, _AnnData_ provides the data structure, and _pandas_ [@McKinney2022] provides chained table operations, but no comparable grammar connects the two.
 
-These limitations follow from the long-form abstraction itself rather than from its implementation, so they could not be removed by a contribution to _tidySummarizedExperiment_ without changing its user-facing semantics, on which existing users depend.
+These limitations follow from the long-form abstraction itself.
 We therefore built _plyxp_ as a separate package with its own class, _PlySummarizedExperiment_, which wraps any SE subclass (e.g., _SingleCellExperiment_) by composition.
 Because the class is distinct, _plyxp_ and _tidySummarizedExperiment_ can be loaded together without method conflicts, and the two projects have since converged at the implementation level (see Research impact statement).
 
