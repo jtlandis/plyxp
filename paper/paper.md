@@ -102,6 +102,8 @@ xp |>
 Internally, each context is an _rlang_ data mask, a chain of environments in which object data and pronoun targets are bound lazily, so a cross-context transformation is computed only if the user's expression requests it, and at most once per data mask (\autoref{fig:masks}).
 This avoids eagerly converting the whole object, eliminates name collisions between contexts, and makes the destination of every result unambiguous.
 Grouping follows the same principle: _plyxp_ only permits groupings that partition whole rows or columns, because arbitrary partitions of matrix elements are not guaranteed to form valid sub-matrices.
+Enforcing this restriction for grouping has enabled _plyxp_ to implement the dplyr `summarise` function such that it will return an SE object.
+Prior implementations did support `summarise`, however were not isomorphic as the ambiguity of the implementation dropped structural information, thus returning a data frame was more practical.
 
 ![Data-mask structure in _plyxp_. The `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by dashed lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_F1_006a.png){width="100%"}
 
