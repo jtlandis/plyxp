@@ -45,8 +45,10 @@ Operating on these objects, however, requires learning domain-specific accessor 
 Grouped computations over sets of rows or columns often require explicit loops or less familiar functional programming helpers, which can obscure the purpose of analysis code.
 The _tidyomics_ project [@Hutchison2024] addresses this by bringing the chained, verb-based style of tidy data analysis [@Wickham2014], as implemented in _dplyr_ and the wider _tidyverse_ [@tidyverse], to Bioconductor classes.
 
-_plyxp_ targets Bioconductor users, such as bioinformatics analysts working with bulk or single-cell expression data, who want this tidy style for SE objects but whose computations mix matrix values and metadata and therefore need to remain efficient.
-Instead of converting the object to a long table, _plyxp_ evaluates expressions directly against the matrix and metadata in place, using the data-masking facilities of _rlang_ [@rlang], and returns an object of the same class that was supplied.
+_plyxp_ targets Bioconductor users whose analysis pipelines requires SE objects for their compact strucutre but want to adopt tidy styling abstractions that do not sacrifice efficiency.
+Instead of converting the object to a long table as required to use native _dplyr_ implementations naively, _plyxp_ evaluates expressions directly against the matrix and metadata in place, using the data-masking facilities of _rlang_ [@rlang], and returns an object of the same class that was supplied.
+_plyxp_ establishes flexible access across matrices and metadata in that the user dictate extracting data "asis" or in a convenient "reshaped" form.
+<!--not both flexible points - multicontext AND the asis/reshaped -->
 
 # State of the field
 
