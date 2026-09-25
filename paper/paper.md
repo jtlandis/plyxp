@@ -107,8 +107,8 @@ Prior implementations did support `summarise`, however were not isomorphic as th
 
 ![Data-mask structure in _plyxp_. The `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by dashed lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_F1_006a.png){width="100%"}
 
-The principal trade-off is a small, fixed overhead: _plyxp_ relies on Bioconductor-native operations such as `[` subsetting and builds its abstraction on every call, so it is not expected to be faster than calling the SE interface directly.
-We accept this cost in exchange for syntactic precision and an efficient way to access data in its native shape (\autoref{tbl:perf}).
+_plyxp_ builds its abstractions upon Bioconductor-native operations such as `[` subsetting and incurs a small, fixed overhead.
+Although plyxp is not expected to outperform direct calls to the SE interface, its `group_by()`/`summarise()` operations are more expressive and often faster than equivalent hand-written code [@plyxp_examples].
 
 # Research impact statement
 
