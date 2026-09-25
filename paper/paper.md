@@ -66,7 +66,8 @@ Because the class is distinct, _plyxp_ and _tidySummarizedExperiment_ can be loa
 
 _plyxp_ defines three evaluation contexts for an object with $n$ rows and $p$ columns: `assays`, one or more $n \times p$ matrices; `rows`, vectors of length $n$ describing features; and `cols`, vectors of length $p$ describing samples.
 Expressions are evaluated in the `assays` context by default, and the sentinel functions `rows()` and `cols()` redirect evaluation to the metadata (\autoref{fig:syntax}A).
-The same syntax determines where results are stored by `mutate()` and which dimension is subset by `filter()`:
+The same syntax determines where results are stored by `mutate()` and which dimension is subset by `filter()`.
+Below we create a new _plyxp_ object (`xp`) from a SummarizedExperiment where the rows and columns of the matrices represents genes and samples respectively:
 
 ```r
 xp <- new_plyxp(se)
@@ -74,7 +75,8 @@ xp |>
   mutate(
     log_counts = log10(counts + 1),
     cols(treated = dex == "trt"),
-    cpbp = counts / .rows$gene_length
+    cpbp = counts / .rows$gene_length,
+    cpm = counts / .cols$mil_of_reads
   ) |>
   filter(rows(gene_biotype == "lincRNA"))
 ```
