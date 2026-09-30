@@ -83,7 +83,7 @@ xp |>
 
 <!--need to find out if we can reference code listing with regular .md files for joss. Could be helpful to reference this listing in the "flexibility" sentence-->
 
-![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax} []{label="fig:syntax"}](application_note_F2_003.png){width="100%"}
+![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax} []{label="fig:syntax"}](application_note_syntax_00.png){width="100%"}
 
 Contexts are connected through _rlang_ pronouns, objects that give an unambiguous lookup into another environment [@Wickham2019].
 Each context is reachable through two pronouns (\autoref{fig:syntax}B).
@@ -105,37 +105,27 @@ Grouping follows the same principle: _plyxp_ only permits groupings that partiti
 Enforcing this restriction for grouping has enabled _plyxp_ to implement the dplyr `summarise` function such that it will return an SE object.
 Prior implementations did support `summarise`, however were not isomorphic as the ambiguity of the implementation dropped structural information, thus returning a data frame was more practical.
 
-![Data-mask structure in _plyxp_. The `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by dashed lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_F1_006a.png){width="100%"}
+![Data-mask structure in _plyxp_. The `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by dashed lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_masks_02.png){width="100%"}
 
 _plyxp_ builds its abstractions upon Bioconductor-native operations such as `[` subsetting and incurs a small, fixed overhead.
 Although plyxp is not expected to outperform direct calls to the SE interface, its `group_by()`/`summarise()` operations are more expressive and often faster than equivalent hand-written code [@plyxp_examples].
 
 # Research impact statement
 
-The strongest evidence of impact is external adoption: as of the Bioconductor 3.22 release (Fall 2025), _tidySummarizedExperiment_ uses _plyxp_ internally for some operations.
-Users of that package therefore benefit from _plyxp_'s evaluation strategy without changing their code, in place of operations that previously required a long-form representation of the data.
-_plyxp_ is itself distributed through both the release and development branches of Bioconductor, where it undergoes the project's automated build and check process.
+_plyxp_ is a realized example of a new expressive grammar for access and manipulation of annotated matrix data and a framework for efficiently performing the operations implied by the syntax.
+Its three evaluation contexts combined with the proposed sentinel syntax provide an unambiguous grammar that is faithful to the structure of the annotated matrix.
+Specifically, each evaluation context is distinct such that objects within are of a similar "size" (e.g., for an annotated matrix of $n \times p$ dimensions, the rows, columns, and assays are size $n$, $p$ and $n \times p$, respectively).
+Furthermore, identical symbols between these contexts will represent different objects, and the sentinel functions `rows()` and `cols()` provide a clear indication of which context is being referenced.
+Cross-context operations are optimized in that any reshaping is done lazily and may avoided entirely through the "as-is" pronoun variants, exemplifying the flexibility of _plyxp_.
 
-We benchmarked a representative cross-context task, scaling the counts matrix by gene length, on the _airway_ RNA-seq dataset [@Himes2014] (\autoref{tbl:perf}).
-_plyxp_ was about 19 times faster than unwinding the object to a long table and back, and about four times slower than hand-written native R code.
+We benchmarked a representative cross-context task, scaling the counts matrix by gene length, on the _airway_ RNA-seq dataset [@Himes2014].
+_plyxp_ was greater than a magnitude faster than unwinding the object to a long table and back, and less than a magnitude slower than hand-written native R code.
 Within _plyxp_, choosing the as-is pronoun over the reshaped one reduced the time needed to compute row means roughly tenfold, showing why both access modes are exposed.
 Benchmark code and the package versions used are available in a companion repository [@plyxp_examples].
 
-<!--+--------+----------+------------+-----------+
-| | _Dividing counts by length_ |
-| +----------+------------+-----------+
-| | native R | _plyxp_ | unwound |
-+========+==========+============+===========+
-| Time | 4.7 ms | 19.2 ms | 372 ms |
-+--------+----------+------------+-----------+
-| | _Computing row means_ | |
-| +----------+------------+ |
-| | asis | reshaped | |
-+--------+----------+------------+-----------+
-| Time | 14.4 ms | 155 ms | |
-+--------+----------+------------+-----------+
-
-: Performance comparison of _plyxp_ and alternative approaches. Run times are medians over repeated evaluations. The "Computing row means" task compares pronoun access options within _plyxp_, not against native R. \label{tbl:perf} []{label="tbl:perf"}-->
+_plyxp_ has also been adopted outside our group.
+As of the Bioconductor 3.22 release (October 2025), _tidySummarizedExperiment_ uses _plyxp_ internally for some operations, so its users benefit from _plyxp_'s evaluation strategy without changing their code, in place of operations that previously required a long-form representation of the data.
+_plyxp_ is distributed through both the release and development branches of Bioconductor, where it passes the project's automated build and check process, and it was downloaded from more than 600 distinct IP addresses in the first month of the Bioconductor 3.23 release (May 2026).
 
 # AI usage disclosure
 
