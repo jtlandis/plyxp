@@ -126,7 +126,7 @@ Within _plyxp_, choosing the as-is pronoun over the reshaped one reduced the tim
 Benchmark code and the package versions used are available in a companion repository [@plyxp_examples].
 
 _plyxp_ has also been adopted outside our group.
-As of the Bioconductor 3.22 release (October 2025), _tidySummarizedExperiment_ uses _plyxp_ internally for some operations, so its users benefit from _plyxp_'s evaluation strategy without changing their code, in place of operations that previously required a long-form representation of the data.
+As of the Bioconductor 3.22 release (October 2025), _tidySummarizedExperiment_ uses _plyxp_ internally in place of operations that previously required a long-form representation, so its users benefit without changing their code.
 _plyxp_ is distributed through both the release and development branches of Bioconductor, where it passes the project's automated build and check process, and it was downloaded from more than 600 distinct IP addresses in the first month of the Bioconductor 3.23 release (May 2026).
 
 # AI usage disclosure
