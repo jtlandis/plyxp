@@ -82,7 +82,7 @@ xp |>
 
 <!--need to find out if we can reference code listing with regular .md files for joss. Could be helpful to reference this listing in the "flexibility" sentence-->
 
-![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax} []{label="fig:syntax"}](application_note_syntax_00.png){width="100%"}
+![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as-is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax} []{label="fig:syntax"}](application_note_syntax_00.png){width="100%"}
 
 Contexts are connected through _rlang_ pronouns, objects that give an unambiguous lookup into another environment [@Wickham2019].
 Each context is reachable through two pronouns (\autoref{fig:syntax}B).
