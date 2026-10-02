@@ -118,7 +118,7 @@ _plyxp_ is a realized example of a new expressive grammar for access and manipul
 Its three evaluation contexts combined with the proposed sentinel syntax provide an unambiguous grammar that is faithful to the structure of the annotated matrix.
 Specifically, each evaluation context is distinct such that objects within are of a similar "size" (e.g., for an annotated matrix of $n \times p$ dimensions, the rows, columns, and assays are size $n$, $p$ and $n \times p$, respectively).
 Furthermore, identical symbols between these contexts will represent different objects, and the sentinel functions `rows()` and `cols()` provide a clear indication of which context is being referenced.
-Cross-context operations are optimized in that any reshaping is done lazily and may avoided entirely through the "as-is" pronoun variants, exemplifying the flexibility of _plyxp_.
+Cross-context operations are optimized in that any reshaping is done lazily and may be avoided entirely through the "as-is" pronoun variants, exemplifying the flexibility of _plyxp_.
 
 We benchmarked a representative cross-context task, scaling the counts matrix by gene length, on the _airway_ RNA-seq dataset [@Himes2014].
 _plyxp_ was greater than a magnitude faster than unwinding the object to a long table and back, and less than a magnitude slower than hand-written native R code.
