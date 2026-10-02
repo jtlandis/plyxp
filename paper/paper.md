@@ -110,7 +110,7 @@ Prior implementations of `summarise()` for SE objects returned a data frame beca
 ![Simplified data-mask structure in _plyxp_. The `assays` and `rows` contexts are represented by the green and purple blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by black lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_simple_masks_01.png){width="100%"}
 
 _plyxp_ builds its abstractions upon Bioconductor-native operations such as `[` subsetting and incurs a small, fixed overhead.
-Although plyxp is not expected to outperform direct calls to the SE interface, its `group_by()`/`summarise()` operations are more expressive and often faster than equivalent hand-written code [@plyxp_examples].
+Although _plyxp_ is not expected to outperform direct calls to the SE interface, its `group_by()`/`summarise()` operations are more expressive and often faster than equivalent hand-written code [@plyxp_examples].
 
 # Research impact statement
 
