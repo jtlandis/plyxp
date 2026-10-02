@@ -99,7 +99,8 @@ xp |>
   ))
 ```
 
-Internally, each context is an _rlang_ data mask, a chain of environments in which object data and pronoun targets are bound lazily, so a cross-context transformation is computed only if the user's expression requests it, and at most once per data mask (\autoref{fig:masks}).
+Internally, each context is an _rlang_ data mask, a chain of environments in which object data and pronoun targets are bound lazily.
+Thus, a cross-context transformation is computed only if the user's expression requests it, and at most once per data mask (\autoref{fig:masks}).
 This avoids eagerly converting the whole object, eliminates name collisions between contexts, and makes the destination of every result unambiguous.
 Grouping follows the same principle: _plyxp_ only permits groupings that partition whole rows or columns, because arbitrary partitions of matrix elements are not guaranteed to form valid sub-matrices.
 Enforcing this restriction for grouping has enabled _plyxp_ to implement the dplyr `summarise` function such that it will return an SE object.
