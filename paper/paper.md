@@ -86,7 +86,8 @@ xp |>
 
 Contexts are connected through _rlang_ pronouns, objects that give an unambiguous lookup into another environment [@Wickham2019].
 Each context is reachable through two pronouns (\autoref{fig:syntax}B).
-The reshaped pronoun (e.g., `.rows`, `.assays`) returns data resized to fit the current context, so the row vector `gene_length` above is replicated to the size of the matrix.
+The reshaped pronoun (e.g., `.rows`, `.assays`) returns data resized to fit the current context, so the row-metadata vector `gene_length` above is replicated to the size of the matrix.
+This enabling convenient and efficient per-element arithmetic to generate new assays, such as counts-per-basepair (`cpbp`) and counts-per-million (`cpm`) above.
 The as-is pronoun (e.g., `.assays_asis`) returns the data exactly as stored, so that optimized routines can operate on its native shape.
 For example, both expressions below add row means to the row metadata, but the first uses the vectorized `rowMeans()` on the matrix, whereas the second receives the matrix reshaped as a list of rows and iterates over it with _purrr_ [@purrr]:
 
