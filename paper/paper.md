@@ -121,7 +121,7 @@ Furthermore, identical symbols between these contexts will represent different o
 Cross-context operations are optimized in that any reshaping is done lazily and may be avoided entirely through the "as-is" pronoun variants, exemplifying the flexibility of _plyxp_.
 
 We benchmarked a representative cross-context task, scaling the counts matrix by gene length, on the _airway_ RNA-seq dataset [@Himes2014].
-_plyxp_ was greater than a magnitude faster than unwinding the object to a long table and back, and less than a magnitude slower than hand-written native R code.
+_plyxp_ was more than an order of magnitude faster than unwinding the object to a long table and back, and within an order of magnitude of hand-written native R code.
 Within _plyxp_, choosing the as-is pronoun over the reshaped one reduced the time needed to compute row means roughly tenfold, showing why both access modes are exposed.
 Benchmark code and the package versions used are available in a companion repository [@plyxp_examples].
 
