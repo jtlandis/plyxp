@@ -55,7 +55,7 @@ Within _tidyomics_, tidy interfaces exist for genomic ranges (_plyranges_) [@Lee
 The closest existing tool is _tidySummarizedExperiment_, released with Bioconductor 3.12 in 2020, which presents an SE as an abstracted data frame by conceptually unwinding the matrix into a tidy long-form table.
 This design is well suited to exploration and to piping data directly into _ggplot2_, but computations that combine matrix values with metadata pay the cost of that unwinding and of reconstructing the SE afterwards.
 The long-form view also discards information about which table a new variable belongs to and requires rules for resolving name collisions across tables.
-In Python, _AnnData_ provides the data structure, and _pandas_ [@McKinney2022] provides chained table operations, but no comparable grammar connects the two.
+In Python, _AnnData_ provides the data structure, and _pandas_ [@McKinney2022] provides chained table operations, but no comparable grammar connects the two to our knowledge.
 
 These limitations follow from the long-form abstraction itself.
 We therefore built _plyxp_ as a separate package with its own class, _PlySummarizedExperiment_, which wraps any SE subclass (e.g., _SingleCellExperiment_) by composition.
