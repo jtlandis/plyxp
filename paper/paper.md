@@ -32,7 +32,7 @@ Many biological experiments produce matrices of measurements consisting of featu
 These measurements are only interpretable together with two further tables of descriptive information: one describing the features and one describing the samples.
 All three pieces must stay in sync whenever the data are filtered, reordered, or transformed; otherwise a measurement can silently become attached to the wrong feature or sample.
 _plyxp_ is an R package that lets analysts manipulate these annotated matrix data using the widely taught verbs of the _dplyr_ package [@dplyr], such as `mutate()` and `filter()`, while guaranteeing that measurements and descriptions remain aligned.
-It introduces a small, explicit grammar for stating which of the three tables an expression refers to and where its result should be stored.
+It introduces a small, explicit grammar for stating which of the three contexts an expression refers to and where its result should be stored.
 _plyxp_ is distributed through Bioconductor and can be installed with `BiocManager::install("plyxp")`; the source code is available at <https://github.com/jtlandis/plyxp>.
 
 # Statement of need
