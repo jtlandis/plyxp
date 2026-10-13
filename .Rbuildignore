@@ -1,3 +1,5 @@
+.*.qmd
+paper/
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^CONTRIBUTING\.md$

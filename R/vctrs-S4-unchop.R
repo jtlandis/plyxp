@@ -186,7 +186,8 @@ new_DF <- function(
   nrows = NULL,
   rownames = NULL
 ) {
-  nrows <- nrows %||% do.call(vec_size_common, .data)
+  stopifnot(is.list(.data))
+  nrows <- nrows %||% plyxp_size_common_list(.data)
   S4Vectors::new2(
     "DFrame",
     listData = .data,

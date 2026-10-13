@@ -473,20 +473,20 @@ rse_row_data <- function(x, use.names = TRUE, ...) {
 check_mcols <- function(mcols, vec) {
   len <- length(vec)
   vclass <- class(vec)
-  mcols_target_class <- getSlots(vclass)[["elementMetadata"]]
-  ok <- is(mcols, mcols_target_class)
+  mcols_target_class <- methods::getSlots(vclass)[["elementMetadata"]]
+  ok <- methods::is(mcols, mcols_target_class)
   if (ok) {
     return(mcols)
   }
   if (is.null(mcols)) {
-    mcols <- methods::new2("DFrame", nrows = len, check = FALSE)
+    mcols <- S4Vectors::new2("DFrame", nrows = len, check = FALSE)
   } else if (is.list(mcols)) {
-    mcols <- S4Vectors:::new_DataFrame(mcols)
+    mcols <- new_DF(mcols)
   }
 
-  ok <- is(mcols, mcols_target_class)
+  ok <- methods::is(mcols, mcols_target_class)
   if (!ok) {
-    mcols <- as(mcols, mcols_target_class)
+    mcols <- methods::as(mcols, mcols_target_class)
   }
   if (!is.null(rownames(mcols))) {
     rownames(mcols) <- NULL
@@ -517,13 +517,22 @@ check_mcols <- function(mcols, vec) {
   x
 }
 
-method(row_data, getClass("SummarizedExperiment")) <- mcols_row_data
+method(row_data, methods::getClass("SummarizedExperiment")) <- mcols_row_data
 
-method(row_data, getClass("RangedSummarizedExperiment")) <- rse_row_data
+method(
+  row_data,
+  methods::getClass("RangedSummarizedExperiment")
+) <- rse_row_data
 
-method(`row_data<-`, getClass("SummarizedExperiment")) <- `mcols_row_data<-`
+method(
+  `row_data<-`,
+  methods::getClass("SummarizedExperiment")
+) <- `mcols_row_data<-`
 
-method(`row_data<-`, getClass("RangedSummarizedExperiment")) <- `rse_row_data<-`
+method(
+  `row_data<-`,
+  methods::getClass("RangedSummarizedExperiment")
+) <- `rse_row_data<-`
 
 
 col_data <- function(x) {

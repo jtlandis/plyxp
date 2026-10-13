@@ -3,9 +3,12 @@
 \name{vctrs-vec_size}
 \alias{vctrs-vec_size}
 \alias{vec_size}
-\title{replicate a vector}
+\title{extract the size of a vector}
 \usage{
 vec_size(x)
+}
+\arguments{
+\item{x}{A vector}
 }
 \value{
 size of the S3 or S4 vector
@@ -15,6 +18,6 @@ A re-export of \code{\link[vctrs:vec_size]{vctrs::vec_size}} and
 as an S7 generic function to allow \code{S4Vectors}.
 }
 \examples{
-vec_size(1:2, times = 5)
-vec_size(S4Vectors::Rle(1:2), times = 5)
+vec_size(1:2)
+vec_size(S4Vectors::Rle(rep(1:2, each = 5)))
 }
