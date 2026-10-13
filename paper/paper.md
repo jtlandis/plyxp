@@ -28,10 +28,10 @@ bibliography: paper.bib
 
 # Summary
 
-Many biological experiments produce matrices of measurements consisting of features by samples.
-These measurements are only interpretable together with two further tables of descriptive information: one describing the features and one describing the samples.
+Many biological experiments produce matrices containing measurements of features by samples.
+These measurements are only interpretable alongside two additional tables of descriptive information: one describing the features and one describing the samples.
 All three pieces must stay in sync whenever the data are filtered, reordered, or transformed; otherwise a measurement can silently become attached to the wrong feature or sample.
-_plyxp_ is an R package that lets analysts manipulate these annotated matrix data using the widely taught verbs of the _dplyr_ package [@dplyr], such as `mutate()` and `filter()`, while guaranteeing that measurements and descriptions remain aligned.
+_plyxp_ is an R package that lets analysts manipulate these annotated matrix data using the user-friendly verbs of the _dplyr_ package [@dplyr], such as `mutate()` and `filter()`, while guaranteeing that measurements and descriptions remain aligned.
 It introduces a small, explicit grammar for stating which of the three contexts an expression refers to and where its result should be stored.
 _plyxp_ is distributed through Bioconductor and can be installed with `BiocManager::install("plyxp")`; the source code is available at <https://github.com/jtlandis/plyxp>.
 
@@ -87,7 +87,7 @@ xp |>
 Contexts are connected through _rlang_ pronouns, objects that give an unambiguous lookup into another environment [@Wickham2019].
 Each context is reachable through two pronouns (\autoref{fig:syntax}B).
 The reshaped pronoun (e.g., `.rows`, `.assays`) returns data resized to fit the current context, so the row-metadata vector `gene_length` above is replicated to the size of the matrix.
-This enabling convenient and efficient per-element arithmetic to generate new assays, such as counts-per-basepair (`cpbp`) and counts-per-million (`cpm`) above.
+This enables convenient and efficient per-element arithmetic to generate new assays, such as counts-per-basepair (`cpbp`) and counts-per-million (`cpm`) above.
 The as-is pronoun (e.g., `.assays_asis`) returns the data exactly as stored, so that optimized routines can operate on its native shape.
 For example, both expressions below add row means to the row metadata, but the first uses the vectorized `rowMeans()` on the matrix, whereas the second receives the matrix reshaped as a list of rows and iterates over it with _purrr_ [@purrr]:
 
@@ -105,7 +105,7 @@ This avoids eagerly converting the whole object, eliminates name collisions betw
 Grouping is likewise constrained by the matrix structure.
 _plyxp_ only permits groupings that partition whole rows or columns, because arbitrary partitions of matrix elements are not guaranteed to form valid sub-matrices.
 Enforcing this restriction for grouping has enabled _plyxp_ to implement the _dplyr_ `summarise()` function such that it will return an SE object.
-Prior implementations of `summarise()` for SE objects returned a data frame because the dropped structural information and unrestricted grouping posed a challenge to consistently construct an SE object.
+Prior implementations of `summarise()` for SE objects returned a data frame because the dropped structural information and unrestricted grouping posed a challenge to consistently constructing an SE object.
 
 ![Simplified data-mask structure in _plyxp_. The `assays` and `rows` contexts are represented by the green and purple blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by black lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_simple_masks_01.png){width="100%"}
 
