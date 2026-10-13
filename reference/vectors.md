@@ -15,14 +15,6 @@ class_s4_vctrs
 class_DF
 ```
 
-## Format
-
-An object of class `S7_union` of length 1.
-
-An object of class `classRepresentation` of length 1.
-
-An object of class `classRepresentation` of length 1.
-
 ## Value
 
 S7 class union or base class

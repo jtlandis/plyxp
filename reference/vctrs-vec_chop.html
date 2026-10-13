@@ -9,7 +9,7 @@ function to allow S4Vectors."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,15 +58,10 @@ function to allow <code>S4Vectors</code>.</p>
 
 
 <dt id="arg-indices">indices<a class="anchor" aria-label="anchor" href="#arg-indices"></a></dt>
-<dd><p>For <code>vec_chop()</code>, a list of positive integer vectors to
-slice <code>x</code> with, or <code>NULL</code>. Can't be used if <code>sizes</code> is already specified.
-If both <code>indices</code> and <code>sizes</code> are <code>NULL</code>, <code>x</code> is split into its individual
-elements, equivalent to using an <code>indices</code> of <code>as.list(vec_seq_along(x))</code>.</p>
-<p>For <code><a href="list_unchop.html">list_unchop()</a></code>, a list of positive integer vectors specifying the
-locations to place elements of <code>x</code> in. Each element of <code>x</code> is recycled to
-the size of the corresponding index vector. The size of <code>indices</code> must
-match the size of <code>x</code>. If <code>NULL</code>, <code>x</code> is combined in the order it is
-provided in, which is equivalent to using <code><a href="https://vctrs.r-lib.org/reference/vec_c.html" class="external-link">vec_c()</a></code>.</p></dd>
+<dd><p>A list of positive integer vectors to slice <code>x</code> with, or
+<code>NULL</code>. Can't be used if <code>sizes</code> is already specified. If both <code>indices</code>
+and <code>sizes</code> are <code>NULL</code>, <code>x</code> is split into its individual elements,
+equivalent to using an <code>indices</code> of <code>as.list(vec_seq_along(x))</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

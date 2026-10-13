@@ -90,6 +90,8 @@
 - [`vec_rep()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_rep.md)
   [`vec_rep_each()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_rep.md)
   : replicate a vector
+- [`vec_size()`](https://jtlandis.github.io/plyxp/reference/vctrs-vec_size.md)
+  : extract the size of a vector
 - [`vec_slice()`](https://jtlandis.github.io/plyxp/reference/vctrs_slice.md)
   : Get observations of a vector
 - [`vec_group_id()`](https://jtlandis.github.io/plyxp/reference/vec_group_id.md)

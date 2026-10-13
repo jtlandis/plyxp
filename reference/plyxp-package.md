@@ -28,5 +28,8 @@ Useful links:
 
 Authors:
 
+- Justin Landis <jtlandis314@gmail.com>
+  ([ORCID](https://orcid.org/0000-0001-5501-4934))
+
 - Michael Love <michaelisaiahlove@gmail.com>
   ([ORCID](https://orcid.org/0000-0001-8401-0545))

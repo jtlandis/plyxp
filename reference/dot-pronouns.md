@@ -28,20 +28,6 @@ pronoun from `plyxp` but only use the fully unqualified name, `.assays`,
 .cols_asis
 ```
 
-## Format
-
-An object of class `NULL` of length 0.
-
-An object of class `NULL` of length 0.
-
-An object of class `NULL` of length 0.
-
-An object of class `NULL` of length 0.
-
-An object of class `NULL` of length 0.
-
-An object of class `NULL` of length 0.
-
 ## Value
 
 access to specific values behind the rlang pronoun

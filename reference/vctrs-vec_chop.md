@@ -22,20 +22,10 @@ vec_chop(x, ..., indices = NULL)
 
 - indices:
 
-  For `vec_chop()`, a list of positive integer vectors to slice `x`
-  with, or `NULL`. Can't be used if `sizes` is already specified. If
-  both `indices` and `sizes` are `NULL`, `x` is split into its
-  individual elements, equivalent to using an `indices` of
-  `as.list(vec_seq_along(x))`.
-
-  For
-  [`list_unchop()`](https://jtlandis.github.io/plyxp/reference/list_unchop.md),
-  a list of positive integer vectors specifying the locations to place
-  elements of `x` in. Each element of `x` is recycled to the size of the
-  corresponding index vector. The size of `indices` must match the size
-  of `x`. If `NULL`, `x` is combined in the order it is provided in,
-  which is equivalent to using
-  [`vec_c()`](https://vctrs.r-lib.org/reference/vec_c.html).
+  A list of positive integer vectors to slice `x` with, or `NULL`. Can't
+  be used if `sizes` is already specified. If both `indices` and `sizes`
+  are `NULL`, `x` is split into its individual elements, equivalent to
+  using an `indices` of `as.list(vec_seq_along(x))`.
 
 ## Value
 

@@ -1,7 +1,7 @@
 # unchop a list of objects
 
 A generic version of
-[`vctrs::list_unchop`](https://vctrs.r-lib.org/reference/vec_chop.html)
+[`vctrs::list_unchop`](https://vctrs.r-lib.org/reference/list_unchop.html)
 meant to support S4 Vectors.
 
 ## Usage

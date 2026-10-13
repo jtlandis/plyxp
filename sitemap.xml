@@ -1,5 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://jtlandis.github.io/plyxp/404.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/CONTRIBUTING.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/LICENSE-text.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/LICENSE.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/articles/index.html</loc></url>
@@ -32,6 +33,7 @@
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_chop.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_recycle.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_rep.html</loc></url>
+<url><loc>https://jtlandis.github.io/plyxp/reference/vctrs-vec_size.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vctrs_slice.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vec_group_id.html</loc></url>
 <url><loc>https://jtlandis.github.io/plyxp/reference/vec_ptype2.html</loc></url>
