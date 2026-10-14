@@ -423,12 +423,6 @@ plyxp_mask <- R6::R6Class(
     .ptype = NULL,
     # newly added names
     .added = character(),
-    push = function(name) {
-      needs_unbind <- name %in% private$.names
-      private$.names <- union(private$.names, name)
-      private$.added <- union(private$.added, name)
-      invisible(needs_unbind)
-    },
     # initial size of environments
     # number of elements of `.data` + 20L
     .env_size = NULL,
