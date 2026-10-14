@@ -118,7 +118,7 @@ plyxp_quos <- function(
         trans = .trans[[ctx]]
       )
       # remove empty arguments from calls
-      ctx_quos <- Filter(Negate(rlang::quo_is_missing), ctx_quos)
+      ctx_quos <- exclude_empty_quos(ctx_quos)
       dots[[i]] <- splice(ctx_quos)
       next
     }
@@ -133,7 +133,7 @@ plyxp_quos <- function(
     )
   }
   out <- do.call(dots_list, c(dots, list(.named = .named)))
-  out <- Filter(Negate(is.null), out)
+  out <- exclude_empty_quos(out)
   if (.named) {
     # in case the prior expansion
     # of rows(...) and cols(...) need
@@ -141,6 +141,14 @@ plyxp_quos <- function(
     out <- enforce_named(out)
   }
   out
+}
+
+is_empty_quo <- function(q) {
+  is.null(q) || rlang::quo_is_missing(q)
+}
+
+exclude_empty_quos <- function(quos) {
+  Filter(Negate(is_empty_quo), quos)
 }
 
 plyxp_quo <- function(expr, env, ctx, trans, ...) {
