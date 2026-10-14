@@ -4,12 +4,17 @@ ctx_quo <- function(expr, env, ctx) {
   quo
 }
 
+# enforced named never branches to case where
+# no names are not provided because we always force
+# named quosures in `plyxp_quos()` through dots_list.
+# consider dropping
 enforce_named <- function(exprs) {
   to_update <- FALSE
-  nms <- names(exprs) %||% {
-    to_update <- TRUE
-    vapply(exprs, rlang::as_label, "")
-  }
+  nms <- names(exprs) %||%
+    {
+      to_update <- TRUE
+      vapply(exprs, rlang::as_label, "")
+    }
   char_len <- nzchar(nms)
   if (any(to_rename <- char_len == 0)) {
     nms[to_rename] <- vapply(exprs[to_rename], rlang::as_label, "")
@@ -68,15 +73,20 @@ as_trans_fn <- function(fn) {
 #'
 #' @noRd
 plyxp_quos <- function(
-    ...,
-    .named = TRUE,
-    .ctx = NULL,
-    .trans = list()) {
+  ...,
+  .named = TRUE,
+  .ctx = NULL,
+  .trans = list()
+) {
   #
   dots <- quos(...) |>
     as.list()
-  if (is.null(.ctx)) rlang::abort("`.ctx` must be specified!")
-  if (!is.list(.trans)) rlang::abort("`.trans` must be a list!")
+  if (is.null(.ctx)) {
+    rlang::abort("`.ctx` must be specified!")
+  }
+  if (!is.list(.trans)) {
+    rlang::abort("`.trans` must be a list!")
+  }
   .trans <- lapply(.trans, as_trans_fn)
   .ctx_default <- .ctx[1] %||% rlang::abort("`.ctx` have at least 1 element!")
   .ctx_opt <- .ctx[-1]
@@ -101,9 +111,7 @@ plyxp_quos <- function(
       ctx_nms <- rlang::names2(ctx_exprs)
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(
-        list(ctx_exprs,
-          name = ctx_nms, is_named = ctx_is_named
-        ),
+        list(ctx_exprs, name = ctx_nms, is_named = ctx_is_named),
         plyxp_quo,
         env = .env,
         ctx = ctx,
