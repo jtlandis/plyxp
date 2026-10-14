@@ -211,7 +211,7 @@ plyxp_mask <- R6::R6Class(
       if (needs_unbind) {
         for (i in seq_along(binding_funcs)) {
           func <- binding_funcs[[i]]
-          env_unbind(environment(func)$.env_bind, name)
+          env_unbind(attr(func, "plyxp:::binding_env"), name)
           func(name)
         }
       } else {
