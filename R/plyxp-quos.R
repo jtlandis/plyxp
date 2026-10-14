@@ -1,8 +1,9 @@
-ctx_quo <- function(expr, env, ctx) {
-  quo <- new_quosure(expr = expr, env = env)
-  attr(quo, "plyxp:::ctx") <- ctx
-  quo
-}
+#' unused
+# ctx_quo <- function(expr, env, ctx) {
+#   quo <- new_quosure(expr = expr, env = env)
+#   attr(quo, "plyxp:::ctx") <- ctx
+#   quo
+# }
 
 # enforced named never branches to case where
 # no names are not provided because we always force
