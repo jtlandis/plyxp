@@ -22,7 +22,7 @@ affiliations:
     name: Department of Genetics, University of North Carolina at Chapel Hill, United States
   - index: 3
     name: Department of Biostatistics, University of North Carolina at Chapel Hill, United States
-date: 16 September 2026
+date: 14 October 2026
 bibliography: paper.bib
 ---
 
@@ -82,7 +82,7 @@ xp |>
 
 <!--need to find out if we can reference code listing with regular .md files for joss. Could be helpful to reference this listing in the "flexibility" sentence-->
 
-![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as-is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax} []{label="fig:syntax"}](application_note_syntax_00.png){width="100%"}
+![Diagram of the _plyxp_ syntax with the _dplyr_ `mutate()` function, where the `assays`, `rows`, and `cols` contexts are represented by the green, purple, and yellow blocks, respectively. (A) Syntax within the `mutate()` call determines the context in which new values (blue blocks) are inserted. (B) Pronouns allow references between contexts. Pronouns first access the requested data "as-is" before reshaping it for the current context. Black bounding boxes indicate elements of a list. \label{fig:syntax}](application_note_syntax_00.png){width="100%"}
 
 Contexts are connected through _rlang_ pronouns, objects that give an unambiguous lookup into another environment [@Wickham2019].
 Each context is reachable through two pronouns (\autoref{fig:syntax}B).
@@ -107,7 +107,7 @@ _plyxp_ only permits groupings that partition whole rows or columns, because arb
 Enforcing this restriction for grouping has enabled _plyxp_ to implement the _dplyr_ `summarise()` function such that it will return an SE object.
 Prior implementations of `summarise()` for SE objects returned a data frame because the dropped structural information and unrestricted grouping posed a challenge to consistently constructing an SE object.
 
-![Simplified data-mask structure in _plyxp_. The `assays` and `rows` contexts are represented by the green and purple blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by black lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks} []{label="fig:masks"}](application_note_simple_masks_01.png){width="100%"}
+![Simplified data-mask structure in _plyxp_. The `assays` and `rows` contexts are represented by the green and purple blocks, respectively. Grey rectangles represent environments and contain example variable bindings. Parent environments are linked to child environments by black lines, and pronoun bindings are linked to their target contexts by red lines. For brevity, neither full environment hierarchies nor all extended environments are shown. Entry points for each context are indicated by blue stars. Through _rlang_'s tidy evaluation engine, symbols within the data mask are resolved before the calling environment is searched. \label{fig:masks}](application_note_simple_masks_01.png){width="100%"}
 
 _plyxp_ builds its abstractions upon Bioconductor-native operations such as `[` subsetting and incurs a small, fixed overhead.
 Although _plyxp_ is not expected to outperform direct calls to the SE interface, its `group_by()`/`summarise()` operations are more expressive and often faster than equivalent hand-written code [@plyxp_examples].
@@ -131,8 +131,8 @@ _plyxp_ is distributed through both the release and development branches of Bioc
 
 # AI usage disclosure
 
-Generative AI tools were not used in the development of the _plyxp_ software, its documentation, or the authoring of the original manuscript from which this paper is derived.
-An AI assistant (Claude Opus 5, Anthropic) was used solely to restructure and condense that existing manuscript text to meet the Journal of Open Source Software's format and length requirements.
+Generative AI tools were not used in the development of the _plyxp_ software, its documentation (vignettes and reference manual), or the authoring of the original manuscript from which this paper is derived.
+An AI assistant (Claude Opus 5.5, Anthropic) was used to restructure and condense that existing manuscript text to meet the Journal of Open Source Software's format and length requirements, and to draft the repository's contributing guide.
 All resulting text was reviewed, edited, and verified by the human authors, who made all design, analysis, and interpretation decisions.
 
 # Acknowledgements
