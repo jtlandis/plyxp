@@ -143,33 +143,6 @@ plyxp_quo <- function(expr, env, ctx, trans, ...) {
   quo
 }
 
-enforce_matrix <- function(quos, ctxs) {
-  is_assay_ctx <- ctxs == "assays"
-  quos[is_assay_ctx] <- lapply(
-    quos[is_assay_ctx],
-    function(quo) {
-      if (is.null(quo_get_expr(quo))) {
-        return(quo)
-      } else {
-        quo <- quo_set_expr(
-          quo,
-          expr(
-            matrix(
-              !!quo,
-              nrow = `plyxp:::ctx:::nrow`,
-              ncol = `plyxp:::ctx:::ncol`
-            )
-          )
-        )
-        if (identical(quo_get_env(quo), empty_env())) {
-          quo <- quo_set_env(quo, base_env())
-        }
-        quo
-      }
-    }
-  )
-  quos
-}
 
 
 quos_is_named <- function(quos) {
