@@ -2,6 +2,13 @@ test_that("no groups exist", {
   expect_null(group_data(se_simple))
 })
 
+test_that("group_by aborts on invalid input", {
+  expect_error(
+    group_by(se_simple, 1L),
+    "Cannot group_by in `assays` context"
+  )
+})
+
 test_that("groups can be constructed", {
   gse <- group_by(se_simple, rows(direction), cols(condition))
   g <- group_data(gse)
@@ -75,7 +82,9 @@ test_that("groups change on arrange augment", {
   expect_equal(nrow(gdata_$row_groups), 2)
   expect_identical(gdata$col_groups, gdata_$col_groups)
   expect_identical(gdata_$row_groups$.indices, list(c(1L, 3L, 4L), c(2L, 5L)))
-  gdata_ <- group_data(arrange(gse, rows(dplyr::desc(.features)),
+  gdata_ <- group_data(arrange(
+    gse,
+    rows(dplyr::desc(.features)),
     .by_group = TRUE
   ))
   expect_equal(nrow(gdata_$row_groups), 2)
@@ -91,7 +100,9 @@ test_that("groups change on slice augment", {
   gdata_ <- group_data(slice(gse, rows(which(direction == "-"))))
   expect_equal(nrow(gdata_$row_groups), 1)
   expect_identical(gdata$col_groups, gdata_$col_groups)
-  gdata_ <- group_data(slice(gse, rows(which(direction == "-")),
+  gdata_ <- group_data(slice(
+    gse,
+    rows(which(direction == "-")),
     .preserve = TRUE
   ))
   expect_equal(nrow(gdata_$row_groups), 2)
@@ -104,4 +115,67 @@ test_that("scalars provide appropriate indices", {
 
   expect_identical(rowData(se)$foo, rep(6L, 5L))
   expect_identical(group_data(se)$row_groups$.indices, list(1:5))
+})
+
+test_that(".add works in contexts", {
+  expect_identical(
+    group_data(
+      gse <- group_by(se_simple, rows(direction), .add = TRUE)
+    )$row_groups |>
+      nrow(),
+    2L
+  )
+  gse2 <- gse |>
+    group_by(rows(length), .add = TRUE)
+  gd2 <- gse2 |>
+    group_data() |>
+    _$row_groups
+
+  expect_identical(
+    nrow(gd2),
+    5L
+  )
+  expect_identical(
+    names(gd2[1:2]),
+    c("direction", "length")
+  )
+
+  expect_identical(
+    group_data(
+      gse <- group_by(se_simple, cols(condition), .add = TRUE)
+    )$col_groups |>
+      nrow(),
+    2L
+  )
+  gse2 <- gse |>
+    group_by(cols(sample), .add = TRUE)
+  gd2 <- gse2 |>
+    group_data() |>
+    _$col_groups
+
+  expect_identical(
+    nrow(gd2),
+    4L
+  )
+  expect_identical(
+    names(gd2[1:2]),
+    c("condition", "sample")
+  )
+})
+
+test_that("can group_by .features or .samples", {
+  expect_identical(
+    group_data(
+      group_by(se_simple, rows(.features))
+    )$row_groups |>
+      nrow(),
+    nrow(se_simple)
+  )
+  expect_identical(
+    group_data(
+      group_by(se_simple, cols(.samples))
+    )$col_groups |>
+      nrow(),
+    ncol(se_simple)
+  )
 })
