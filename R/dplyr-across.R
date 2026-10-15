@@ -87,7 +87,8 @@ expand_across <- function(
     }
   }
   if (setup$ctx_swap) {
-    ctx_swap <- switch(setup$ctx_swap,
+    ctx_swap <- switch(
+      setup$ctx,
       assays = expr(assay_ctx),
       rows = expr(row_ctx),
       cols = expr(col_ctx)
