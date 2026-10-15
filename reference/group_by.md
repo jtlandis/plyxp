@@ -76,4 +76,77 @@ group_by(se_simple, rows(direction), cols(condition))
 #> n   row_5     col_4    |      5      1.61 | +         g5        37 | drug     
 #> # ℹ n = 20
 #> # ℹ 1 more variable: sample <chr>
+
+gse <- group_by(se_simple, rows(direction, length), cols(condition))
+ungroup(gse)
+#> # A SummarizedExperiment-tibble Abstraction: 5 × 4
+#>     .features .samples | counts logcounts | direction length gene  | condition
+#>     <chr>     <chr>    |  <int>     <dbl> | <chr>      <int> <chr> | <chr>    
+#>   1 row_1     col_1    |     14      2.64 | -              1 g1    | cntrl    
+#>   2 row_2     col_1    |     19      2.94 | +             24 g2    | cntrl    
+#>   3 row_3     col_1    |     16      2.77 | +             60 g3    | cntrl    
+#>   4 row_4     col_1    |     11      2.40 | -             39 g4    | cntrl    
+#>   5 row_5     col_1    |     18      2.89 | +             37 g5    | cntrl    
+#>   …   …         …             …        …    …              …  …        …      
+#> n-4 row_1     col_4    |      9      2.20 | -              1 g1    | drug     
+#> n-3 row_2     col_4    |      4      1.39 | +             24 g2    | drug     
+#> n-2 row_3     col_4    |     20      3.00 | +             60 g3    | drug     
+#> n-1 row_4     col_4    |      3      1.10 | -             39 g4    | drug     
+#> n   row_5     col_4    |      5      1.61 | +             37 g5    | drug     
+#> # ℹ n = 20
+#> # ℹ 1 more variable: sample <chr>
+ungroup(gse, cols())
+#> # A SummarizedExperiment-tibble Abstraction: 5 × 4
+#> # Groups: rows(direction, length)
+#>     .features .samples | counts logcounts | direction length gene  | condition
+#>     <chr>     <chr>    |  <int>     <dbl> | <chr>      <int> <chr> | <chr>    
+#>   1 row_1     col_1    |     14      2.64 | -              1 g1    | cntrl    
+#>   2 row_2     col_1    |     19      2.94 | +             24 g2    | cntrl    
+#>   3 row_3     col_1    |     16      2.77 | +             60 g3    | cntrl    
+#>   4 row_4     col_1    |     11      2.40 | -             39 g4    | cntrl    
+#>   5 row_5     col_1    |     18      2.89 | +             37 g5    | cntrl    
+#>   …   …         …             …        …    …              …  …        …      
+#> n-4 row_1     col_4    |      9      2.20 | -              1 g1    | drug     
+#> n-3 row_2     col_4    |      4      1.39 | +             24 g2    | drug     
+#> n-2 row_3     col_4    |     20      3.00 | +             60 g3    | drug     
+#> n-1 row_4     col_4    |      3      1.10 | -             39 g4    | drug     
+#> n   row_5     col_4    |      5      1.61 | +             37 g5    | drug     
+#> # ℹ n = 20
+#> # ℹ 1 more variable: sample <chr>
+ungroup(gse, rows())
+#> # A SummarizedExperiment-tibble Abstraction: 5 × 4
+#> # Groups: cols(condition)
+#>     .features .samples | counts logcounts | direction length gene  | condition
+#>     <chr>     <chr>    |  <int>     <dbl> | <chr>      <int> <chr> | <chr>    
+#>   1 row_1     col_1    |     14      2.64 | -              1 g1    | cntrl    
+#>   2 row_2     col_1    |     19      2.94 | +             24 g2    | cntrl    
+#>   3 row_3     col_1    |     16      2.77 | +             60 g3    | cntrl    
+#>   4 row_4     col_1    |     11      2.40 | -             39 g4    | cntrl    
+#>   5 row_5     col_1    |     18      2.89 | +             37 g5    | cntrl    
+#>   …   …         …             …        …    …              …  …        …      
+#> n-4 row_1     col_4    |      9      2.20 | -              1 g1    | drug     
+#> n-3 row_2     col_4    |      4      1.39 | +             24 g2    | drug     
+#> n-2 row_3     col_4    |     20      3.00 | +             60 g3    | drug     
+#> n-1 row_4     col_4    |      3      1.10 | -             39 g4    | drug     
+#> n   row_5     col_4    |      5      1.61 | +             37 g5    | drug     
+#> # ℹ n = 20
+#> # ℹ 1 more variable: sample <chr>
+ungroup(gse, rows(length))
+#> # A SummarizedExperiment-tibble Abstraction: 5 × 4
+#> # Groups: rows(direction), cols(condition)
+#>     .features .samples | counts logcounts | direction length gene  | condition
+#>     <chr>     <chr>    |  <int>     <dbl> | <chr>      <int> <chr> | <chr>    
+#>   1 row_1     col_1    |     14      2.64 | -              1 g1    | cntrl    
+#>   2 row_2     col_1    |     19      2.94 | +             24 g2    | cntrl    
+#>   3 row_3     col_1    |     16      2.77 | +             60 g3    | cntrl    
+#>   4 row_4     col_1    |     11      2.40 | -             39 g4    | cntrl    
+#>   5 row_5     col_1    |     18      2.89 | +             37 g5    | cntrl    
+#>   …   …         …             …        …    …              …  …        …      
+#> n-4 row_1     col_4    |      9      2.20 | -              1 g1    | drug     
+#> n-3 row_2     col_4    |      4      1.39 | +             24 g2    | drug     
+#> n-2 row_3     col_4    |     20      3.00 | +             60 g3    | drug     
+#> n-1 row_4     col_4    |      3      1.10 | -             39 g4    | drug     
+#> n   row_5     col_4    |      5      1.61 | +             37 g5    | drug     
+#> # ℹ n = 20
+#> # ℹ 1 more variable: sample <chr>
 ```
