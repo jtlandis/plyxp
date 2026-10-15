@@ -9,8 +9,12 @@
 #' @param mask the R6 mask-manager of all `rlang` data mask contexts
 #' @param error_call function call to report there was an error if one is raised
 #' @noRd
-expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
-                          mask, error_call) {
+expand_across <- function(
+  quo,
+  ctx = attr(quo, "plyxp:::ctx"),
+  mask,
+  error_call
+) {
   if (!quo_is_call(quo, "across", ns = c("", "dplyr"))) {
     return(list(quo))
   }
@@ -32,7 +36,8 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
   if (".fns" %in% names(expr)) {
     fns <- as_quosure(expr$.fns, env)
     # validate_fns <- dplyr:::quo_eval_fns
-    fns <- validate_fns(fns,
+    fns <- validate_fns(
+      fns,
       mask = mask$masks[[ctx]]$environments[[1]],
       error_call = error_call
     )
@@ -40,10 +45,14 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
     fns <- NULL
   }
 
-  setup <- plyxp_across_setup(!!cols,
-    fns = fns, names = eval(expr$.names),
-    mask = mask$masks[[ctx]], manager = mask,
-    error_call = error_call, .caller_env = env,
+  setup <- plyxp_across_setup(
+    !!cols,
+    fns = fns,
+    names = eval(expr$.names),
+    mask = mask$masks[[ctx]],
+    manager = mask,
+    error_call = error_call,
+    .caller_env = env,
     ctx = ctx
   )
 
@@ -65,8 +74,10 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
       fn <- fns[[j]]
       fn_call <- as_across_expr(fn, var)
       name <- names[[k]]
-      expressions[[k]] <- plyxp_quo(fn_call,
-        ctx = ctx, env = env,
+      expressions[[k]] <- plyxp_quo(
+        fn_call,
+        ctx = ctx,
+        env = env,
         name = name,
         is_named = TRUE,
         column = var,
@@ -107,12 +118,23 @@ expand_across <- function(quo, ctx = attr(quo, "plyxp:::ctx"),
 #' @param .caller_env environment the original quosure sure be evaluated within
 #' @param error_call function call to report there was an error if one is raised
 #' @noRd
-plyxp_across_setup <- function(cols, fns, names, mask, ctx,
-                               manager, .caller_env, error_call) {
+plyxp_across_setup <- function(
+  cols,
+  fns,
+  names,
+  mask,
+  ctx,
+  manager,
+  .caller_env,
+  error_call
+) {
   cols <- enquo(cols)
   if (is.null(fns) && quo_is_call(cols, "~")) {
-    bullets <- c("Must supply a column selection.",
-      i = glue::glue("You most likely meant: `{across_if_fn}(everything(), {as_label(cols)})`."),
+    bullets <- c(
+      "Must supply a column selection.",
+      i = glue::glue(
+        "You most likely meant: `{across_if_fn}(everything(), {as_label(cols)})`."
+      ),
       i = "The first argument `.cols` selects a set of columns.",
       i = "The second argument `.fns` operates on each selected columns."
     )
@@ -128,16 +150,15 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
     cols <- quo_set_expr(cols, expr(everything()))
   }
 
-  if (identical(quo_get_expr(cols), quote(everything())) &&
-    ctx %in% c("rows", "cols")) {
+  if (
+    identical(quo_get_expr(cols), quote(everything())) &&
+      ctx %in% c("rows", "cols")
+  ) {
     # if identitcal AND we are in rows/cols context
     # explicitly change expr to remove either
     # .features/.samples.
     # These should only be changed
-    rm <- switch(ctx,
-      rows = expr(-.features),
-      cols = expr(-.samples)
-    )
+    rm <- switch(ctx, rows = expr(-.features), cols = expr(-.samples))
     cols <- quo_set_expr(cols, rm)
   }
 
@@ -157,7 +178,8 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
   }
   if (!is.list(fns) || length(fns) == 0L) {
     rlang::abort(
-      c("Unxpected argument for `.fns`. across() expects one of:",
+      c(
+        "Unxpected argument for `.fns`. across() expects one of:",
         i = "a function or lambda function",
         i = "a non-zero length list of functions or lambda functions"
       )
@@ -173,16 +195,21 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
     }
   }
 
-  glue_env <- env(.caller_env,
+  glue_env <- env(
+    .caller_env,
     .col = vec_rep_each(names_vars, times = length(fns)),
     .fn = vec_rep(names_fns, times = length(vars))
   )
-  names <- vctrs::vec_as_names(glue::glue(names, .envir = glue_env),
+  names <- vctrs::vec_as_names(
+    glue::glue(names, .envir = glue_env),
     repair = "check_unique",
     call = error_call
   )
   list(
-    vars = vars, fns = fns, names = names, ctx = ctx,
+    vars = vars,
+    fns = fns,
+    names = names,
+    ctx = ctx,
     ctx_swap = ctx_swap
   )
 }
@@ -196,7 +223,8 @@ plyxp_across_setup <- function(cols, fns, names, mask, ctx,
 #' @noRd
 expr_substitute <- function(expr, old, new) {
   expr <- duplicate(expr)
-  switch(typeof(expr),
+  switch(
+    typeof(expr),
     language = node_walk_replace(node_cdr(expr), old, new),
     symbol = if (identical(expr, old)) {
       return(new)
@@ -208,10 +236,13 @@ expr_substitute <- function(expr, old, new) {
 # @rdname dplyr_across_internals
 node_walk_replace <- function(node, old, new) {
   while (!is_null(node)) {
-    switch(typeof(node_car(node)),
+    switch(
+      typeof(node_car(node)),
       language = {
-        if (!is_call(node_car(node), c("~", "function")) ||
-          is_call(node_car(node), "~", n = 2)) {
+        if (
+          !is_call(node_car(node), c("~", "function")) ||
+            is_call(node_car(node), "~", n = 2)
+        ) {
           node_walk_replace(node_cdar(node), old, new)
         }
       },
@@ -254,7 +285,8 @@ validate_fns <- function(quo, mask, error_call = caller_env()) {
         if (is_inlinable_formula(x)) {
           x <- expr_substitute(x, quote(.), quote(.x))
           fn <- new_function(
-            pairlist2(.x = ), f_rhs(x),
+            pairlist2(.x = ),
+            f_rhs(x),
             empty_env()
           )
           return(fn)
@@ -263,7 +295,8 @@ validate_fns <- function(quo, mask, error_call = caller_env()) {
       }
       as_function(x, arg = ".fns", call = error_call)
     } else {
-      rlang::abort("`.fns` must be a function, a formula, or a list of functions/formulas.",
+      rlang::abort(
+        "`.fns` must be a function, a formula, or a list of functions/formulas.",
         call = error_call
       )
     }
