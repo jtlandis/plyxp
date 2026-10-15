@@ -31,8 +31,11 @@ test_that("quosures contain correct context attribute", {
     expect(
       ok = act$attr == expected,
       sprintf(
-        "%s's `%s` attribute was %s, expected %s", act$lab, attr,
-        act$attr, expected
+        "%s's `%s` attribute was %s, expected %s",
+        act$lab,
+        attr,
+        act$attr,
+        expected
       )
     )
     invisible(act$val)
@@ -41,7 +44,6 @@ test_that("quosures contain correct context attribute", {
   expect_attr_val(quos[[2]], "plyxp:::ctx", "ctx2")
   expect_attr_val(quos[[3]], "plyxp:::ctx", "ctx3")
 })
-
 
 
 test_that("`:=` works within contexts", {
