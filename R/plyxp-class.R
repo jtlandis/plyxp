@@ -329,12 +329,12 @@ plyxp_slice_se <- function(se, i, j, .preserve = FALSE) {
 
 #' @export
 `$.PlySummarizedExperiment` <- function(x, name) {
-  col_data(se(x))[[name]]
+  colData(se(x))[[name]]
 }
 
 #' @export
 `$<-.PlySummarizedExperiment` <- function(x, name, value) {
-  col_data(se(x))[[name]] <- value
+  colData(x)[[name]] <- value
   x
 }
 
@@ -452,7 +452,7 @@ setMethod(
   "rowData",
   "PlySummarizedExperiment",
   function(x, use.names = TRUE, ...) {
-    row_data(se(x), use.names = use.names, ...)
+    rowData(se(x), use.names = use.names, ...)
   }
 )
 
@@ -462,129 +462,9 @@ setMethod(
   "rowData<-",
   "PlySummarizedExperiment",
   function(x, ..., value) {
-    row_data(se(x), ...) <- value
-    x
+    plyxp(x, `rowData<-`, ..., value = value)
   }
 )
-
-row_data <- S7::new_generic(
-  "row_data",
-  "x",
-  function(x, use.names = TRUE, ...) S7_dispatch()
-)
-
-
-mcols_row_data <- function(x, use.names = TRUE, ...) {
-  S4Vectors::mcols(x = x, use.names = use.names, ...)
-}
-
-rse_row_data <- function(x, use.names = TRUE, ...) {
-  mcols_row_data(x = x@rowRanges, use.names = use.names, ...)
-}
-
-`row_data<-` <- S7::new_generic("row_data<-", "x", function(x, ..., value) {
-  S7_dispatch()
-})
-
-check_mcols <- function(mcols, vec) {
-  len <- length(vec)
-  vclass <- class(vec)
-  mcols_target_class <- methods::getSlots(vclass)[["elementMetadata"]]
-  ok <- methods::is(mcols, mcols_target_class)
-  if (ok) {
-    return(mcols)
-  }
-  if (is.null(mcols)) {
-    mcols <- S4Vectors::new2("DFrame", nrows = len, check = FALSE)
-  } else if (is.list(mcols)) {
-    mcols <- new_DF(mcols)
-  }
-
-  ok <- methods::is(mcols, mcols_target_class)
-  if (!ok) {
-    mcols <- methods::as(mcols, mcols_target_class)
-  }
-  if (!is.null(rownames(mcols))) {
-    rownames(mcols) <- NULL
-  }
-  mcols_nrow <- nrow(mcols)
-  if (mcols_nrow == len) {
-    return(mcols)
-  }
-  if (mcols_nrow != 1L) {
-    stop(sprintf(
-      "length of mcols must be either %i or 1, not %i",
-      len,
-      mcols_nrow
-    ))
-  }
-  rep(mcols, len)
-}
-
-`mcols_row_data<-` <- function(x, ..., value) {
-  value <- check_mcols(value, x)
-  S4Vectors::mcols(x = x, ...) <- value
-  x
-}
-
-`rse_row_data<-` <- function(x, ..., value) {
-  value <- check_mcols(value, x)
-  S4Vectors::mcols(x = x@rowRanges, ...) <- value
-  x
-}
-
-method(row_data, methods::getClass("SummarizedExperiment")) <- mcols_row_data
-
-method(
-  row_data,
-  methods::getClass("RangedSummarizedExperiment")
-) <- rse_row_data
-
-method(
-  `row_data<-`,
-  methods::getClass("SummarizedExperiment")
-) <- `mcols_row_data<-`
-
-method(
-  `row_data<-`,
-  methods::getClass("RangedSummarizedExperiment")
-) <- `rse_row_data<-`
-
-
-col_data <- function(x) {
-  x@colData
-}
-
-set_col_data <- new_generic("set_col_data", "value", function(value, se) {
-  S7_dispatch()
-})
-
-set_col_data_null <- function(value, se) {
-  value <- S4Vectors::new2(
-    "DFrame",
-    nrows = ncol(se),
-    rownames = colnames(se),
-    check = FALSE
-  )
-  se@colData <- value
-  se
-}
-
-method(set_col_data, NULL) <- set_col_data_null
-
-set_col_data_df <- function(value, se) {
-  if (nrow(value) != ncol(se)) {
-    stop("nrow of supplied 'colData' must equal ncol of object")
-  }
-  se@colData <- value
-  se
-}
-
-method(set_col_data, getClass("DataFrame")) <- set_col_data_df
-
-`col_data<-` <- function(x, ..., value) {
-  set_col_data(value, se = x)
-}
 
 #' @describeIn PlySummarizedExperiment-methods get colData in a PlySummarizedExperiment object
 #' @export
@@ -592,7 +472,7 @@ setMethod(
   "colData",
   "PlySummarizedExperiment",
   function(x, ...) {
-    col_data(se(x), ...)
+    colData(se(x), ...)
   }
 )
 
@@ -602,8 +482,7 @@ setMethod(
   "colData<-",
   c("PlySummarizedExperiment", "DataFrame"),
   function(x, ..., value) {
-    se(x) <- set_col_data_df(value, se = se(x))
-    x
+    plyxp(x, `colData<-`, ..., value = value)
   }
 )
 
@@ -613,8 +492,7 @@ setMethod(
   "colData<-",
   c("PlySummarizedExperiment", "NULL"),
   function(x, ..., value) {
-    se(x) <- set_col_data_null(value, se = se(x))
-    x
+    plyxp(x, `colData<-`, ..., value = value)
   }
 )
 
@@ -645,12 +523,7 @@ setMethod(
   "rownames",
   c("PlySummarizedExperiment"),
   function(x) {
-    se <- se(x)
-    if (methods::is(se, "RangedSummarizedExperiment")) {
-      names(se@rowRanges)
-    } else {
-      names(se)
-    }
+    names(se(x))
   }
 )
 
@@ -661,7 +534,7 @@ setMethod(
   "colnames",
   c("PlySummarizedExperiment"),
   function(x) {
-    rownames(col_data(se(x)))
+    rownames(colData(x))
   }
 )
 
@@ -671,7 +544,7 @@ setMethod("nrow", "PlySummarizedExperiment", function(x) length(se(x)))
 
 #' @rdname PlySummarizedExperiment-methods
 #' @export
-setMethod("ncol", "PlySummarizedExperiment", function(x) nrow(col_data(se(x))))
+setMethod("ncol", "PlySummarizedExperiment", function(x) nrow(colData(se(x))))
 
 #' @rdname PlySummarizedExperiment-methods
 #' @export
