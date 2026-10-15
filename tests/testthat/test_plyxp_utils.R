@@ -13,3 +13,14 @@ test_that("as.data.frame unwinds data", {
     ncol(se_simple)
   )
 })
+
+test_that("sentinal functions error", {
+  expect_error(
+    rows(),
+    "`rows\\(\\)` is a sentinal function"
+  )
+  expect_error(
+    cols(),
+    "`cols\\(\\)` is a sentinal function"
+  )
+})
