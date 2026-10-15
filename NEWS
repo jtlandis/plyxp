@@ -1,5 +1,6 @@
 ## plyxp 1.7.5
 
+* `across()` switches to proper context if user specifies a context function.
 * `ungroup()` can now drop entire `rows()` or `cols()` contexts, without touching the other:
 
    ```R
