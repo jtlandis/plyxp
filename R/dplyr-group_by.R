@@ -122,35 +122,55 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   }
 
   rnms <- names(results$rows)
-  if (".features" %in% rnms) {
-    rownames(.data) <- results$rows$.features
-    results$rows$.features <- NULL
-    rnms <- names(results$rows)
-  }
+  row_data <- NULL
   if (length(rnms)) {
+    has_nms <- FALSE
     row_data <- rowData(.data)
+    if (".features" %in% rnms) {
+      has_nms <- TRUE
+      rownames(.data) <- results$rows$.features
+      results$rows$.features <- NULL
+      rnms <- names(results$rows)
+    }
     row_data[rnms] <- results$rows
     # push nms to the front
     row_data <- row_data[c(rnms, setdiff(names(row_data), rnms))]
     rowData(.data) <- row_data
+    row_data <- row_data[rnms]
+    if (has_nms) {
+      row_data <- cbind(
+        .features = rownames(.data),
+        row_data
+      )
+    }
   }
 
   cnms <- names(results$cols)
-  if (".samples" %in% cnms) {
-    colnames(.data) <- results$cols$.samples
-    results$cols$.samples <- NULL
-    cnms <- names(results$cols)
-  }
+  col_data <- NULL
   if (length(cnms)) {
+    has_nms <- FALSE
     col_data <- colData(.data)
+    if (".samples" %in% cnms) {
+      has_nms <- TRUE
+      colnames(.data) <- results$cols$.samples
+      results$cols$.samples <- NULL
+      cnms <- names(results$cols)
+    }
     col_data[cnms] <- results$cols
     # push nms to the front
     col_data <- col_data[c(cnms, setdiff(names(col_data), cnms))]
     colData(.data) <- col_data
+    col_data <- col_data[cnms]
+    if (has_nms) {
+      col_data <- cbind(
+        .samples = colnames(.data),
+        col_data
+      )
+    }
   }
   groups <- plyxp_groups(
-    row_groups = rowData(.data)[rnms],
-    col_groups = colData(.data)[cnms]
+    row_groups = row_data,
+    col_groups = col_data
   )
   group_data_se_impl(.data) <- groups
   .data
