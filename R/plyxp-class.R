@@ -129,6 +129,19 @@ plyxp <- function(.data, .f, ..., .caller = caller_env()) {
   .data
 }
 
+str_tail <- function(str, n) {
+  nchar <- nchar(str)
+  substr(str, nchar - n + 1L, nchar)
+}
+
+parse_dotf <- function(.f) {
+  label <- rlang::as_label(.f)
+  if (identical(str_tail(label, 3L), "...")) {
+    return(sprintf("{%s}", label))
+  }
+  label
+}
+
 #' @describeIn plyxp pass a function to the result of an accessor of the
 #' `SummarizedExperiment` Class
 #' This function is a wrapper for the expression:
@@ -175,13 +188,13 @@ plyxp_on <- function(.data, .f, ..., .on, .caller = caller_env()) {
           cnd$call,
           .on = {
             cnd$call[[1]] <- sym(.on_name)
-            message <- sprintf("error in `%s(se(.data))", .on_name)
+            message <- sprintf("error in `%s(se(.data))`", .on_name)
           },
           .f = {
             cnd$call[[1]] <- .f_sub
             message <- sprintf(
-              "error in `%s(%s(se(.data)), ...)",
-              as_label(.f_sub),
+              "error in `%s(%s(se(.data)), ...)`",
+              parse_dotf(.f_sub),
               .on_name
             )
           },
@@ -215,7 +228,10 @@ case_call <- function(x, ...) {
 }
 
 find_func <- function(func, .caller = caller_env()) {
-  try_fetch(match.fun(func), error = function(cnd) {
+  force(.caller)
+  force(func)
+  expr <- substitute(match.fun(func), list(func = func))
+  try_fetch(rlang::eval_bare(expr, .caller), error = function(cnd) {
     rlang::abort(
       sprintf("could not match %s()", func),
       parent = cnd,
