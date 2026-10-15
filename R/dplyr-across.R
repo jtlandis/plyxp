@@ -26,6 +26,7 @@ expand_across <- function(
     expand.dots = FALSE,
     envir = env
   )
+  trans <- attr(quo, "plyxp:::trans")
   if (".cols" %in% names(expr)) {
     cols <- expr$.cols
   } else {
@@ -81,7 +82,7 @@ expand_across <- function(
         name = name,
         is_named = TRUE,
         column = var,
-        trans = NULL
+        trans = trans
       )
       k <- k + 1L
     }
