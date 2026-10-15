@@ -104,16 +104,16 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   #   assays(.data, withDimnames = FALSE)[[nms[i]]] <- results$assays[[i]]
   # }
 
-  if (.add && !is_empty(curr_groups <- group_data_se_impl(.data))) {
-    if (!is_empty(curr_groups$row_groups)) {
-      curr <- select(curr_groups$row_groups, -starts_with(".indices")) |>
+  if (.add && !is_empty(.groups)) {
+    if (!is_empty(.groups$row_groups)) {
+      curr <- select(.groups$row_groups, -starts_with(".indices")) |>
         names()
       curr <- rowData(.data)[curr]
       curr[names(results$rows)] <- results$rows
       results$rows <- curr
     }
-    if (!is_empty(curr_groups$col_groups)) {
-      curr <- select(curr_groups$col_groups, -starts_with(".indices")) |>
+    if (!is_empty(.groups$col_groups)) {
+      curr <- select(.groups$col_groups, -starts_with(".indices")) |>
         names()
       curr <- colData(.data)[curr]
       curr[names(results$cols)] <- results$cols
@@ -134,7 +134,6 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
     row_data <- row_data[c(rnms, setdiff(names(row_data), rnms))]
     rowData(.data) <- row_data
   }
-
 
   cnms <- names(results$cols)
   if (".samples" %in% cnms) {
@@ -224,7 +223,8 @@ ungroup_se_impl <- function(x, ...) {
     update_cols <- call2("cols", splice(syms(new_groups)))
     update_ <- paste0(update_, "col")
   }
-  switch(update_,
+  switch(
+    update_,
     rowcol = group_by_se_impl(x, !!update_rows, !!update_cols),
     row = group_by_se_impl(x, !!update_rows),
     col = group_by_se_impl(x, !!update_cols)
@@ -298,7 +298,6 @@ group_split.PlySummarizedExperiment <- function(.tbl, ..., .keep = TRUE) {
   grouped_cols <- is_grouped_cols(group_vars)
   is_grouped <- grouped_rows || grouped_cols
 
-
   if (!.keep && is_grouped) {
     if (grouped_rows) {
       rowData(.tbl) <- rowData(.tbl)[,
@@ -323,7 +322,8 @@ group_split.PlySummarizedExperiment <- function(.tbl, ..., .keep = TRUE) {
     c("rows", "cols")[c(grouped_rows, grouped_cols)],
     collapse = ""
   )
-  switch(type,
+  switch(
+    type,
     rows = lapply(
       groups$row_groups$.indices,
       \(i, .data) new_plyxp(.data[i, ]),

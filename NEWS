@@ -1,5 +1,6 @@
 ## plyxp 1.7.5
 
+* `group_by()` .add parameter now works as expected
 * A minor memory leak was discovered due to an unexpected interaction of inlining data into function bodies and the R JIT compiler.
   This has now been fixed within the offending internal function: `add_bind()`
 * now supports DataFrames as columns within the `rowData()` and `colData()` of a `SummarizedExperiment` object.
