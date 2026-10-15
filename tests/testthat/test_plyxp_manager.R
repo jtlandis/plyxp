@@ -37,3 +37,25 @@ test_that("correct number of groups for ungrouped and grouped `se_simple`", {
   expect_identical(gbm$n_groups, 2L)
   gbm$ctx <- "assays"
 })
+
+
+test_that("manager", {
+  manager <- new_plyxp_manager(se(se_simple))
+  q <- plyxp_quos(
+    counts_1 = counts + 1,
+    cols(is_drug = condition == "drug"),
+    rows(will_error = stop("bad expr")),
+    .ctx = c("assays", "rows", "cols")
+  )
+  expect_error(
+    plyxp_evaluate(manager, q),
+    "bad expr"
+  )
+  gm <- new_plyxp_manager(
+    group_by(se_simple, rows(direction), cols(condition))
+  )
+  expect_error(
+    plyxp_evaluate(gm, q),
+    "bad expr"
+  )
+})

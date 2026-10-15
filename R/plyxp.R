@@ -11,13 +11,12 @@
 #' @noRd
 #' @examples
 #'
-#' manager <- new_plyxp_manager(se_simple)
+#' manager <- new_plyxp_manager(se(se_simple))
 #' manager$ctx
 #' q <- plyxp_quos(
 #'   counts_1 = counts + 1,
 #'   cols(is_drug = condition == "drug"),
-#'   .ctx_default = "assays",
-#'   .ctx_opt = c("rows", "cols")
+#'   .ctx = c("assays", "rows", "cols")
 #' )
 #' manager$eval(q[[1]])
 #' manager$results()
@@ -30,6 +29,11 @@
 #'
 new_plyxp_manager <- function(obj, ...) {
   UseMethod("new_plyxp_manager")
+}
+
+#' @export
+new_plyxp_manager.PlySummarizedExperiment <- function(obj, ...) {
+  new_plyxp_manager(se(obj), ...)
 }
 
 #' @export
@@ -79,11 +83,10 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   )
 }
 
-plyxp_evaluate <- function(mask, quos, ctxs, nams, env) {
+plyxp_evaluate <- function(mask, quos, ctxs = NULL, env = caller_env()) {
   .call <- caller_call()
-  # if (.matrix) {
-  #   quos <- enforce_matrix(quos, ctxs)
-  # }
+  ctxs <- ctxs %||%
+    vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
   n_quo <- length(quos)
   curr_quo <- NULL
   try_fetch(

@@ -78,8 +78,7 @@ summarize_se_impl <- function(
   quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
 
-  nms <- names(quos)
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   chops <- mask$apply(\(m) lapply(m$added, m$get_chop))
   assay_chops <- chops$assays
   group_vars_ <- group_vars_se_impl(.data)

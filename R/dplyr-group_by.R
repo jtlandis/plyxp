@@ -96,8 +96,7 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   if (any(err <- ctxs %in% "assays")) {
     plyxp_assays_cannot(do = "group_by", review = err)
   }
-  nms <- names(quos)
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   results <- mask$results()
   # nms <- names(results$assays)
   # for (i in seq_along(results$assays)) {

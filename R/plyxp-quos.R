@@ -178,6 +178,38 @@ plyxp_quo <- function(expr, env, ctx, trans, ...) {
   quo
 }
 
+plyxp_quo_ctx <- function(quo) {
+  attr(quo, "plyxp:::ctx")
+}
+
+`plyxp_quo_ctx<-` <- function(quo, value) {
+  attr(quo, "plyxp:::ctx") <- value
+  quo
+}
+
+plyxp_quo_trans <- function(quo) {
+  attr(quo, "plyxp:::transform")
+}
+
+`plyxp_quo_trans<-` <- function(quo, value) {
+  attr(quo, "plyxp:::transform") <- value
+  quo
+}
+
+plyxp_quo_data <- function(quo) {
+  attr(quo, "plyxp:::data")
+}
+
+`plyxp_quo_data<-` <- function(quo, value) {
+  if (is.null(value)) {
+    attr(quo, "plyxp:::data") <- value
+  } else {
+    stopifnot(is.list(value))
+    attr(quo, "plyxp:::data")[names(value)] <- value
+  }
+  quo
+}
+
 
 quos_is_named <- function(quos) {
   lapply(quos, attr, which = "plyxp:::data") |>

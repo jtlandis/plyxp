@@ -49,8 +49,7 @@ mutate_se_impl <- function(.data, ...) {
     )
   )
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  nms <- names(quos)
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   results <- mask$results()
 
   nms <- names(results$rows)
