@@ -1,5 +1,16 @@
 ## plyxp 1.7.5
 
+* `ungroup()` can now drop entire `rows()` or `cols()` contexts, without touching the other:
+
+   ```R
+   gse <- group_by(se_simple, rows(direction, length), cols(condition))
+   ungroup(gse)
+   ungroup(gse, cols())
+   ungroup(gse, rows())
+   ungroup(gse, rows(length))
+   ```
+   
+   
 * `group_by()` allows .features and .samples in the rows and cols contexts
   respectively.
 * `group_by()` .add parameter now works as expected

@@ -50,12 +50,14 @@ as_trans_fn <- function(fn) {
 #' @param .ctx A character string of availablecontexts. The first
 #' element is considered to be the default context, whereas the
 #' rest are considered optional.
-#' @param .ctx_trans A list of functions to eventually apply to
+#' @param .trans A list of functions to eventually apply to
 #' the expressions depending on their context. The names of the list
 #' elements should match the contexts names provided by `.ctx`. These
 #' functions will be quoted and in-lined into the expressions and thus
 #' cannot rely on the environments the functions are constructed.
-#' These functions are quoted
+#' These functions are quoted.
+#' @param .exclude_empty Logical value. If TRUE, any empty expressions
+#' are removed from the resulting list.
 #' @return a quosure with attribute `plyxp:::ctx`.
 #' @examples
 #'
@@ -77,7 +79,8 @@ plyxp_quos <- function(
   ...,
   .named = TRUE,
   .ctx = NULL,
-  .trans = list()
+  .trans = list(),
+  .exclude_empty = TRUE
 ) {
   #
   dots <- quos(...) |>
@@ -97,7 +100,7 @@ plyxp_quos <- function(
   is_nms <- nms != ""
   for (i in seq_along(dots)) {
     quo <- dots[[i]]
-    if (quo_is_missing(quo)) {
+    if (.exclude_empty && quo_is_missing(quo)) {
       # skip missing quosures
       next
     }
@@ -118,14 +121,27 @@ plyxp_quos <- function(
         ctx = ctx,
         trans = .trans[[ctx]]
       )
-      # remove empty arguments from calls
-      ctx_quos <- exclude_empty_quos(ctx_quos)
+      if (.exclude_empty) {
+        # remove empty arguments from calls
+        ctx_quos <- exclude_empty_quos(ctx_quos)
+      } else if (is_empty(ctx_quos)) {
+        # if we want to retain empty, and this context is empty...
+        ctx_quos <- list(
+          .empty = plyxp_quo(
+            expr = expr(),
+            env = base::emptyenv(),
+            ctx = ctx,
+            trans = .trans[[ctx]]
+          )
+        )
+      }
+
       dots[[i]] <- splice(ctx_quos)
       next
     }
 
     dots[[i]] <- plyxp_quo(
-      .expr,
+      if (is_missing(.expr)) expr() else .expr,
       env = .env,
       ctx = .ctx_default,
       is_named = is_nms[i],
@@ -134,7 +150,9 @@ plyxp_quos <- function(
     )
   }
   out <- do.call(dots_list, c(dots, list(.named = .named)))
-  out <- exclude_empty_quos(out)
+  if (.exclude_empty) {
+    out <- exclude_empty_quos(out)
+  }
   if (.named) {
     # in case the prior expansion
     # of rows(...) and cols(...) need
@@ -159,7 +177,6 @@ plyxp_quo <- function(expr, env, ctx, trans, ...) {
   attr(quo, "plyxp:::data") <- list2(...)
   quo
 }
-
 
 
 quos_is_named <- function(quos) {

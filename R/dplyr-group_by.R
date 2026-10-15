@@ -182,6 +182,14 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
 #' class for `SummarizedExperiment` objects
 #' @param ... [contextual expressions][plyxp::plyxp-context] specifying
 #' which columns to ungroup. Omitting `...` ungroups the entire object.
+#'
+#' @examples
+#' gse <- group_by(se_simple, rows(direction, length), cols(condition))
+#' ungroup(gse)
+#' ungroup(gse, cols())
+#' ungroup(gse, rows())
+#' ungroup(gse, rows(length))
+#'
 #' @export
 ungroup.PlySummarizedExperiment <- function(x, ...) {
   plyxp(x, ungroup_se_impl, ...)
@@ -191,7 +199,8 @@ ungroup_se_impl <- function(x, ...) {
   quos <- plyxp_quos(
     ...,
     .named = FALSE,
-    .ctx = c("assays", "rows", "cols")
+    .ctx = c("assays", "rows", "cols"),
+    .exclude_empty = FALSE
   )
   curr_groups <- group_data_se_impl(x)
   if (is_empty(curr_groups)) {
@@ -209,13 +218,21 @@ ungroup_se_impl <- function(x, ...) {
   by_ctx <- split(quos, ctxs)
   update_cols <- update_rows <- NULL
   update_ <- ""
-  if (!is_empty(by_ctx$rows) || !is.null(curr_groups$row_groups)) {
+
+  if (!is_empty(rexprs <- by_ctx$rows) || !is.null(curr_groups$row_groups)) {
+    # some context was passed as an argument.
+    # it could be empty
     if (is.null(curr_groups$row_groups)) {
       abort("no row groups to ungroup")
     }
     old_groups <- select(curr_groups$row_groups, -starts_with(".indices")) |>
       names()
-    select_expr <- call2("c", splice(by_ctx$rows))
+    select_expr <- if (length(rexprs) == 1L && quo_is_missing(rexprs[[1]])) {
+      call2("c", splice(syms(old_groups)))
+    } else {
+      rexprs <- exclude_empty_quos(rexprs)
+      call2("c", splice(rexprs))
+    }
     to_remove <- eval_select(
       select_expr,
       data = as.list(rowData(x)),
@@ -226,13 +243,20 @@ ungroup_se_impl <- function(x, ...) {
     update_rows <- call2("rows", splice(syms(new_groups)))
     update_ <- "row"
   }
-  if (!is_empty(by_ctx$cols) || !is.null(curr_groups$col_groups)) {
+  if (!is_empty(cexprs <- by_ctx$cols) || !is.null(curr_groups$col_groups)) {
+    # some context was passed as an argument.
+    # it could be empty
     if (is.null(curr_groups$col_groups)) {
       abort("no col groups to ungroup")
     }
     old_groups <- select(curr_groups$col_groups, -starts_with(".indices")) |>
       names()
-    select_expr <- call2("c", splice(by_ctx$cols))
+    select_expr <- if (length(cexprs) == 1L && quo_is_missing(cexprs[[1]])) {
+      call2("c", splice(syms(old_groups)))
+    } else {
+      cexprs <- exclude_empty_quos(cexprs)
+      call2("c", splice(cexprs))
+    }
     to_remove <- eval_select(
       select_expr,
       data = as.list(colData(x)),

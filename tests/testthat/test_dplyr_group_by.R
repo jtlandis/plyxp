@@ -179,3 +179,48 @@ test_that("can group_by .features or .samples", {
     ncol(se_simple)
   )
 })
+
+test_that("ungrouped object is identical", {
+  expect_identical(
+    se_simple,
+    ungroup(se_simple)
+  )
+})
+
+test_that("can selectively ungroup data", {
+  gse <- group_by(se_simple, rows(direction, length), cols(condition))
+  expect_identical(
+    ungroup(gse) |> group_data(),
+    NULL
+  )
+
+  gd <- ungroup(gse, cols()) |> group_data()
+  expect_identical(
+    gd$col_groups,
+    NULL
+  )
+  expect_identical(
+    gd$row_groups,
+    group_data(gse)$row_groups
+  )
+
+  gd <- ungroup(gse, rows()) |> group_data()
+  expect_identical(
+    gd$row_groups,
+    NULL
+  )
+  expect_identical(
+    gd$col_groups,
+    group_data(gse)$col_groups
+  )
+
+  gd <- ungroup(gse, rows(length)) |> group_data()
+  expect_identical(
+    nrow(gd$row_groups),
+    2L
+  )
+  expect_identical(
+    gd$col_groups,
+    group_data(gse)$col_groups
+  )
+})

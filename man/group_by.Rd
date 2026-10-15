@@ -47,4 +47,10 @@ the resulting output class is left unchanged. Thus \code{dplyr} generics for
 
 group_by(se_simple, rows(direction), cols(condition))
 
+gse <- group_by(se_simple, rows(direction, length), cols(condition))
+ungroup(gse)
+ungroup(gse, cols())
+ungroup(gse, rows())
+ungroup(gse, rows(length))
+
 }
