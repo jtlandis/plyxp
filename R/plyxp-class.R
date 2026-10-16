@@ -516,7 +516,7 @@ setMethod(
   }
 )
 
-
+#' @include reexports-biocgenerics.R
 #' @rdname PlySummarizedExperiment-methods
 #' @export
 setMethod(
@@ -573,5 +573,16 @@ setMethod(
   c("PlySummarizedExperiment", "NULL"),
   function(x, value) {
     plyxp(x, `dimnames<-`, value = list(NULL, NULL))
+  }
+)
+
+
+#' @rdname PlySummarizedExperiment-methods
+#' @export
+setMethod(
+  "names",
+  c("PlySummarizedExperiment"),
+  function(x) {
+    names(se(x))
   }
 )

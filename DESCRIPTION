@@ -26,7 +26,8 @@ Imports:
     S7,
     S4Vectors,
     utils,
-    methods
+    methods,
+    BiocGenerics
 Depends:
     R (>= 4.5.0)
 Suggests:
@@ -65,6 +66,7 @@ Collate:
     'mask_env_top.R'
     'plyxp-R6-manager.R'
     'plyxp-R6.R'
+    'reexports-biocgenerics.R'
     'plyxp-class.R'
     'plyxp-package.R'
     'plyxp-quos.R'
