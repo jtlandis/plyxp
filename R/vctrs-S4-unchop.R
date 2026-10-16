@@ -56,6 +56,7 @@ method(
   list(x = S7::class_list, ptype = class_s4_vctrs)
 ) <-
   function(x, ptype, ..., indices = NULL) {
+    x <- lapply(x, vec_cast, to = ptype)
     merged <- do.call("c", x)
     if (!is.null(indices)) {
       indices <- vctrs::list_unchop(indices)
@@ -69,7 +70,11 @@ method(
   list(x = S7::class_list, ptype = class_DF)
 ) <-
   function(x, ptype, ..., indices = NULL) {
+    mcols <- S4Vectors::mcols(ptype)
+    S4Vectors::mcols(ptype) <- NULL
+    x <- lapply(x, vec_cast, to = ptype)
     merged <- do.call("rbind", x)
+    S4Vectors::mcols(merged) <- mcols
     if (!is.null(indices)) {
       indices <- vctrs::list_unchop(indices)
       merged <- vec_slice(merged, order(indices))
@@ -103,9 +108,7 @@ method(
     class_vctrs,
     class_vctrs
   )
-) <- function(x, y, ...) {
-  vctrs::vec_ptype2(x, y, ...)
-}
+) <- vctrs::vec_ptype2
 
 method(
   vec_ptype2,
@@ -135,19 +138,19 @@ method(
   }
 }
 
-S7::method(
-  vec_ptype2,
-  signature = list(x = S7::class_data.frame, y = S7::class_data.frame)
-) <- function(x, y, ...) {
-  vctrs::vec_ptype2(
-    x = x,
-    y = y,
-    ...,
-    x_arg = "x",
-    y_arg = "y",
-    call = caller_env()
-  )
-}
+# S7::method(
+#   vec_ptype2,
+#   signature = list(x = S7::class_data.frame, y = S7::class_data.frame)
+# ) <- function(x, y, ...) {
+#   vctrs::vec_ptype2(
+#     x = x,
+#     y = y,
+#     ...,
+#     x_arg = "x",
+#     y_arg = "y",
+#     call = caller_env()
+#   )
+# }
 
 plyxp_size_common_list <- function(dots) {
   size <- 1L
