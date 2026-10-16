@@ -70,3 +70,26 @@ test_that("summarize places assays in correct order", {
     summarise(seq = seq)
   expect_identical(unname(pull(colse, seq)), unname(pull(se_obj, seq)))
 })
+
+test_that("summarize can rename output", {
+  gse <- group_by(se_simple, rows(direction), cols(condition))
+
+  res <- expect_no_error(
+    summarize(
+      gse,
+      sum = sum(counts),
+      rows(sum = sum(.assays_asis$counts)),
+      cols(sum = sum(.assays_asis$counts)),
+      rows(.features = direction |> unique()),
+      cols(.samples = condition |> unique())
+    )
+  )
+  expect_identical(
+    rownames(res),
+    c("-", "+")
+  )
+  expect_identical(
+    colnames(res),
+    c("cntrl", "drug")
+  )
+})
