@@ -1,7 +1,8 @@
 test_that("arrange works - ungrouped", {
   expect_error(
     arrange(
-      se_simple, counts
+      se_simple,
+      counts
     )
   )
 
@@ -18,8 +19,59 @@ test_that("arrange works - ungrouped", {
     c("-", "+", "+", "-", "+")
   )
   expect_identical(
+    rowData(res)[["length"]],
+    c(1L, 24L, 37L, 39L, 60L)
+  )
+  expect_identical(
     colData(res)[["condition"]],
     c("drug", "drug", "cntrl", "cntrl")
+  )
+})
+
+test_that("arrange works - ungrouped just rows", {
+  res <- expect_no_error(
+    arrange(
+      se_simple,
+      rows(length)
+    )
+  )
+
+  expect_identical(
+    rowData(res)[["direction"]],
+    c("-", "+", "+", "-", "+")
+  )
+  expect_identical(
+    rowData(res)[["length"]],
+    c(1L, 24L, 37L, 39L, 60L)
+  )
+  expect_identical(
+    colData(res)[["condition"]],
+    c("cntrl", "cntrl", "drug", "drug")
+  )
+})
+
+test_that("arrange works - ungrouped just cols", {
+  res <- expect_no_error(
+    arrange(
+      se_simple,
+      cols(dplyr::desc(sample))
+    )
+  )@se
+
+  expect_identical(
+    rowData(res)[["length"]],
+    c(1L, 24L, 60L, 39L, 37L)
+  )
+  expect_identical(
+    colData(res)[["condition"]],
+    c("drug", "drug", "cntrl", "cntrl")
+  )
+})
+
+test_that("arranging on nothing is identity", {
+  expect_identical(
+    arrange(se_simple),
+    se_simple
   )
 })
 
@@ -57,8 +109,6 @@ test_that("arrange works - grouped .by_group = TRUE", {
     )
   )@se
 
-
-
   expect_identical(
     rowData(res)[["direction"]],
     c("+", "+", "+", "-", "-")
@@ -77,8 +127,10 @@ test_that("endomorphism", {
   )
   endo <- local({
     ro <- order(rowData(se(se_simple))[["length"]], method = "radix")
-    co <- order(colData(se(se_simple))[["sample"]],
-      decreasing = TRUE, method = "radix"
+    co <- order(
+      colData(se(se_simple))[["sample"]],
+      decreasing = TRUE,
+      method = "radix"
     )
     se_simple[ro, co]
   })
@@ -86,22 +138,22 @@ test_that("endomorphism", {
   expect_identical(res, endo)
 
   gse <- group_by(se_simple, rows(direction), cols(condition)) |>
-    arrange(rows(length),
-      cols(dplyr::desc(sample)),
-      .by_group = TRUE
-    ) |>
+    arrange(rows(length), cols(dplyr::desc(sample)), .by_group = TRUE) |>
     ungroup() |>
     se()
 
   endo2 <- local({
     se <- se(se_simple)
-    ro <- order(rowData(se)[["direction"]],
+    ro <- order(
+      rowData(se)[["direction"]],
       rowData(se)[["length"]],
       method = "radix"
     )
-    co <- order(colData(se)[["condition"]],
+    co <- order(
+      colData(se)[["condition"]],
       colData(se)[["sample"]],
-      decreasing = c(FALSE, TRUE), method = "radix"
+      decreasing = c(FALSE, TRUE),
+      method = "radix"
     )
     out <- se[ro, co]
     # group_by reorders rowData and colData based on groups

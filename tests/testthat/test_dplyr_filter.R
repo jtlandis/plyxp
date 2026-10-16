@@ -15,6 +15,35 @@ test_that("filter works - no groups", {
   expect_identical(dim(res), c(3L, 2L))
 })
 
+test_that("filter works - no groups - just rows", {
+  res <- expect_no_error(
+    filter(
+      se_simple,
+      rows(length > 30)
+    )
+  )
+
+  expect_identical(dim(res), c(3L, 4L))
+})
+
+test_that("filter works - no groups - just cols", {
+  res <- expect_no_error(
+    filter(
+      se_simple,
+      cols(sample %in% c("s2", "s3"))
+    )
+  )
+
+  expect_identical(dim(res), c(5L, 2L))
+})
+
+test_that("no dots filter is identity", {
+  res <- expect_no_error(
+    filter(se_simple)
+  )
+
+  expect_identical(res, se_simple)
+})
 
 test_that("filter works - with groups", {
   gse <- group_by(se_simple, rows(direction), cols(condition))
