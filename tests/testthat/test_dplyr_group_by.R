@@ -223,4 +223,207 @@ test_that("can selectively ungroup data", {
     gd$col_groups,
     group_data(gse)$col_groups
   )
+
+  gxp <- group_by(se_simple, rows(direction, gene))
+  expect_identical(
+    groups(gxp)$row_groups,
+    list(quote(direction), quote(gene))
+  )
+  expect_identical(
+    ungroup(gxp, rows(gene)) |> groups() |> _$row_groups,
+    list(quote(direction))
+  )
+
+  gxp <- group_by(se_simple, cols(condition, sample))
+  expect_identical(
+    groups(gxp)$col_groups,
+    list(quote(condition), quote(sample))
+  )
+  expect_identical(
+    ungroup(gxp, cols(sample)) |> groups() |> _$col_groups,
+    list(quote(condition))
+  )
+})
+
+test_that("cannot ungroup assays", {
+  gxp <- group_by(se_simple, rows(direction))
+  expect_error(
+    ungroup(gxp, counts),
+    "Cannot ungroup in `assays` context"
+  )
+})
+
+test_that("cannot ungroup non-grouped contexts", {
+  gxp <- group_by(se_simple, rows(direction))
+  expect_error(
+    ungroup(gxp, cols()),
+    "no col groups to ungroup"
+  )
+  expect_error(
+    ungroup(gxp, cols(condition)),
+    "no col groups to ungroup"
+  )
+  gxp <- group_by(se_simple, cols(condition))
+  expect_error(
+    ungroup(gxp, rows()),
+    "no row groups to ungroup"
+  )
+  expect_error(
+    ungroup(gxp, rows(direction)),
+    "no row groups to ungroup"
+  )
+})
+
+test_that("can query groups properly", {
+  expect_null(
+    plyxp_curr_groups(se_simple)
+  )
+  expect_identical(
+    group_by(se_simple, rows(direction)) |> plyxp_curr_groups(),
+    list(quote(rows(direction)))
+  )
+  expect_identical(
+    group_by(se_simple, cols(condition)) |> plyxp_curr_groups(),
+    list(quote(cols(condition)))
+  )
+  expect_identical(
+    group_by(se_simple, rows(direction), cols(condition)) |>
+      plyxp_curr_groups(),
+    list(quote(rows(direction)), quote(cols(condition)))
+  )
+
+  expect_identical(
+    group_by(se_simple, cols(condition), rows(direction)) |>
+      plyxp_curr_groups(),
+    list(quote(rows(direction)), quote(cols(condition)))
+  )
+})
+
+test_that("group_split() returns itself", {
+  expect_identical(
+    group_split(se_simple),
+    list(se_simple)
+  )
+})
+
+test_that("group_split() slices objects as expected - rows & cols", {
+  gxp <- group_by(se_simple, rows(direction), cols(condition))
+  expect_warning(
+    gsplit <- group_split(gxp, rows(sample)),
+    "... is ignored when `.tbl` is grouped"
+  )
+  expect_identical(
+    group_split(gxp),
+    gsplit
+  )
+  expect_identical(
+    group_split(se_simple, rows(direction), cols(condition)),
+    gsplit
+  )
+  expect_identical(
+    length(gsplit),
+    4L
+  )
+  expect_identical(
+    purrr::map2_lgl(
+      gsplit,
+      group_data(gxp)$row_groups$direction |>
+        rep(2L),
+      ~ all(pull(.x, rows(direction)) == .y)
+    ),
+    c(TRUE, TRUE, TRUE, TRUE)
+  )
+  expect_identical(
+    purrr::map2_lgl(
+      gsplit,
+      group_data(gxp)$col_groups$condition |>
+        rep(each = 2L),
+      ~ all(pull(.x, cols(condition)) == .y)
+    ),
+    c(TRUE, TRUE, TRUE, TRUE)
+  )
+})
+
+test_that("group_split() slices objects as expected - rows ", {
+  gxp <- group_by(se_simple, rows(direction))
+  expect_warning(
+    gsplit <- group_split(gxp, rows(sample)),
+    "... is ignored when `.tbl` is grouped"
+  )
+  expect_identical(
+    group_split(gxp),
+    gsplit
+  )
+  expect_identical(
+    group_split(se_simple, rows(direction)),
+    gsplit
+  )
+  expect_identical(length(gsplit), 2L)
+  expect_identical(
+    purrr::map2_lgl(
+      gsplit,
+      group_data(gxp)$row_groups$direction,
+      ~ all(pull(.x, rows(direction)) == .y)
+    ),
+    c(TRUE, TRUE)
+  )
+})
+
+test_that("group_split() slices objects as expected - cols ", {
+  gxp <- group_by(se_simple, cols(condition))
+  expect_warning(
+    gsplit <- group_split(gxp, rows(sample)),
+    "... is ignored when `.tbl` is grouped"
+  )
+  expect_identical(
+    group_split(gxp),
+    gsplit
+  )
+  expect_identical(
+    group_split(se_simple, cols(condition)),
+    gsplit
+  )
+  expect_identical(length(gsplit), 2L)
+  expect_identical(
+    purrr::map2_lgl(
+      gsplit,
+      group_data(gxp)$col_groups$condition,
+      ~ all(pull(.x, cols(condition)) == .y)
+    ),
+    c(TRUE, TRUE)
+  )
+})
+
+test_that("ungroup(..., .keep = FALSE) removes fields", {
+  gxp <- group_by(se_simple, cols(condition))
+  expect_identical(
+    group_split(gxp, .keep = FALSE) |>
+      purrr::map_lgl(
+        ~ !"condition" %in% colnames(.x)
+      ),
+    c(TRUE, TRUE)
+  )
+  gxp <- group_by(se_simple, rows(direction))
+  expect_identical(
+    group_split(gxp, .keep = FALSE) |>
+      purrr::map_lgl(
+        ~ !"direction" %in% rownames(.x)
+      ),
+    c(TRUE, TRUE)
+  )
+  gxp <- group_by(se_simple, cols(condition), rows(direction))
+  expect_identical(
+    group_split(gxp, .keep = FALSE) |>
+      purrr::map_lgl(
+        ~ !"condition" %in% colnames(.x)
+      ),
+    c(TRUE, TRUE, TRUE, TRUE)
+  )
+  expect_identical(
+    group_split(gxp, .keep = FALSE) |>
+      purrr::map_lgl(
+        ~ !"direction" %in% rownames(.x)
+      ),
+    c(TRUE, TRUE, TRUE, TRUE)
+  )
 })
