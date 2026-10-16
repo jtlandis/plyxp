@@ -66,3 +66,15 @@ test_that("pull from rows", {
     pull(se_simple, cols(.samples))
   )
 })
+
+test_that("pull can only pull one var", {
+  expect_error(
+    pull(se_simple, rows(gene, length)),
+    "`var` can only pull one object"
+  )
+
+  expect_error(
+    pull(se_simple, c(counts, logcounts)),
+    "failed to pull 'c\\(counts, logcounts\\)' from 'assays' context"
+  )
+})
