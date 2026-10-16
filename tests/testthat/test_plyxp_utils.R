@@ -24,3 +24,23 @@ test_that("sentinal functions error", {
     "`cols\\(\\)` is a sentinal function"
   )
 })
+
+
+test_that("ctx_env works", {
+  expect_null(
+    peek_ctx("foo")
+  )
+  old <- expect_null(
+    poke_ctx("foo", "bar")
+  )
+  expect_identical(
+    poke_ctx("foo", NULL),
+    "bar"
+  )
+  expect_null(
+    peek_ctx("foo")
+  )
+  expect_no_error(
+    rlang::env_unbind(ctx_env, "foo")
+  )
+})
