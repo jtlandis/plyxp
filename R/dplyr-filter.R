@@ -1,6 +1,6 @@
 # Meant to be used to propagate NULL when a downstream
-# function could take NULLs
-`%|!|%` <- function(x, y) if (!is_empty(x)) y else NULL
+# function could take NULLs - Unused...
+# `%|!|%` <- function(x, y) if (!is_empty(x)) y else NULL
 
 #' @name filter
 #' @title filter PlySummarizedExperiment

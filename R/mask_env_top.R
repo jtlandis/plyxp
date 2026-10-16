@@ -137,13 +137,14 @@ plyxp_group_ids2 <- function(
 #     as.list()
 # }
 
-env_group_id <- function(env) {
-  force(env)
-  function(id) {
-    env[["plyxp:::ctx:::group_id"]] <- id
-    invisible(id)
-  }
-}
+# seems to have moved to `plyxp_manager$group_id`
+# env_group_id <- function(env) {
+#   force(env)
+#   function(id) {
+#     env[["plyxp:::ctx:::group_id"]] <- id
+#     invisible(id)
+#   }
+# }
 
 # provides most of the connectivity for tracking how other
 # contexts should collect certain data. Most of this headache is to support
@@ -340,6 +341,6 @@ prepare_shared_ctx_env <- function(groups, expanded) {
     quote(`plyxp:::ctx:::group_id`),
     shared_ctx_env
   )
-  shared_ctx_env$set_group_id <- env_group_id(shared_ctx_env)
+  # shared_ctx_env$set_group_id <- env_group_id(shared_ctx_env)
   shared_ctx_env
 }
