@@ -1,6 +1,9 @@
 #' @include vctrs-S4-.R
 
-vec_init <- new_generic("vec_init", "x", function(x, n = 1L) S7::S7_dispatch())
+vec_init <- new_generic("vec_init", "x", function(x, n = 1L) {
+  n <- as.integer(n)
+  S7::S7_dispatch()
+})
 
 
 method(vec_init, class_vctrs) <- vctrs::vec_init

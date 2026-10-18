@@ -1,4 +1,5 @@
 #' @include vctrs-S4-.R
+#' @include vctrs-S4-init.R
 
 vec_cast <- new_generic("vec_init", c("x", "to"), function(x, to, ...) {
   S7::S7_dispatch()
@@ -26,41 +27,43 @@ method(vec_cast, list(S7::class_any, S7::class_any)) <- function(x, to, ...) {
   )
 }
 
-method(vec_cast, list(class_DF, S7::class_data.frame)) <- function(x, to, ...) {
-  xn <- length(x)
+pre_cast_df <- function(x, to, xsize = vec_size(x)) {
   ton <- length(to)
-  if (
-    xn > ton ||
-      (!is.null(mcols <- mcols(x)) && length(mcols) > 0)
-  ) {
+  xnm <- colnames(x)
+  tonm <- colnames(to)
+  if (!all(xnm %in% tonm)) {
     stop("cannot lossy cast `x` to `to`")
   }
-
-  xsize <- vec_size(x)
-  new_data <- vec_init(to, xsize)
-  listData <- x@listData
-  for (name in colnames(x)) {
-    new_data[[name]] <- vec_cast(listData[[name]], new_data[[name]])
+  out <- vector("list", ton)
+  names(out) <- tonm
+  for (name in xnm) {
+    out[[name]] <- vec_cast(x[[name]], to[[name]])
   }
-  attr(new_data, "row.names") <- c(NA_integer_, -nn)
-  class(new_data) <- "data.frame"
-  new_data
+  tonm <- setdiff(tonm, xnm)
+  for (name in tonm) {
+    out[[name]] <- vec_init(to[[name]], n = xsize)
+  }
+  out
+}
+
+method(vec_cast, list(class_DF, S7::class_data.frame)) <- function(x, to, ...) {
+  xsize <- x@nrows
+  out <- pre_cast_df(x, to, xsize = xsize)
+  attr(out, "row.names") <- c(NA_integer_, -xsize)
+  class(out) <- class(to)
+  out
 }
 
 method(
   vec_cast,
   list(S7::class_data.frame | class_DF, class_DF)
 ) <- function(x, to, ...) {
-  xn <- length(x)
-  ton <- length(to)
-  if (xn > ton) {
-    stop("cannot lossy cast `x` to `to`")
-  }
-  xsize <- vec_size(x)
-  new_data <- vec_init(to, xsize)
-  listData <- to@listData
-  for (name in colnames(x)) {
-    new_data[[name]] <- vec_cast(x[[name]], listData[[name]])
-  }
-  new_data
+  xsize <- nrow(x)
+  out <- pre_cast_df(x, to, xsize = xsize)
+  S4Vectors::new2(
+    "DFrame",
+    listData = out,
+    nrows = xsize,
+    check = FALSE
+  )
 }
