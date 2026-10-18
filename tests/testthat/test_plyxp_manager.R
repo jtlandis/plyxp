@@ -59,3 +59,19 @@ test_that("manager", {
     "bad expr"
   )
 })
+
+
+test_that("assays split in groups", {
+  m <- group_by(se_simple, rows(direction), cols(condition)) |>
+    new_plyxp_manager()
+  q <- plyxp_quos(counts, .ctx = "assays")
+  expect_identical(
+    m$ctx_mask$eval(q[[1L]]),
+    matrix(
+      c(14L, 11L, 8L, 17L),
+      2,
+      2,
+      dimnames = list(c("row_1", "row_4"), c("col_1", "col_2"))
+    )
+  )
+})
