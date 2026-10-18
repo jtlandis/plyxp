@@ -114,9 +114,11 @@ method(vec_slice, class_s4_vctrs) <- function(x, i, ...) {
 }
 
 method(vec_slice, class_DF) <- function(x, i, ...) {
-  x@listData <- purrr::map(x@listData, vec_slice, i = i)
+  rnames <- rownames(x)
+  i <- into_index(indices = i, .size = nrow(x), .names = rnames)
+  x@listData <- lapply(x@listData, vec_slice, i = i)
   x@nrows <- length(i)
-  if (!is.null(rnames <- rownames(x))) {
+  if (!is.null(rnames)) {
     x@rownames <- vec_slice(rnames, i = i)
   }
   x
