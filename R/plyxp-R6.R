@@ -61,20 +61,37 @@ add_bind <- function(
   type = c("standard", "lazy", "active")
 ) {
   # type <- match.arg(type, c("standard", "lazy", "active"))
-  fun <- switch(
-    type,
-    standard = expr(env_bind),
-    lazy = expr(env_bind_lazy),
-    active = expr(env_bind_active),
-    stop(sprintf("unsupported `type` argument: %s", type))
-  )
   name_unquo <- quote(!!name)
   quosure_unquo <- quote(!!quosure)
   # removed inlining of .env_expr and .env_bind due to https://github.com/r-lib/coro/issues/36
   # Note, if the user's expression (.expr) inlines data, then this **can** cause a
   # memory leak if the output function gets JIT compiled
-  fn <- if (type == "active") {
-    new_function(
+  fn <- switch(
+    type,
+    standard = new_function(
+      args = alist(name = ),
+      body = expr({
+        name_sym <- as.name(name)
+        this <- base::sys.function()
+        expr_env <- attr(this, "plyxp:::expr_env")
+        quosure <- new_quosure(expr(!!.expr), env = expr_env)
+        binding_env <- attr(this, "plyxp:::binding_env")
+        result <- rlang::eval_tidy(quosure)
+        env_bind(binding_env, !!name_unquo := result)
+      })
+    ),
+    lazy = new_function(
+      args = alist(name = ),
+      body = expr({
+        name_sym <- as.name(name)
+        this <- base::sys.function()
+        expr_env <- attr(this, "plyxp:::expr_env")
+        quosure <- new_quosure(expr(!!.expr), env = expr_env)
+        binding_env <- attr(this, "plyxp:::binding_env")
+        env_bind_lazy(binding_env, !!name_unquo := !!quosure_unquo)
+      })
+    ),
+    active = new_function(
       args = alist(name = ),
       body = expr({
         name_sym <- as.name(name)
@@ -86,23 +103,12 @@ add_bind <- function(
           env = expr_env
         )
         # active_fun <- eval_tidy(quosure, data = as_data_mask(base::baseenv()))
-        binding_env <- this |> attr("plyxp:::binding_env")
-        (!!fun)(binding_env, !!name_unquo := actv_fun)
+        binding_env <- attr(this, "plyxp:::binding_env")
+        env_bind_active(binding_env, !!name_unquo := actv_fun)
       })
-    )
-  } else {
-    new_function(
-      args = alist(name = ),
-      body = expr({
-        name_sym <- as.name(name)
-        this <- base::sys.function()
-        expr_env <- attr(this, "plyxp:::expr_env")
-        quosure <- new_quosure(expr(!!.expr), env = expr_env)
-        binding_env <- attr("plyxp:::binding_env")
-        (!!fun)(binding_env, !!name_unquo := !!quosure_unquo)
-      })
-    )
-  }
+    ),
+    stop(sprintf("unsupported `type` argument: %s", type))
+  )
   attr(fn, "plyxp:::expr_env") <- .env_expr
   attr(fn, "plyxp:::binding_env") <- .env_bind
   fn
@@ -143,7 +149,7 @@ add_bind <- function(
 #' @examples
 #' # note: this R6 class is not exported at this moment
 #'
-#' mask <- getNamespace("plyxp")$plyxp_masknew(iris,
+#' mask <- getNamespace("plyxp")$plyxp_mask$new(iris,
 #'   .env_bot = rlang::env(`plyxp:::ctx:::group_id` = 1L)
 #' )
 #' mask$eval(quote(Sepal.Width))

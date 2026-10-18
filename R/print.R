@@ -147,6 +147,11 @@ show_tidy.default <- function(x, ...) {
 }
 
 #' @export
+show_tidy.PlySummarizedExperiment <- function(x, n = 10, ...) {
+  show_tidy(se(x), n = n, ...)
+}
+
+#' @export
 show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
   top_n <- ceiling(n / 2)
   bot_n <- floor(n / 2)
