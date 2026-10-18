@@ -186,31 +186,30 @@ chop_dims_outer <- function(obj, .dims) {
   out
 }
 
-vec_chop_assays <- function(.data, .indices) {
-  map2(
-    attr(.indices, "plyxp:::row_chop_ind"),
-    attr(.indices, "plyxp:::col_chop_ind"),
-    function(.x, .y, .data) .data[.x, .y, drop = FALSE],
-    .data = .data
-  )
-}
-
-vec_chop_assays_row <- function(.data, .indices) {
-  map(
-    attr(.indices, "plyxp:::row_chop_ind"),
-    function(.i, .data) .data[.i, , drop = FALSE],
-    .data = .data
-  )
-}
-
-vec_chop_assays_col <- function(.data, .indices) {
-  map(
-    attr(.indices, "plyxp:::col_chop_ind"),
-    function(.i, .data) .data[, .i, drop = FALSE],
-    .data = .data
-  )
-}
-
+# vec_chop_assays <- function(.data, .indices) {
+#   map2(
+#     attr(.indices, "plyxp:::row_chop_ind"),
+#     attr(.indices, "plyxp:::col_chop_ind"),
+#     function(.x, .y, .data) .data[.x, .y, drop = FALSE],
+#     .data = .data
+#   )
+# }
+#
+# vec_chop_assays_row <- function(.data, .indices) {
+#   map(
+#     attr(.indices, "plyxp:::row_chop_ind"),
+#     function(.i, .data) .data[.i, , drop = FALSE],
+#     .data = .data
+#   )
+# }
+#
+# vec_chop_assays_col <- function(.data, .indices) {
+#   map(
+#     attr(.indices, "plyxp:::col_chop_ind"),
+#     function(.i, .data) .data[, .i, drop = FALSE],
+#     .data = .data
+#   )
+# }
 
 create_groups <- function(.data, .rename = ".indices") {
   # check if length > 0
