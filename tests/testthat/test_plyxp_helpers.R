@@ -74,3 +74,136 @@ test_that("plyxp_on() sends custom errors", {
     se_simple
   )
 })
+
+
+test_that("assay() pulls data", {
+  se_assays <- assays(se(se_simple))
+  expect_identical(
+    assay(se_simple),
+    se_assays[[1L]]
+  )
+  expect_identical(
+    assay(se_simple, "counts"),
+    se_assays[["counts"]]
+  )
+  expect_identical(
+    assay(se_simple, 2L),
+    se_assays[[2L]]
+  )
+})
+
+test_that("assay<-() sets data", {
+  se_assays <- assays(se(se_simple))
+  xp <- se_simple
+  assay(xp) <- se_assays[[1L]] + 1L
+  expect_identical(
+    assay(xp),
+    se_assays[[1L]] + 1L
+  )
+
+  assay(xp, 2L) <- se_assays[[2L]] + 1
+  expect_identical(
+    assay(xp, 2L),
+    se_assays[[2L]] + 1
+  )
+})
+
+
+test_that("assays<-() sets data", {
+  se_assays <- assays(se(se_simple)) |> lapply(\(x) x + 1)
+  xp <- se_simple
+  assays(xp) <- se_assays
+  expect_identical(
+    as.list(assays(xp)),
+    se_assays
+  )
+})
+
+test_that("metadata<-() sets data", {
+  xp <- se_simple
+  metadata(xp)["foo"] <- "bar"
+  expect_identical(
+    metadata(xp)$foo,
+    "bar"
+  )
+})
+
+test_that("$.PlySummarizedExperiment operates on colData", {
+  expect_identical(
+    se_simple$condition,
+    colData(se_simple)$condition
+  )
+  xp <- se_simple
+  xp$foo <- "bar"
+  expect_identical(
+    se_simple$foo,
+    colData(se_simple)$foo
+  )
+})
+
+test_that("can pull names of object", {
+  xp <- se_simple
+  expect_identical(
+    names(xp),
+    sprintf("row_%i", 1:5)
+  )
+  expect_identical(
+    dimnames(xp),
+    list(
+      sprintf("row_%i", 1:5),
+      sprintf("col_%i", 1:4)
+    )
+  )
+  expect_no_error(
+    dimnames(xp)[[1L]] <- sprintf("new_row_%i", 1:5)
+  )
+  expect_identical(
+    dimnames(xp),
+    list(
+      sprintf("new_row_%i", 1:5),
+      sprintf("col_%i", 1:4)
+    )
+  )
+  expect_no_error(
+    dimnames(xp)[[2L]] <- sprintf("new_col_%i", 1:4)
+  )
+  expect_identical(
+    dimnames(xp),
+    list(
+      sprintf("new_row_%i", 1:5),
+      sprintf("new_col_%i", 1:4)
+    )
+  )
+  expect_no_error(
+    dimnames(xp) <- NULL
+  )
+  expect_identical(
+    dimnames(xp),
+    list(
+      NULL,
+      NULL
+    )
+  )
+})
+
+
+test_that("plyxp*() errors correctly", {
+  expect_error(
+    plyxp(se_simple, \(x) stop("forcing error")),
+    "forcing error"
+  )
+
+  expect_error(
+    plyxp(se_simple, colData),
+    "must return a .*SummarizedExperiment"
+  )
+
+  do_colData <- function(x) {
+    stop("forcing error")
+  }
+
+  expect_error(
+    plyxp_on(se_simple, do_colData, .on = colData),
+    "error in `do_colData\\(colData\\(se\\(.data\\)\\), ...\\)`"
+  )
+})
