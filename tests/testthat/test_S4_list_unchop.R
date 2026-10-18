@@ -51,8 +51,19 @@ test_that("can combind DF and data.frame", {
 test_that("Cannot lossy cast data frames", {
   DF <- S4Vectors::DataFrame(y = letters[1:3], z = c(TRUE, FALSE, TRUE))
   DF2 <- S4Vectors::DataFrame(y = letters[4:6])
+  df <- data.frame(x = 1:3, y = letters[1:3])
   expect_error(
-    vec_cast(DF, DF2)
+    vec_cast(DF, DF2),
+    "cannot lossy cast `x` to `to`"
+  )
+
+  expect_error(
+    vec_cast(DF, df),
+    "cannot lossy cast `x` to `to`"
+  )
+  expect_error(
+    vec_cast(df, DF),
+    "cannot lossy cast `x` to `to`"
   )
 })
 
@@ -67,5 +78,35 @@ test_that("Cannot init malformed DFrame", {
   expect_error(
     vec_init(DF, 4L),
     "cannot init DFrame. Improper mcols length"
+  )
+})
+
+
+test_that("unchop S4 objects", {
+  rle <- S4Vectors::Rle(rep(1L:2L, each = 5))
+  expect_identical(
+    list_unchop(
+      list(rle, rle),
+      indices = list(c(1:5, 11:15), c(6:10, 16:20))
+    ),
+    S4Vectors::Rle(rep(1L:2L, each = 10))
+  )
+
+  DF <- S4Vectors::DataFrame(
+    x = rep(letters[1:5], each = 2),
+    y = S4Vectors::Rle(rep(1:2, each = 5))
+  )
+  loc <- expect_no_error(
+    vec_group_loc(DF)$loc
+  )
+  chopped <- expect_no_error(
+    vec_chop(
+      DF,
+      loc
+    )
+  )
+  expect_identical(
+    list_unchop(chopped, indices = loc),
+    DF
   )
 })
