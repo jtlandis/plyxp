@@ -1,5 +1,10 @@
 # The following functions have a lot of boilerplate code
 
+call_fns <- function(arg, fn1, fn2) {
+  fn1(arg)
+  fn2(arg)
+}
+
 # whenever new binding in assays, ensure mask_rows has access.
 connect_assays_to_rows <- function(mask_assays, mask_rows) {
   assay_names <- mask_assays$names
@@ -44,7 +49,8 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
   )
   fun_mold <- add_bind(
     quote(
-      lapply(seq_len(`plyxp:::ctx:::n`),
+      lapply(
+        seq_len(`plyxp:::ctx:::n`),
         function(i, x) x[i, , drop = TRUE],
         x = !!name_sym
       )
@@ -53,8 +59,10 @@ connect_assays_to_rows <- function(mask_assays, mask_rows) {
     .env_bind = env_pronoun,
     type = "active"
   )
-  walk(assay_names, fun_asis) |>
-    walk(fun_mold)
+
+  lapply(assay_names, call_fns, fn1 = fun_asis, fn2 = fun_mold)
+  # walk(assay_names, fun_asis) |>
+  #   walk(fun_mold)
   # whenever a new assay binding is made,
   # execute the prior functions
   mask_assays$on_bind(fun_asis)$on_bind(fun_mold)
@@ -109,7 +117,8 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
   )
   fun_mold <- add_bind(
     quote(
-      lapply(seq_len(`plyxp:::ctx:::n`),
+      lapply(
+        seq_len(`plyxp:::ctx:::n`),
         function(i, x) x[, i, drop = TRUE],
         x = !!name_sym
       )
@@ -118,8 +127,9 @@ connect_assays_to_cols <- function(mask_assays, mask_cols) {
     .env_bind = env_pronoun,
     type = "active"
   )
-  walk(assay_names, fun_asis) |>
-    walk(fun_mold)
+  lapply(assay_names, call_fns, fn1 = fun_asis, fn2 = fun_mold)
+  # walk(assay_names, fun_asis) |>
+  #   walk(fun_mold)
   # whenever a new assay binding is made,
   # execute the prior functions
   mask_assays$on_bind(fun_asis)$on_bind(fun_mold)
@@ -153,8 +163,10 @@ connect_rows_to_assays <- function(mask_rows, mask_assays) {
     .env_bind = env_pronoun,
     type = "active"
   )
-  walk(row_names, fun_asis) |>
-    walk(fun_mold)
+
+  lapply(row_names, call_fns, fn1 = fun_asis, fn2 = fun_mold)
+  # walk(row_names, fun_asis) |>
+  #   walk(fun_mold)
   # whenever a new row binding is made,
   # execute the prior functions
   mask_rows$on_bind(fun_asis)$on_bind(fun_mold)
@@ -187,8 +199,9 @@ connect_cols_to_assays <- function(mask_cols, mask_assays) {
     .env_bind = env_pronoun,
     type = "active"
   )
-  walk(col_names, fun_asis) |>
-    walk(fun_mold)
+  lapply(col_names, call_fns, fn1 = fun_asis, fn2 = fun_mold)
+  # walk(col_names, fun_asis) |>
+  #   walk(fun_mold)
   # whenever a new col binding is made,
   # execute the prior functions
   mask_cols$on_bind(fun_asis)$on_bind(fun_mold)
@@ -233,8 +246,9 @@ connect_rows_to_cols <- function(mask_rows, mask_cols) {
     .env_bind = env_pronoun,
     type = "active"
   )
-  walk(row_names, fun_asis) |>
-    walk(fun_mold)
+  lapply(row_names, call_fns, fn1 = fun_asis, fn2 = fun_mold)
+  # walk(row_names, fun_asis) |>
+  #   walk(fun_mold)
   # whenever a new row binding is made,
   # execute the prior functions
   mask_rows$on_bind(fun_asis)$on_bind(fun_mold)
@@ -279,8 +293,9 @@ connect_cols_to_rows <- function(mask_rows, mask_cols) {
     .env_bind = env_pronoun,
     type = "active"
   )
-  walk(col_names, fun_asis) |>
-    walk(fun_mold)
+  lapply(col_names, call_fns, fn1 = fun_asis, fn2 = fun_mold)
+  # walk(col_names, fun_asis) |>
+  #   walk(fun_mold)
   # whenever a new col binding is made,
   # execute the prior functions
   mask_cols$on_bind(fun_asis)$on_bind(fun_mold)
@@ -297,16 +312,20 @@ connect_masks <- function(mask_assays, mask_rows, mask_cols) {
   col2row <- connect_cols_to_rows(mask_cols = mask_cols, mask_rows = mask_rows)
   row2col <- connect_rows_to_cols(mask_rows = mask_rows, mask_cols = mask_cols)
   col2assay <- connect_cols_to_assays(
-    mask_cols = mask_cols, mask_assays = mask_assays
+    mask_cols = mask_cols,
+    mask_assays = mask_assays
   )
   row2assay <- connect_rows_to_assays(
-    mask_rows = mask_rows, mask_assays = mask_assays
+    mask_rows = mask_rows,
+    mask_assays = mask_assays
   )
   assay2row <- connect_assays_to_rows(
-    mask_assays = mask_assays, mask_rows = mask_rows
+    mask_assays = mask_assays,
+    mask_rows = mask_rows
   )
   assay2col <- connect_assays_to_cols(
-    mask_assays = mask_assays, mask_cols = mask_cols
+    mask_assays = mask_assays,
+    mask_cols = mask_cols
   )
 
   list(
