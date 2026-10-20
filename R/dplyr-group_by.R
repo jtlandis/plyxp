@@ -105,14 +105,14 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
 
   if (.add && !is_empty(.groups)) {
     if (!is_empty(.groups$row_groups)) {
-      curr <- select(.groups$row_groups, -starts_with(".indices")) |>
+      curr <- deselect(.groups$row_groups, "^.indices") |>
         names()
       curr <- rowData(.data)[curr]
       curr[names(results$rows)] <- results$rows
       results$rows <- curr
     }
     if (!is_empty(.groups$col_groups)) {
-      curr <- select(.groups$col_groups, -starts_with(".indices")) |>
+      curr <- deselect(.groups$col_groups, "^.indices") |>
         names()
       curr <- colData(.data)[curr]
       curr[names(results$cols)] <- results$cols
@@ -224,7 +224,7 @@ ungroup_se_impl <- function(x, ...) {
     if (is.null(curr_groups$row_groups)) {
       abort("no row groups to ungroup")
     }
-    old_groups <- select(curr_groups$row_groups, -starts_with(".indices")) |>
+    old_groups <- deselect(curr_groups$row_groups, "^.indices") |>
       names()
     select_expr <- if (length(rexprs) == 1L && quo_is_missing(rexprs[[1]])) {
       call2("c", splice(syms(old_groups)))
@@ -248,7 +248,7 @@ ungroup_se_impl <- function(x, ...) {
     if (is.null(curr_groups$col_groups)) {
       abort("no col groups to ungroup")
     }
-    old_groups <- select(curr_groups$col_groups, -starts_with(".indices")) |>
+    old_groups <- deselect(curr_groups$col_groups, "^.indices") |>
       names()
     select_expr <- if (length(cexprs) == 1L && quo_is_missing(cexprs[[1]])) {
       call2("c", splice(syms(old_groups)))
@@ -272,6 +272,12 @@ ungroup_se_impl <- function(x, ...) {
     row = group_by_se_impl(x, !!update_rows),
     col = group_by_se_impl(x, !!update_cols)
   )
+}
+
+deselect <- function(DF, ptrn) {
+  nms <- colnames(DF)
+  ind <- grep(ptrn, nms)
+  DF[-ind]
 }
 
 #' @export

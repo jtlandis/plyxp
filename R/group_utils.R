@@ -12,10 +12,12 @@ expand_groups2 <- function(.rows, .cols) {
   n <- .nrow * .ncol
   out[[".nrows"]] <- map_int(out[[".rows::.indices"]], length)
   out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
-  attr(out, "row.names") <- c(NA_integer_, -n)
-  class(out) <- c("tbl_df", "tbl", "data.frame")
-  attr(out, "plyxp:::unique_row_ind") <- seq_len(.nrow)
-  attr(out, "plyxp:::unique_col_ind") <- ((seq_len(.ncol) - 1L) * .nrow) + 1L
+  out <- S4Vectors::new2("DFrame", listData = out, nrows = n, check = FALSE)
+  S4Vectors::metadata(out)[["plyxp:::unique_row_ind"]] <- seq_len(.nrow)
+  S4Vectors::metadata(out)[["plyxp:::unique_col_ind"]] <- ((seq_len(.ncol) -
+    1L) *
+    .nrow) +
+    1L
 
   # due to this ordering here, I had introduced an unexpected
   # column-wise ordering of assays. I have changed it and commented
@@ -216,21 +218,23 @@ create_groups <- function(.data, .rename = ".indices") {
   if (is_empty(.data)) {
     return(NULL)
   }
-  # check first index has length > 0
-  # assumes all others have similar length (probably not always true)
-  if (length(.data[[1]]) == 0) {
-    .data <- as_tibble(.data)
-    .data[[.rename]] <- list()
-    .data[[sprintf("%s_group_id", .rename)]] <- integer()
-    return(.data)
-  }
-  .data |>
-    as_tibble() |>
-    vec_group_loc() |>
-    unnest(key) |>
-    rename("{.rename}" := loc) |>
-    mutate("{.rename}_group_id" := seq_len(n()))
+  grouped <- .data |>
+    vec_group_loc()
+  n <- nrow(grouped)
+  key <- as.list(grouped$key)
+  data <- list(
+    grouped$loc,
+    seq_len(n)
+  )
+  names(data) <- sprintf(c("%s", "%s_group_id"), .rename)
+  S4Vectors::new2(
+    "DFrame",
+    listData = c(key, data),
+    nrows = n,
+    check = FALSE
+  )
 }
+
 
 plyxp_groups <- function(row_groups = NULL, col_groups = NULL) {
   out <- list(
@@ -278,14 +282,18 @@ get_group_indices <- function(
       )
       attr(out, "plyxp:::row_chop_ind") <- .details[[".rows::.indices"]]
       attr(out, "plyxp:::col_chop_ind") <- .details[[".cols::.indices"]]
-      attr(out, "plyxp:::unique_row_ind") <- attr(
-        .details,
+      attr(out, "plyxp:::unique_row_ind") <- S4Vectors::metadata(
+        .details
+      )[[
         "plyxp:::unique_row_ind"
-      )
-      attr(out, "plyxp:::unique_col_ind") <- attr(
-        .details,
+      ]]
+
+      attr(out, "plyxp:::unique_col_ind") <- S4Vectors::metadata(
+        .details
+      )[[
         "plyxp:::unique_col_ind"
-      )
+      ]]
+
       # attr(out, "type") <- attr(.groups, "type")
       out
     },
@@ -408,3 +416,16 @@ unchop_2d <- function(lst, row_ind, col_ind) {
   }
   out
 }
+
+# `for` <- function(var, seq, expr) {
+#   cat("Loop initialization intercepted!\n")
+#
+#   # Capture the variable name as a symbol
+#   var_sym <- substitute(var)
+#
+#   # Use base R's primitive loop hidden in the base package
+#   base::`for`(i, seq, {
+#     assign(as.character(var_sym), i, envir = parent.frame())
+#     eval(substitute(expr), envir = parent.frame())
+#   })
+# }
