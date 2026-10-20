@@ -6,14 +6,22 @@ expand_groups2 <- function(.rows, .cols) {
   names(.cols) <- sprintf(".cols::%s", names(.cols))
   .nrow <- nrow(.rows)
   .ncol <- nrow(.cols)
+  n <- .nrow * .ncol
   .rows <- map(.rows, vec_rep, times = .ncol)
   .cols <- map(.cols, vec_rep_each, times = .nrow)
-  out <- c(.rows, .cols)
-  n <- .nrow * .ncol
-  out[[".nrows"]] <- map_int(out[[".rows::.indices"]], length)
-  out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
-  attr(out, "row.names") <- c(NA_integer_, -n)
-  class(out) <- c("tbl_df", "tbl", "data.frame")
+  out <- c(
+    .rows,
+    .cols,
+    list(
+      .nrows = base::lengths(.rows[[".rows::.indices"]]),
+      .ncols = base::lengths(.cols[[".cols::.indices"]]),
+      .group_id = seq_len(n)
+    )
+  )
+  out <- df0(
+    out,
+    n
+  )
   attr(out, "plyxp:::unique_row_ind") <- seq_len(.nrow)
   attr(out, "plyxp:::unique_col_ind") <- ((seq_len(.ncol) - 1L) * .nrow) + 1L
 
@@ -25,7 +33,6 @@ expand_groups2 <- function(.rows, .cols) {
   #   out[[".rows::.indices_group_id"]]
   # )
   # out <- out[o,]
-  out$.group_id <- seq_len(n)
   out
 }
 
