@@ -371,7 +371,7 @@ plyxp_mask <- R6::R6Class(
       private$.indices <- indices
       private$.ngroups <- if (is.null(indices)) 1L else length(indices)
       fun <- private$get_chop_fun()
-      test_output <- fun(test)
+      test_output <- fun(quote(test))
       stopifnot(is_expression(test_output))
       # environment(fun) <- private$env_data_lazy
       private$chop_data <- fun
@@ -381,12 +381,12 @@ plyxp_mask <- R6::R6Class(
     get_chop_fun = function() {
       if (is.null(private$.indices)) {
         function(name) {
-          name <- enexpr(name)
+          # name <- enexpr(name)
           expr(list(!!name))
         }
       } else {
         function(name) {
-          name <- enexpr(name)
+          # name <- enexpr(name)
           expr(vec_chop(!!name, indices = .indices))
         }
       }
@@ -528,7 +528,7 @@ plyxp_assay <- R6::R6Class(
         # type <- attr(.indices, "type")
         private$.ngroups <- length(.indices)
         fun <- function(name) {
-          name <- enexpr(name)
+          # name <- enexpr(name)
           expr(chop_assays_outer(!!name, .indices))
         }
         return(fun)
