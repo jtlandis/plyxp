@@ -75,3 +75,53 @@ test_that("assays split in groups", {
     )
   )
 })
+
+
+test_that("masks bindings are read-only", {
+  m <- group_by(se_simple, rows(direction), cols(condition)) |>
+    new_plyxp_manager()
+
+  expect_error(
+    m$ctx_mask <- list(),
+    "`\\$ctx_mask` is read only"
+  )
+
+  expect_error(
+    m$n_groups <- list(),
+    "`\\$n_groups` is read only"
+  )
+
+  expect_error(
+    m$masks <- list(),
+    "`\\$masks` is read only"
+  )
+
+  expect_error(
+    m$extended <- list(),
+    "`\\$extended` is read only"
+  )
+})
+
+test_that("get proper sequence across contexts groups", {
+  m <- group_by(se_simple, rows(direction), cols(condition)) |>
+    new_plyxp_manager()
+
+  expect_identical(
+    m$along_ctx(),
+    seq_len(4L)
+  )
+
+  m$ctx <- "rows"
+
+  expect_identical(
+    m$along_ctx(),
+    seq_len(2L)
+  )
+
+  m$ctx <- "cols"
+
+  expect_identical(
+    m$along_ctx(),
+    seq_len(2L)
+  )
+})
