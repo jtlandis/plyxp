@@ -75,7 +75,7 @@ select_se_impl <- function(.data, ...) {
     data = .data
   )
 
-  .assays(.data) <- .assays(.data)[selected[["assays"]]]
+  assays_(.data) <- assays_(.data)[selected[["assays"]]]
   rowData(.data) <- rowData(.data)[selected[["rows"]]]
   colData(.data) <- colData(.data)[selected[["cols"]]]
 
@@ -87,7 +87,7 @@ select_se_impl <- function(.data, ...) {
 plyxp_eval_select <- function(quos, ctxs, data) {
   out <- vector("list", length(quos))
   .data <- list(
-    assays = as.list(.assays(data)),
+    assays = as.list(assays_(data)),
     rows = as.list(rowData(data)),
     cols = as.list(colData(data))
   )

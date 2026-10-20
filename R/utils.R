@@ -54,11 +54,11 @@ class_name_ <- function(cls) {
 #   class_name_(cls)
 # }
 
-.assays <- function(x) {
+assays_ <- function(x) {
   assays(x, withDimnames = FALSE)
 }
 
-`.assays<-` <- function(x, value) {
+`assays_<-` <- function(x, value) {
   assays(x, withDimnames = FALSE) <- value
   x
 }

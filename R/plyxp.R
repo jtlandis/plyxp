@@ -1,5 +1,7 @@
 # @seealso [plyxp::PlyxpMaskManager]
 
+#' @include utils.R
+
 #' @title New Plyxp mask
 #' @name new_plyxp_manager
 #' @description
@@ -45,7 +47,7 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
 
   mask_assay <- plyxp_assay$new(
-    .assays(obj),
+    assays_(obj),
     get_group_indices(groups, expanded, "assay"),
     .nrow = nr,
     .ncol = nc,

@@ -1,4 +1,5 @@
 #' @importFrom dplyr mutate
+#' @include utils.R
 
 #' @name mutate
 #' @title Mutate a PlySummarizedExperiment object
@@ -78,7 +79,7 @@ mutate_se_impl <- function(.data, ...) {
   # set assays last to reset dimnames
   nms <- names(results$assays)
   dim_nms <- dimnames(.data)
-  assays_ <- as.list(.assays(.data))
+  assays_ <- as.list(assays_(.data))
   for (i in seq_along(results$assays)) {
     new_assay <- results$assays[[i]]
     if (!is.null(new_assay)) {
@@ -88,7 +89,7 @@ mutate_se_impl <- function(.data, ...) {
     }
     assays_[[nms[i]]] <- new_assay
   }
-  .assays(.data) <- assays_
+  assays_(.data) <- assays_
 
   .data
 }

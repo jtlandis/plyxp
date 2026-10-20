@@ -44,7 +44,7 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
   ctxs <- attr(var, which = "plyxp:::ctx")
   data_ctx <- switch(
     ctxs,
-    "assays" = .assays(.data),
+    "assays" = assays_(.data),
     "rows" = rowData(.data),
     "cols" = colData(.data)
   )
