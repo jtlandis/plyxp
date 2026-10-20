@@ -323,17 +323,23 @@ get_group_indices <- function(
 group_details <- function(obj) {
   group_data <- group_data_se_impl(obj)
   if (is.null(group_data$row_groups)) {
-    group_data$row_groups <- tibble(
-      .indices = list(seq_len(nrow(obj))),
-      .indices_group_id = 1L
+    group_data$row_groups <- df0(
+      list(
+        .indices = list(seq_len(nrow(obj))),
+        .indices_group_id = 1L
+      ),
+      1L
     )
     attr(group_data, "grouped_rows") <- FALSE
   }
 
   if (is.null(group_data$col_groups)) {
-    group_data$col_groups <- tibble(
-      .indices = list(seq_len(ncol(obj))),
-      .indices_group_id = 1L
+    group_data$col_groups <- df0(
+      list(
+        .indices = list(seq_len(ncol(obj))),
+        .indices_group_id = 1L
+      ),
+      1L
     )
 
     attr(group_data, "grouped_cols") <- FALSE
