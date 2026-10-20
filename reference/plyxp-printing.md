@@ -84,9 +84,6 @@ if (require("IRanges")) {
 #>     setequal, union
 #> 
 #> Attaching package: ‘BiocGenerics’
-#> The following objects are masked from ‘package:plyxp’:
-#> 
-#>     colnames, rownames
 #> The following objects are masked from ‘package:stats’:
 #> 
 #>     IQR, mad, sd, var, xtabs

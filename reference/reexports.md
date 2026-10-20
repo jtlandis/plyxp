@@ -3,6 +3,13 @@
 These objects are imported from other packages. Follow the links below
 to see their documentation.
 
+- BiocGenerics:
+
+  [`colnames()`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html),
+  [`ncol()`](https://rdrr.io/pkg/BiocGenerics/man/nrow.html),
+  [`nrow()`](https://rdrr.io/pkg/BiocGenerics/man/nrow.html),
+  [`rownames()`](https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html)
+
 - S4Vectors:
 
   [`metadata()`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html),

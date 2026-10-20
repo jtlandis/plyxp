@@ -90,6 +90,9 @@ dimnames(x) <- value
 
 # S4 method for class 'PlySummarizedExperiment,NULL'
 dimnames(x) <- value
+
+# S4 method for class 'PlySummarizedExperiment'
+names(x)
 ```
 
 ## Arguments

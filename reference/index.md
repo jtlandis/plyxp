@@ -27,6 +27,7 @@
   [`dimnames(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
   [`` `dimnames<-`( ``*`<PlySummarizedExperiment>`*`,`*`<list>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
   [`` `dimnames<-`( ``*`<PlySummarizedExperiment>`*`,`*`<NULL>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
+  [`names(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/PlySummarizedExperiment-methods.md)
   : PlySummarizedExperiment Methods
 - [`arrange(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/arrange.md)
   : arrange rows or columns of PlySummarizedExperiment
