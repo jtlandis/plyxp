@@ -1,19 +1,34 @@
 #' @include vctrs-S4-.R
 #' @include vctrs-S4-init.R
 
-vec_cast <- new_generic("vec_init", c("x", "to"), function(x, to, ...) {
+vec_cast <- new_generic("vec_cast", c("x", "to"), function(x, to, ...) {
   S7::S7_dispatch()
 })
 
+.s7_class <- S7::new_S3_class(c("S7_class", "S7_object"))
 
 method(vec_cast, list(class_vctrs, class_vctrs)) <- vctrs::vec_cast
 
+
+method(vec_cast, list(.s7_class, S7::class_any)) <- function(x, to, ...) {
+  tocls <- class_name_(obj_class(to))
+  rlang::abort(
+    message = c(
+      sprintf("cannot cast an `S7_class` to %s", tocls),
+      "i" = "did you mean to cast the result of the S7_class constructor?"
+    )
+  )
+}
+
 method(vec_cast, list(S7::class_any, S7::class_any)) <- function(x, to, ...) {
-  if (identical(obj_class(x), obj_class(to))) {
+  if (identical(xcls <- obj_class(x), tocls <- obj_class(to))) {
+    # consider registering identity for this case?
     return(x)
   }
-  xcls <- obj_class_name(x)
-  tocls <- obj_class_name(to)
+  # if x or to is an S4 class, perhapse we should check
+  # selectMethod(coerce, c(xcls@className, tocls@className))?
+  xcls <- class_name_(xcls)
+  tocls <- class_name_(tocls)
   rlang::abort(
     message = c(
       sprintf("cannot cast %s to %s", xcls, tocls),
