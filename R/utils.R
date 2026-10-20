@@ -53,3 +53,12 @@ class_name_ <- function(cls) {
 #   cls <- obj_class(x)
 #   class_name_(cls)
 # }
+
+.assays <- function(x) {
+  assays(x, withDimnames = FALSE)
+}
+
+`.assays<-` <- function(x, value) {
+  assays(x, withDimnames = FALSE) <- value
+  x
+}

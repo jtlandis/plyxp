@@ -78,6 +78,7 @@ mutate_se_impl <- function(.data, ...) {
   # set assays last to reset dimnames
   nms <- names(results$assays)
   dim_nms <- dimnames(.data)
+  assays_ <- as.list(.assays(.data))
   for (i in seq_along(results$assays)) {
     new_assay <- results$assays[[i]]
     if (!is.null(new_assay)) {
@@ -85,8 +86,9 @@ mutate_se_impl <- function(.data, ...) {
       # this attrib
       dimnames(new_assay) <- dim_nms
     }
-    assay(.data, nms[i], withDimnames = FALSE) <- new_assay
+    assays_[[nms[i]]] <- new_assay
   }
+  .assays(.data) <- assays_
 
   .data
 }

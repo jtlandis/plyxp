@@ -45,7 +45,7 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
 
   mask_assay <- plyxp_assay$new(
-    assays(obj),
+    .assays(obj),
     get_group_indices(groups, expanded, "assay"),
     .nrow = nr,
     .ncol = nc,

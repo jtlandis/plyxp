@@ -19,7 +19,7 @@ as.data.frame.PlySummarizedExperiment <- function(x, ...) {
       .features = vec_rep(.features, times = nc),
       .samples = vec_rep_each(.samples, times = nr)
     ),
-    lapply(assays(x), as_vec),
+    lapply(.assays(x), as_vec),
     lapply(rowData(x), vec_rep, times = nc),
     lapply(colData(x), vec_rep_each, times = nr)
   )

@@ -69,13 +69,13 @@ select_se_impl <- function(.data, ...) {
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   # nms  <- names(quos)
 
-
   selected <- plyxp_eval_select(
-    quos = quos, ctxs = ctxs, data = .data
+    quos = quos,
+    ctxs = ctxs,
+    data = .data
   )
 
-
-  assays(.data) <- assays(.data)[selected[["assays"]]]
+  .assays(.data) <- .assays(.data)[selected[["assays"]]]
   rowData(.data) <- rowData(.data)[selected[["rows"]]]
   colData(.data) <- colData(.data)[selected[["cols"]]]
 
@@ -87,7 +87,7 @@ select_se_impl <- function(.data, ...) {
 plyxp_eval_select <- function(quos, ctxs, data) {
   out <- vector("list", length(quos))
   .data <- list(
-    assays = as.list(assays(data)),
+    assays = as.list(.assays(data)),
     rows = as.list(rowData(data)),
     cols = as.list(colData(data))
   )
