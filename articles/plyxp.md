@@ -177,21 +177,27 @@ summary |>
   as_tibble(rownames = "type")
 ```
 
+    ## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
+    ## `.name_repair` is omitted as of tibble 2.0.0.
+    ## ℹ Using compatibility `.name_repair`.
+    ## This warning is displayed once per session.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
     ## # A tibble: 30 × 9
-    ##    type        SRR1039508 SRR1039509 SRR1039512 SRR1039513 SRR1039516 SRR1039517
-    ##    <chr>            <dbl>      <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
-    ##  1 protein_co…   19413626   17741060   23926011   14360299   23003444   29233398
-    ##  2 pseudogene      807285     733916     868950     478980     852106     946776
-    ##  3 processed_…      47547      46534      47788      26367      43965      52063
-    ##  4 antisense        49682      43769      60098      33066      56696      66335
-    ##  5 lincRNA         133335     120060     206075     125015     145078     170641
-    ##  6 polymorphi…       2804       2895       3417       2247       3497       4065
-    ##  7 IG_V_pseud…          3          0          1          0          1          0
-    ##  8 IG_V_gene            0          7          2          3          4          4
-    ##  9 sense_over…       6038       5618       7662       5579       7869       9443
-    ## 10 sense_intr…       3560       3595       3963       2837       4503       5990
+    ##    type        V1       V2       V3       V4       V5       V6       V7       V8
+    ##    <chr>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>
+    ##  1 1     19413626 17741060 23926011 14360299 23003444 29233398 18114369 20103401
+    ##  2 2       807285   733916   868950   478980   852106   946776   644006   633835
+    ##  3 3        47547    46534    47788    26367    43965    52063    34563    35852
+    ##  4 4        49682    43769    60098    33066    56696    66335    45654    45864
+    ##  5 5       133335   120060   206075   125015   145078   170641   147563   149486
+    ##  6 6         2804     2895     3417     2247     3497     4065     2508     2799
+    ##  7 7            3        0        1        0        1        0        0        0
+    ##  8 8            0        7        2        3        4        4        0        4
+    ##  9 9         6038     5618     7662     5579     7869     9443     6580     6759
+    ## 10 10        3560     3595     3963     2837     4503     5990     3320     3528
     ## # ℹ 20 more rows
-    ## # ℹ 2 more variables: SRR1039520 <dbl>, SRR1039521 <dbl>
 
 To extract the *SummarizedExperiment* (if needed):
 
@@ -710,7 +716,7 @@ devtools::session_info()
     ##  pkgconfig              2.0.3   2019-09-22 [2] RSPM (R 4.5.0)
     ##  pkgdown                2.2.1   2026-07-07 [2] RSPM (R 4.5.0)
     ##  pkgload                1.5.3   2026-06-15 [2] RSPM (R 4.5.0)
-    ##  plyxp                * 1.7.4   2026-10-20 [1] Bioconductor
+    ##  plyxp                * 1.7.5   2026-10-20 [1] Bioconductor
     ##  purrr                  1.2.2   2026-04-10 [2] RSPM (R 4.5.0)
     ##  R6                     2.6.1   2025-02-15 [2] RSPM (R 4.5.0)
     ##  ragg                   1.5.2   2026-03-23 [2] RSPM (R 4.5.0)

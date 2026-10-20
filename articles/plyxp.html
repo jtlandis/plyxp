@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -216,23 +216,28 @@ routines:</p>
 <span><span class="va">summary</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/pull.html">pull</a></span><span class="op">(</span><span class="va">col_sums</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span>rownames <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if</span></span>
+<span><span class="co">## `.name_repair` is omitted as of tibble 2.0.0.</span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Using compatibility `.name_repair`.</span></span>
+<span><span class="co">## <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">## <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">## <span style="color: #555555;">generated.</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 30 × 9</span></span></span>
-<span><span class="co">##    type        SRR1039508 SRR1039509 SRR1039512 SRR1039513 SRR1039516 SRR1039517</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> protein_co…   19<span style="text-decoration: underline;">413</span>626   17<span style="text-decoration: underline;">741</span>060   23<span style="text-decoration: underline;">926</span>011   14<span style="text-decoration: underline;">360</span>299   23<span style="text-decoration: underline;">003</span>444   29<span style="text-decoration: underline;">233</span>398</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> pseudogene      <span style="text-decoration: underline;">807</span>285     <span style="text-decoration: underline;">733</span>916     <span style="text-decoration: underline;">868</span>950     <span style="text-decoration: underline;">478</span>980     <span style="text-decoration: underline;">852</span>106     <span style="text-decoration: underline;">946</span>776</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> processed_…      <span style="text-decoration: underline;">47</span>547      <span style="text-decoration: underline;">46</span>534      <span style="text-decoration: underline;">47</span>788      <span style="text-decoration: underline;">26</span>367      <span style="text-decoration: underline;">43</span>965      <span style="text-decoration: underline;">52</span>063</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> antisense        <span style="text-decoration: underline;">49</span>682      <span style="text-decoration: underline;">43</span>769      <span style="text-decoration: underline;">60</span>098      <span style="text-decoration: underline;">33</span>066      <span style="text-decoration: underline;">56</span>696      <span style="text-decoration: underline;">66</span>335</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> lincRNA         <span style="text-decoration: underline;">133</span>335     <span style="text-decoration: underline;">120</span>060     <span style="text-decoration: underline;">206</span>075     <span style="text-decoration: underline;">125</span>015     <span style="text-decoration: underline;">145</span>078     <span style="text-decoration: underline;">170</span>641</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> polymorphi…       <span style="text-decoration: underline;">2</span>804       <span style="text-decoration: underline;">2</span>895       <span style="text-decoration: underline;">3</span>417       <span style="text-decoration: underline;">2</span>247       <span style="text-decoration: underline;">3</span>497       <span style="text-decoration: underline;">4</span>065</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> IG_V_pseud…          3          0          1          0          1          0</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> IG_V_gene            0          7          2          3          4          4</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> sense_over…       <span style="text-decoration: underline;">6</span>038       <span style="text-decoration: underline;">5</span>618       <span style="text-decoration: underline;">7</span>662       <span style="text-decoration: underline;">5</span>579       <span style="text-decoration: underline;">7</span>869       <span style="text-decoration: underline;">9</span>443</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> sense_intr…       <span style="text-decoration: underline;">3</span>560       <span style="text-decoration: underline;">3</span>595       <span style="text-decoration: underline;">3</span>963       <span style="text-decoration: underline;">2</span>837       <span style="text-decoration: underline;">4</span>503       <span style="text-decoration: underline;">5</span>990</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 20 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: SRR1039520 &lt;dbl&gt;, SRR1039521 &lt;dbl&gt;</span></span></span></code></pre>
+<span><span class="co">##    type        V1       V2       V3       V4       V5       V6       V7       V8</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> 1     19<span style="text-decoration: underline;">413</span>626 17<span style="text-decoration: underline;">741</span>060 23<span style="text-decoration: underline;">926</span>011 14<span style="text-decoration: underline;">360</span>299 23<span style="text-decoration: underline;">003</span>444 29<span style="text-decoration: underline;">233</span>398 18<span style="text-decoration: underline;">114</span>369 20<span style="text-decoration: underline;">103</span>401</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 2       <span style="text-decoration: underline;">807</span>285   <span style="text-decoration: underline;">733</span>916   <span style="text-decoration: underline;">868</span>950   <span style="text-decoration: underline;">478</span>980   <span style="text-decoration: underline;">852</span>106   <span style="text-decoration: underline;">946</span>776   <span style="text-decoration: underline;">644</span>006   <span style="text-decoration: underline;">633</span>835</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 3        <span style="text-decoration: underline;">47</span>547    <span style="text-decoration: underline;">46</span>534    <span style="text-decoration: underline;">47</span>788    <span style="text-decoration: underline;">26</span>367    <span style="text-decoration: underline;">43</span>965    <span style="text-decoration: underline;">52</span>063    <span style="text-decoration: underline;">34</span>563    <span style="text-decoration: underline;">35</span>852</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 4        <span style="text-decoration: underline;">49</span>682    <span style="text-decoration: underline;">43</span>769    <span style="text-decoration: underline;">60</span>098    <span style="text-decoration: underline;">33</span>066    <span style="text-decoration: underline;">56</span>696    <span style="text-decoration: underline;">66</span>335    <span style="text-decoration: underline;">45</span>654    <span style="text-decoration: underline;">45</span>864</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 5       <span style="text-decoration: underline;">133</span>335   <span style="text-decoration: underline;">120</span>060   <span style="text-decoration: underline;">206</span>075   <span style="text-decoration: underline;">125</span>015   <span style="text-decoration: underline;">145</span>078   <span style="text-decoration: underline;">170</span>641   <span style="text-decoration: underline;">147</span>563   <span style="text-decoration: underline;">149</span>486</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 6         <span style="text-decoration: underline;">2</span>804     <span style="text-decoration: underline;">2</span>895     <span style="text-decoration: underline;">3</span>417     <span style="text-decoration: underline;">2</span>247     <span style="text-decoration: underline;">3</span>497     <span style="text-decoration: underline;">4</span>065     <span style="text-decoration: underline;">2</span>508     <span style="text-decoration: underline;">2</span>799</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 7            3        0        1        0        1        0        0        0</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 8            0        7        2        3        4        4        0        4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 9         <span style="text-decoration: underline;">6</span>038     <span style="text-decoration: underline;">5</span>618     <span style="text-decoration: underline;">7</span>662     <span style="text-decoration: underline;">5</span>579     <span style="text-decoration: underline;">7</span>869     <span style="text-decoration: underline;">9</span>443     <span style="text-decoration: underline;">6</span>580     <span style="text-decoration: underline;">6</span>759</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> 10        <span style="text-decoration: underline;">3</span>560     <span style="text-decoration: underline;">3</span>595     <span style="text-decoration: underline;">3</span>963     <span style="text-decoration: underline;">2</span>837     <span style="text-decoration: underline;">4</span>503     <span style="text-decoration: underline;">5</span>990     <span style="text-decoration: underline;">3</span>320     <span style="text-decoration: underline;">3</span>528</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 20 more rows</span></span></span></code></pre>
 <p>To extract the <em>SummarizedExperiment</em> (if needed):</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlySummarizedExperiment-methods.html">se</a></span><span class="op">(</span><span class="va">xp</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## class: RangedSummarizedExperiment </span></span>
 <span><span class="co">## dim: 63677 8 </span></span>
@@ -414,7 +419,7 @@ context</li>
 </h3>
 <p>We can compare two ways of dividing out a vector from
 <code>colData</code> along the columns of <code>assay</code> data:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># here the `.cols$` pronoun reshapes the data to fit the `assays` context</span></span>
 <span><span class="va">xp</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>scaled_counts <span class="op">=</span> <span class="va">counts</span> <span class="op">/</span> <span class="va">.cols</span><span class="op">$</span><span class="va">sizeFactor</span><span class="op">)</span></span></code></pre></div>
@@ -435,7 +440,7 @@ context</li>
 <span><span class="co">## <span style="color: #949494;"># ℹ n = 509,416</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 5 more variables: SampleName &lt;fct&gt;, cell &lt;fct&gt;, dex &lt;fct&gt;, albut &lt;fct&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this is equivalent to the following, where we have to transpose</span></span>
 <span><span class="co"># the `counts` assay data twice to enable the correct recycling</span></span>
 <span><span class="co"># of the size factor vector</span></span>
@@ -504,7 +509,7 @@ values. Assume you have a small 5 by 4 <code>SummarizedExperiment</code>
 object. Both of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> and <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code>
 are grouped such that there are 2 groups in both <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code>
 and <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> totaling in 4 groups across the assays.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">se_simple</span>, <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">direction</span><span class="op">)</span>, <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="va">condition</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>data_from_cols <span class="op">=</span> <span class="va">.cols</span><span class="op">$</span><span class="va">condition</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The above syntax implies we wish to move data from the
@@ -542,7 +547,7 @@ the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperi
 <em>tidySummarizedExperiment</em>, we visualize the data as if it was
 tabular. <code>plyxp</code> offers the option to opt-in on this behavior
 by setting the associated global option:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"show_SummarizedExperiment_as_tibble_abstraction"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, you may use helper functions
 <code><a href="../reference/plyxp-printing.html">use_show_tidy()</a></code> and <code><a href="../reference/plyxp-printing.html">use_show_default()</a></code> to
@@ -580,7 +585,7 @@ These are special in that assigning a value to <code>.features</code> in
 the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> context or <code>.samples</code> in the
 <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> context does not create a new column, but changes
 the rownames or colnames of the resulting object.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se_simple</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span></span>
 <span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts logcounts <span style="color: #949494;">|</span> gene  length direction <span style="color: #949494;">|</span> sample</span></span>
@@ -598,7 +603,7 @@ the rownames or colnames of the resulting object.</p>
 <span><span class="co">## <span style="color: #949494;">n  </span> row_5     col_4    <span style="color: #949494;">|</span>      5      1.61 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s4    </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ n = 20</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># moving data to rownames and colnames</span></span>
 <span><span class="va">se_simple</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
@@ -641,12 +646,12 @@ in <code>dplyr</code>, they are unfortunately more complex. This means
 there is some overhead in creating the evaluation mask per dplyr verb.
 Try to reduce the number of <code>dplyr</code> verb calls and instead
 increase the content of each verb. For example instead of doing:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>foo <span class="op">=</span> <span class="va">bar</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>baz <span class="op">=</span> <span class="va">foo</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>do the following</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    foo <span class="op">=</span> <span class="va">bar</span>,</span>
@@ -677,7 +682,7 @@ to the development team first through one of the above channels.</li>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://sessioninfo.r-lib.org/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">##  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
@@ -733,7 +738,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  pkgconfig              2.0.3   <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgdown                2.2.1   <span style="color: #555555;">2026-07-07</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgload                1.5.3   <span style="color: #555555;">2026-06-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
-<span><span class="co">##  plyxp                * 1.7.4   <span style="color: #555555;">2026-10-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  plyxp                * 1.7.5   <span style="color: #555555;">2026-10-20</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  purrr                  1.2.2   <span style="color: #555555;">2026-04-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  R6                     2.6.1   <span style="color: #555555;">2025-02-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  ragg                   1.5.2   <span style="color: #555555;">2026-03-23</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
