@@ -44,6 +44,7 @@ BugReports: https://www.github.com/jtlandis/plyxp/issues
 biocViews: Annotation, GenomeAnnotation, Transcriptomics
 Config/testthat/edition: 3
 Collate:
+    'utils.R'
     'as.data.frame.R'
     'connect_masks.R'
     'context-utils.R'
@@ -75,7 +76,6 @@ Collate:
     'print.R'
     'reexports-SummarizedExperiment.R'
     'reexports-dplyr.R'
-    'utils.R'
     'vctrs-S4-init.R'
     'vctrs-S4-cast.R'
     'vctrs-S4-group.R'
