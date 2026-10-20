@@ -21,6 +21,9 @@ obj_class <- function(x) {
     return(NULL)
   }
   if (inherits(x, "S7_object")) {
+    if (inherits(x, "S7_class")) {
+      return(x)
+    }
     return(S7::S7_class(x))
   }
   cls <- class(x)
@@ -30,16 +33,23 @@ obj_class <- function(x) {
   cls
 }
 
-obj_class_name <- function(x) {
-  cls <- obj_class(x)
-  if (is.null(x)) {
+class_name_ <- function(cls) {
+  if (is.null(cls)) {
     return("NULL")
   }
-  if (inherits(x, "classRepresentation")) {
-    return(paste0("S4<", x@package, x@className, ">"))
+  if (inherits(cls, "classRepresentation")) {
+    return(paste0("S4<", cls@package, "::", cls@className, ">"))
   }
-  if (inherits(x, "S7_class")) {
-    return(paste0("S7<", x@package, x@class_name, ">"))
+  if (inherits(cls, "S7_class")) {
+    return(paste0("S7<", cls@package, "::", cls@name, ">"))
+  }
+  if (!is.character(cls)) {
+    stop("`cls` is not S4 or S7, expected character vector S3")
   }
   paste0("S3<", paste(cls, collapse = "/"), ">")
 }
+
+# obj_class_name <- function(x) {
+#   cls <- obj_class(x)
+#   class_name_(cls)
+# }
