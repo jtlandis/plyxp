@@ -207,3 +207,21 @@ test_that("plyxp*() errors correctly", {
     "error in `do_colData\\(colData\\(se\\(.data\\)\\), ...\\)`"
   )
 })
+
+test_that("vec_phantom can slice properly", {
+  rle <- S4Vectors::Rle(rep(1:2, each = 5))
+
+  sl <- vec_slice(rle, 1:2)
+
+  ph <- vec_phantom(rle)
+
+  expect_identical(
+    attr(ph[1:2], "phantomData"),
+    sl
+  )
+
+  expect_identical(
+    attr(vec_slice(ph, 1:2), "phantomData"),
+    sl
+  )
+})
