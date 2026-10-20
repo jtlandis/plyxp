@@ -116,6 +116,10 @@ test_that("group_id and group_loc works", {
     c(1L, 1L, 2L, 2L, 3L, 4L, 5L, 5L, 6L, 6L)
   )
 
+  expect_no_error(
+    vec_group_loc(DF$y)
+  )
+
   res <- expect_no_error(
     vec_group_loc(DF)
   )
@@ -147,5 +151,84 @@ test_that("vec_rep errors with `times` arg", {
   expect_identical(
     vec_rep_each(rle, 2) |> vec_size(),
     20L
+  )
+})
+
+test_that("vec_recycle errors with `size` arg", {
+  rle <- S4Vectors::Rle(vec_rep_each(1:2, 5))
+
+  expect_error(
+    vec_recycle(rle, c(2, 0)),
+    "argument `size` should be length 1L"
+  )
+
+  expect_error(
+    vec_recycle(rle, "2"),
+    "argument `size` should be integer-ish"
+  )
+
+  expect_error(
+    vec_recycle(rle, 2),
+    "Can't recycle inpute of size 10 to size 2"
+  )
+
+  expect_identical(
+    vec_slice(rle, 1L) |> vec_recycle(5) |> vec_size(),
+    5L
+  )
+  expect_identical(
+    vec_recycle(rle, 10L),
+    rle
+  )
+})
+
+
+test_that("vec_cast fails for unknown classes", {
+  foo <- S7::new_class("foo")
+  bar <- S7::new_class("bar")
+
+  expect_error(
+    vec_cast(foo, bar)
+  )
+
+  expect_error(
+    vec_cast(foo(), bar)
+  )
+
+  brle <- base::rle(c(1, 1, 1, 2, 2))
+  s4rle <- S4Vectors::Rle(c(1, 1, 1, 2, 2))
+
+  expect_error(
+    vec_cast(brle, s4rle)
+  )
+
+  expect_null(
+    obj_class(NULL)
+  )
+  expect_identical(
+    class_name_(NULL),
+    "NULL"
+  )
+  expect_error(
+    class_name_(1L),
+    "`cls` is not S4 or S7, expected character vector S3"
+  )
+})
+
+
+test_that("slicing DFrame keeps rownames", {
+  DF <- S4Vectors::DataFrame(
+    x = 1:3,
+    y = letters[1:3],
+    z = logical(3),
+    row.names = sprintf("row%i", 1:3)
+  )
+
+  DF <- expect_no_error(
+    vec_slice(DF, 1:2)
+  )
+  expect_identical(
+    rownames(DF),
+    sprintf("row%i", 1:2)
   )
 })
