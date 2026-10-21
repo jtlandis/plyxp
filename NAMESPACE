@@ -35,6 +35,7 @@ S3method(show_tidy,PlySummarizedExperiment)
 S3method(show_tidy,SummarizedExperiment)
 S3method(show_tidy,default)
 S3method(slice,PlySummarizedExperiment)
+S3method(slice_min,PlySummarizedExperiment)
 S3method(summarise,PlySummarizedExperiment)
 S3method(summarize,PlySummarizedExperiment)
 S3method(tbl_format_footer,SE_abstraction)
@@ -92,6 +93,7 @@ export(se)
 export(select)
 export(show_tidy)
 export(slice)
+export(slice_min)
 export(summarise)
 export(summarize)
 export(ungroup)
@@ -177,6 +179,7 @@ importFrom(dplyr,
   rows_update,
   select,
   slice,
+  slice_min,
   summarise,
   summarize,
   ungroup

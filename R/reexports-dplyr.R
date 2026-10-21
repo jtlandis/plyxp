@@ -52,6 +52,10 @@ dplyr::slice
 
 #' @noRd
 #' @export
+dplyr::slice_min
+
+#' @noRd
+#' @export
 dplyr::pull
 
 #' @noRd

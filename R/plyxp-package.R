@@ -25,6 +25,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr summarise
 #' @importFrom dplyr slice
+#' @importFrom dplyr slice_min
 #' @importFrom dplyr ungroup
 #' @importFrom methods new
 #' @importFrom pillar align
