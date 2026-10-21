@@ -1,3 +1,23 @@
+## plyxp 1.7.6
+
+* various `slice_*()` functions are now supported.
+  * `slice_min()` - slice either the `rows()` or `cols()` contexts.
+  * NOTE: due to how these functions are called, either the `rows()` or the
+    `cols()` context can be used. In other words the following does not work:
+
+    ```r
+    slice_min(xp, rows(foo), cols(bar))
+    ```
+
+    but the following does:
+
+    ```r
+    xp |>
+      slice_min(rows(foo)) |>
+      slice_min(cols(bar))
+    ```
+
+
 ## plyxp 1.7.5
 
 * `across()` switches to proper context if user specifies a context function.
@@ -10,8 +30,7 @@
    ungroup(gse, rows())
    ungroup(gse, rows(length))
    ```
-   
-   
+
 * `group_by()` allows .features and .samples in the rows and cols contexts
   respectively.
 * `group_by()` .add parameter now works as expected
