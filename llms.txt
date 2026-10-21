@@ -6,8 +6,6 @@
 Bioc](https://bioconductor.org/shields/years-in-bioc/plyxp.svg)![Platforms](https://bioconductor.org/shields/availability/release/plyxp.svg)[![rank](https://bioconductor.org/shields/downloads/release/plyxp.svg)](https://bioconductor.org/packages/stats/bioc/plyxp/)
 ![dependencies](https://bioconductor.org/shields/dependencies/release/plyxp.svg)
 
-# Description
-
 *plyxp* proposes an expressive grammar for manipulating annotated matrix
 data, with syntax to access, modify, and append matrix data and tabular
 row and column metadata, including row-wise or column-wise grouped
