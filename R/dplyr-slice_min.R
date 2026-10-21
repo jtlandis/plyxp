@@ -20,17 +20,35 @@
 #' slice_min(gse, rows(length), n = 1)
 #' @export
 slice_min.PlySummarizedExperiment <- function(
-    .data, ..., n = NULL, prop = NULL, with_ties = TRUE, na_rm = FALSE,
-    .preserve = FALSE) {
-  plyxp(.data, slice_min_se_impl, ...,
-    n = n, prop = prop, with_ties = with_ties, na_rm = na_rm,
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  with_ties = TRUE,
+  na_rm = FALSE,
+  .preserve = FALSE
+) {
+  plyxp(
+    .data,
+    slice_min_se_impl,
+    ...,
+    n = n,
+    prop = prop,
+    with_ties = with_ties,
+    na_rm = na_rm,
     .preserve = .preserve
   )
 }
 
 slice_min_se_impl <- function(
-    .data, ..., n = NULL, prop = NULL, with_ties = TRUE, na_rm = FALSE,
-    .preserve = FALSE) {
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  with_ties = TRUE,
+  na_rm = FALSE,
+  .preserve = FALSE
+) {
   .env <- caller_env()
 
   if (!is.null(n) && !is.null(prop)) {
@@ -88,7 +106,7 @@ slice_min_se_impl <- function(
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "slice_min")
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
 
   chops <- mask$apply(
     .f = function(mask, name) {
@@ -100,8 +118,10 @@ slice_min_se_impl <- function(
   )
   chops <- flatten_slice_chops(chops, groups = group_data_se_impl(.data))
   which_ctx <- unique(ctxs)
-  switch(length(which_ctx),
-    `1` = switch(which_ctx,
+  switch(
+    length(which_ctx),
+    `1` = switch(
+      which_ctx,
       rows = plyxp_slice_se(.data, chops$rows, .preserve = .preserve),
       cols = plyxp_slice_se(.data, , chops$cols, .preserve = .preserve)
     ),

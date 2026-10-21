@@ -163,23 +163,35 @@ test_that("slice_min endomorphism", {
 test_that("slice_min returns results sorted by value", {
   # length: 1 24 60 39 37
   res <- slice_min(se_simple, rows(length), n = 5)
-  expect_identical(rownames(res), c("row_1", "row_2", "row_5", "row_4", "row_3"))
+  expect_identical(
+    rownames(res),
+    c("row_1", "row_2", "row_5", "row_4", "row_3")
+  )
 })
 
 test_that("slice_min matches dplyr::slice_min on rowData", {
   rd <- as.data.frame(rowData(se(se_ties)))
   rd$.id <- rownames(rd)
   args <- list(
-    list(n = 1), list(n = 2), list(n = 3), list(n = 10),
-    list(prop = 0.4), list(prop = 0.99),
-    list(n = 1, with_ties = FALSE), list(n = 4, with_ties = FALSE),
-    list(n = 5, na_rm = TRUE), list(n = 2, na_rm = TRUE, with_ties = FALSE)
+    list(n = 1),
+    list(n = 2),
+    list(n = 3),
+    list(n = 10),
+    list(prop = 0.4),
+    list(prop = 0.99),
+    list(n = 1, with_ties = FALSE),
+    list(n = 4, with_ties = FALSE),
+    list(n = 5, na_rm = TRUE),
+    list(n = 2, na_rm = TRUE, with_ties = FALSE)
   )
   for (var in c("score", "score_na_first", "length")) {
     for (a in args) {
       expected <- do.call(dplyr::slice_min, c(list(rd, rd[[var]]), a))$.id
       actual <- rownames(
-        do.call(slice_min, c(list(se_ties, rlang::expr(rows(!!rlang::sym(var)))), a))
+        do.call(
+          slice_min,
+          c(list(se_ties, rlang::expr(rows(!!rlang::sym(var)))), a)
+        )
       )
       expect_identical(actual, expected, label = paste(var, deparse(a)))
     }

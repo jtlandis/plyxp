@@ -62,3 +62,28 @@ assays_ <- function(x) {
   assays(x, withDimnames = FALSE) <- value
   x
 }
+
+# unreachable <- function(
+#   message,
+#   ...,
+#   call = rlang::caller_call(),
+#   parent = NULL,
+#   report = FALSE
+# ) {
+#   frame <- parent.frame()
+#   cli::cli_abort(
+#     message = c(
+#       "Unreachable code path reached",
+#       message,
+#       if (report) {
+#         c(
+#           i = "Please submit a bug report to {.href [the plyxp repository](https://github.com/jtlandis/plyxp/issues)}"
+#         )
+#       }
+#     ),
+#     class = "plyxp_unreachable",
+#     call = call,
+#     parent = parent,
+#     .envir = frame
+#   )
+# }
