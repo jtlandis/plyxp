@@ -159,7 +159,9 @@ plyxp_manager_eval <- function(quo, env, n_groups, mask, private) {
     for (i in seq_len(n_groups)) {
       private$.ctx_env[["plyxp:::ctx:::group_id"]] <- i
       result <- mask$eval(quo, env = env)
-      chop_out[[i]] <- result
+      if (!is.null(result)) {
+        chop_out[[i]] <- result
+      }
     }
   }
   chop_out
