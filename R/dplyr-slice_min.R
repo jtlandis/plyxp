@@ -63,7 +63,7 @@ slice_max_se_impl <- function(
   )
 }
 
-#' @rdname slice_max
+#' @rdname slice_extremes
 #' @export
 slice_min.PlySummarizedExperiment <- function(
   .data,
