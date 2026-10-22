@@ -100,6 +100,9 @@ enforce_2d_size <- function(
   .nrow,
   .ncol
 ) {
+  if (is.null(.data)) {
+    return(.data)
+  }
   dims <- dim(.data)
   ndim <- length(dims)
   if (ndim >= 2L) {
