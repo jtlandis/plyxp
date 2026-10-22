@@ -194,7 +194,7 @@ construct_plyxp_quos <- function(
 
     dots[[i]] <- raw_plyxp_quosure(
       if (is_missing(.expr)) expr() else .expr,
-      env = .env,
+      envir = .env,
       ctx = .ctx_default,
       is_named = is_nms[i],
       name = nms[i],

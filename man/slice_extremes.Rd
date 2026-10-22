@@ -3,7 +3,7 @@
 \name{slice_extremes}
 \alias{slice_extremes}
 \alias{slice_max.PlySummarizedExperiment}
-\alias{slice_min,}
+\alias{slice_min}
 \alias{slice_max}
 \alias{slice_min.PlySummarizedExperiment}
 \title{Slice maximum rows or columns of a PlySummarizedExperiment}

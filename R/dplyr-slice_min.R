@@ -14,7 +14,7 @@
 #' @param na_rm Should missing values be removed? Default `FALSE`.
 #' @param .preserve When `FALSE` (default), grouping structure is recomputed
 #'   based on the resulting data.
-#' @aliases slice_min, slice_max
+#' @aliases slice_min slice_max
 #' @examples
 #' slice_max(se_simple, rows(length), n = 2)
 #'

@@ -78,7 +78,7 @@ expand_across <- function(
       expressions[[k]] <- raw_plyxp_quosure(
         fn_call,
         ctx = ctx,
-        env = env,
+        envir = env,
         name = name,
         is_named = TRUE,
         column = var,
