@@ -1,6 +1,7 @@
-#' @name slice_min
-#' @title Slice minimum rows or columns of a PlySummarizedExperiment
+#' @name slice_extremes
+#' @title Slice maximum rows or columns of a PlySummarizedExperiment
 #' @description
+#' `slice_max()` selects rows or columns with the largest values of a variable.
 #' `slice_min()` selects rows or columns with the smallest values of a variable.
 #' @param .data a PlySummarizedExperiment object
 #' @param ... expressions wrapped in `rows()` or `cols()` giving the ordering
@@ -13,11 +14,56 @@
 #' @param na_rm Should missing values be removed? Default `FALSE`.
 #' @param .preserve When `FALSE` (default), grouping structure is recomputed
 #'   based on the resulting data.
+#' @aliases slice_min, slice_max
 #' @examples
-#' slice_min(se_simple, rows(length), n = 2)
+#' slice_max(se_simple, rows(length), n = 2)
 #'
 #' gse <- group_by(se_simple, rows(direction))
-#' slice_min(gse, rows(length), n = 1)
+#' slice_max(gse, rows(length), n = 1)
+#' @export
+slice_max.PlySummarizedExperiment <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  with_ties = TRUE,
+  na_rm = FALSE,
+  .preserve = FALSE
+) {
+  plyxp(
+    .data,
+    slice_max_se_impl,
+    ...,
+    n = n,
+    prop = prop,
+    with_ties = with_ties,
+    na_rm = na_rm,
+    .preserve = .preserve
+  )
+}
+
+slice_max_se_impl <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  with_ties = TRUE,
+  na_rm = FALSE,
+  .preserve = FALSE
+) {
+  slice_extreme_se_impl(
+    .data,
+    ...,
+    n = n,
+    prop = prop,
+    with_ties = with_ties,
+    na_rm = na_rm,
+    .preserve = .preserve,
+    extreme = "max"
+  )
+}
+
+#' @rdname slice_max
 #' @export
 slice_min.PlySummarizedExperiment <- function(
   .data,
@@ -49,82 +95,78 @@ slice_min_se_impl <- function(
   na_rm = FALSE,
   .preserve = FALSE
 ) {
-  .env <- caller_env()
+  slice_extreme_se_impl(
+    .data,
+    ...,
+    n = n,
+    prop = prop,
+    with_ties = with_ties,
+    na_rm = na_rm,
+    .preserve = .preserve,
+    extreme = "min"
+  )
+}
 
+
+slice_extreme_se_impl <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  with_ties = TRUE,
+  na_rm = FALSE,
+  .preserve = FALSE,
+  extreme = c("max", "min")
+) {
+  extreme <- match.arg(extreme, c("max", "min"))
+  func <- sprintf("slice_%s", extreme)
+  direction <- switch(
+    extreme,
+    max = "des",
+    min = "asc"
+  )
   if (!is.null(n) && !is.null(prop)) {
-    rlang::abort("Cannot use both `n` and `prop` in `slice_min()`.")
+    rlang::abort("Cannot use both `n` and `prop` in `slice_max()`.")
   }
   if (is.null(n) && is.null(prop)) {
     n <- 1
   }
 
-  # Build the transform as a quoted lambda so it can be inlined by plyxp_quos.
-  # n/prop/with_ties/na_rm are substituted at construction time via bquote(),
-  # leaving `plyxp:::ctx:::n` unsubstituted so it resolves to the current
-  # group size at evaluation time (matching the same pattern as slice()'s
-  # in_bounds transform).
-  #
-  # Following dplyr, the result is sorted by value, `prop` is rounded down,
-  # and missing values sort last (they are dropped when `na_rm = TRUE`).
-  take_min <- bquote(\(.x) {
-    k <- if (is.null(.(prop))) .(n) else floor(.(prop) * `plyxp:::ctx:::n`)
-    idx <- order(.x, na.last = if (.(na_rm)) NA else TRUE)
-    k <- min(k, length(idx))
-    if (k < 1) {
-      return(integer())
-    }
-    if (.(with_ties)) {
-      # rank against the full vector so indices are never shifted by NAs;
-      # all NAs tie with each other as the largest value
-      r <- rank(.x, ties.method = "min", na.last = "keep")
-      r[is.na(r)] <- sum(!is.na(.x)) + 1L
-      idx[r[idx] <= r[idx[k]]]
-    } else {
-      idx[seq_len(k)]
-    }
-  })
+  size <- if (is.null(prop)) {
+    n
+  } else {
+    prop <- vctrs::vec_cast(prop, double())
+    vctrs::vec_assert(prop, double(), size = 1L, arg = "prop")
+    stopifnot(prop >= 0 && prop <= 1)
+    expr(.ctx(floor(!!prop * `plyxp:::ctx:::n`)))
+  }
 
-  quos <- plyxp_quos(
+  quos <- plyxp_enquos(
     ...,
     .ctx = c("assays", "rows", "cols"),
-    .trans = list(rows = take_min, cols = take_min)
   )
 
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
   if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "slice_min", review = err)
+    plyxp_assays_cannot(do = func, review = err)
   }
   if (any(quos_is_named(quos))) {
-    plyxp_should_not_named("slice_min")
+    plyxp_should_not_named(func)
   }
-
-  names(quos) <- sprintf("..slice_min_%i", seq_along(quos))
-  nms <- names(quos)
-  quos <- quos_enforce_named(quos, nms)
-
-  mask <- new_plyxp_manager.SummarizedExperiment(obj = .data)
-  poke_ctx_local("plyxp:::caller_env", .env)
-  poke_ctx_local("plyxp:::manager", mask)
-  poke_ctx_local("plyxp:::dplyr_verb", "slice_min")
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
-
-  chops <- mask$apply(
-    .f = function(mask, name) {
-      added <- mask$added
-      names(added) <- added
-      lapply(added, mask$get_chop)
-    },
-    .on_masks = c("rows", "cols")
+  quos <- lapply(
+    quos,
+    \(q) {
+      plyxp_requo(
+        q,
+        expr = plyxp_slice_rank(
+          !!q,
+          size = !!size,
+          with_ties = !!with_ties,
+          direction = !!direction,
+          na_rm = !!na_rm
+        )
+      )
+    }
   )
-  chops <- flatten_slice_chops(chops, groups = group_data_se_impl(.data))
-  which_ctx <- unique(ctxs)
-  switch(
-    length(which_ctx),
-    `1` = switch(
-      which_ctx,
-      rows = plyxp_slice_se(.data, chops$rows, .preserve = .preserve),
-      cols = plyxp_slice_se(.data, , chops$cols, .preserve = .preserve)
-    ),
-    `2` = plyxp_slice_se(.data, chops$rows, chops$cols, .preserve = .preserve)
-  )
+  slice_se_impl(.data, !!!quos, .preserve = .preserve)
 }
