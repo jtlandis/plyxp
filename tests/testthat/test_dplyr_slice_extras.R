@@ -18,28 +18,40 @@ se_ties <- se_simple |>
 
 # slice_min ---------------------------------------------------------------
 
-test_that("slice_min errors in assays context", {
+test_that("slice_min/max errors in assays context", {
   expect_error(
     slice_min(se_simple, counts),
     "Cannot slice_min in `assays` context"
   )
+  expect_error(
+    slice_max(se_simple, counts),
+    "Cannot slice_max in `assays` context"
+  )
 })
 
-test_that("slice_min errors on named expressions", {
+test_that("slice_min/max errors on named expressions", {
   expect_error(
     slice_min(se_simple, rows(x = length)),
     "should not be named"
   )
+  expect_error(
+    slice_max(se_simple, rows(x = length)),
+    "should not be named"
+  )
 })
 
-test_that("slice_min errors when both n and prop are supplied", {
+test_that("slice_min/max errors when both n and prop are supplied", {
   expect_error(
     slice_min(se_simple, rows(length), n = 2, prop = 0.5),
     "Cannot use both `n` and `prop`"
   )
+  expect_error(
+    slice_max(se_simple, rows(length), n = 2, prop = 0.5),
+    "Cannot use both `n` and `prop`"
+  )
 })
 
-test_that("slice_min works with n - rows", {
+test_that("slice_min/max works with n - rows", {
   res <- expect_no_error(slice_min(se_simple, rows(length), n = 3))
   expect_identical(dim(res), c(3L, 4L))
   expect_identical(rownames(res), c("row_1", "row_2", "row_5"))
@@ -47,17 +59,31 @@ test_that("slice_min works with n - rows", {
   # default n = 1
   res <- slice_min(se_simple, rows(length))
   expect_identical(rownames(res), "row_1")
+
+  res <- expect_no_error(slice_max(se_simple, rows(length), n = 3))
+  expect_identical(dim(res), c(3L, 4L))
+  expect_identical(rownames(res), c("row_3", "row_4", "row_5"))
+
+  # default n = 1
+  res <- slice_max(se_simple, rows(length))
+  expect_identical(rownames(res), "row_3")
 })
 
-test_that("slice_min caps n at the number of rows", {
+test_that("slice_min/max caps n at the number of rows", {
   res <- slice_min(se_simple, rows(length), n = 10)
+  expect_identical(dim(res), c(5L, 4L))
+
+  res <- slice_max(se_simple, rows(length), n = 10)
   expect_identical(dim(res), c(5L, 4L))
 })
 
-test_that("slice_min works with prop - rows", {
+test_that("slice_min/ax works with prop - rows", {
   # floor(0.4 * 5) = 2
   res <- expect_no_error(slice_min(se_simple, rows(length), prop = 0.4))
   expect_identical(rownames(res), c("row_1", "row_2"))
+
+  res <- expect_no_error(slice_max(se_simple, rows(length), prop = 0.4))
+  expect_identical(rownames(res), c("row_3", "row_4"))
 })
 
 test_that("slice_min rounds prop down like dplyr", {
@@ -190,6 +216,45 @@ test_that("slice_min matches dplyr::slice_min on rowData", {
       actual <- rownames(
         do.call(
           slice_min,
+          c(list(se_ties, rlang::expr(rows(!!rlang::sym(var)))), a)
+        )
+      )
+      expect_identical(actual, expected, label = paste(var, deparse(a)))
+    }
+  }
+})
+
+
+test_that("slice_min returns results sorted by value", {
+  # length: 1 24 60 39 37
+  res <- slice_min(se_simple, rows(length), n = 5)
+  expect_identical(
+    rownames(res),
+    c("row_1", "row_2", "row_5", "row_4", "row_3")
+  )
+})
+
+test_that("slice_max matches dplyr::slice_min on rowData", {
+  rd <- as.data.frame(rowData(se(se_ties)))
+  rd$.id <- rownames(rd)
+  args <- list(
+    list(n = 1),
+    list(n = 2),
+    list(n = 3),
+    list(n = 10),
+    list(prop = 0.4),
+    list(prop = 0.99),
+    list(n = 1, with_ties = FALSE),
+    list(n = 4, with_ties = FALSE),
+    list(n = 5, na_rm = TRUE),
+    list(n = 2, na_rm = TRUE, with_ties = FALSE)
+  )
+  for (var in c("score", "score_na_first", "length")) {
+    for (a in args) {
+      expected <- do.call(dplyr::slice_max, c(list(rd, rd[[var]]), a))$.id
+      actual <- rownames(
+        do.call(
+          slice_max,
           c(list(se_ties, rlang::expr(rows(!!rlang::sym(var)))), a)
         )
       )
