@@ -18,13 +18,10 @@ authors:
 affiliations:
   - index: 1
     name: Bioinformatics and Computational Biology Program, University of North Carolina at Chapel Hill, United States
-    ror: 0130frc33
   - index: 2
     name: Department of Genetics, University of North Carolina at Chapel Hill, United States
-    ror: 0130frc33
   - index: 3
     name: Department of Biostatistics, University of North Carolina at Chapel Hill, United States
-    ror: 0130frc33
 date: 23 October 2026
 bibliography: paper.bib
 ---
