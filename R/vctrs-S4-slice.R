@@ -78,27 +78,27 @@ method(vec_slice, class_vctrs) <- function(
   vctrs::vec_slice(x, i, ..., error_call = error_call)
 }
 
-method(vec_slice, getClass("CompressedGRangesList")) <- function(x, i, ...) {
-  st <- IRanges::start(x@partitioning)
-  en <- IRanges::end(x@partitioning)
-  w <- IRanges::width(x@partitioning)[i]
-  seqs <- purrr::map2(st[i], en[i], `:`)
-
-  gr <- IRanges::extractROWS(x@unlistData, vctrs::vec_c(rlang::splice(seqs)))
-
-  # cgr <- as(gr, "CompressedGRangesList")
-  S4Vectors::new2(
-    "CompressedGRangesList",
-    unlistData = gr,
-    partitioning = IRanges::PartitioningByEnd(
-      x = cumsum(w),
-      names = names(x@partitioning)[i]
-    ),
-    elementType = "GRanges",
-    elementMetadata = IRanges::extractROWS(x@elementMetadata, i),
-    metadata = x@metadata
-  )
-}
+# method(vec_slice, getClass("CompressedGRangesList")) <- function(x, i, ...) {
+#   st <- IRanges::start(x@partitioning)
+#   en <- IRanges::end(x@partitioning)
+#   w <- IRanges::width(x@partitioning)[i]
+#   seqs <- purrr::map2(st[i], en[i], `:`)
+#
+#   gr <- IRanges::extractROWS(x@unlistData, vctrs::vec_c(rlang::splice(seqs)))
+#
+#   # cgr <- as(gr, "CompressedGRangesList")
+#   S4Vectors::new2(
+#     "CompressedGRangesList",
+#     unlistData = gr,
+#     partitioning = IRanges::PartitioningByEnd(
+#       x = cumsum(w),
+#       names = names(x@partitioning)[i]
+#     ),
+#     elementType = "GRanges",
+#     elementMetadata = IRanges::extractROWS(x@elementMetadata, i),
+#     metadata = x@metadata
+#   )
+# }
 
 method(vec_slice, class_vec_phantom) <- function(x, i, ...) {
   attr(x, "phantomData") <- vec_slice(attr(x, "phantomData"), i)
@@ -114,38 +114,40 @@ method(vec_slice, class_s4_vctrs) <- function(x, i, ...) {
 }
 
 method(vec_slice, class_DF) <- function(x, i, ...) {
-  x@listData <- purrr::map(x@listData, vec_slice, i = i)
+  rnames <- rownames(x)
+  i <- into_index(indices = i, .size = nrow(x), .names = rnames)
+  x@listData <- lapply(x@listData, vec_slice, i = i)
   x@nrows <- length(i)
-  if (!is.null(rnames <- rownames(x))) {
+  if (!is.null(rnames)) {
     x@rownames <- vec_slice(rnames, i = i)
   }
   x
 }
 
-vec_chop2 <- new_generic(
-  "vec_chop2",
-  dispatch_args = "x",
-  function(x, ..., indices = NULL) {
-    S7_dispatch()
-  }
-)
-
-method(vec_chop2, class_vctrs) <- function(
-  x,
-  ...,
-  indices = NULL,
-  sizes = NULL
-) {
-  vctrs::vec_chop(x = x, ..., indices = indices, sizes = sizes)
-}
-
-method(vec_chop2, class_s4_vctrs) <- function(x, ..., indices = NULL) {
-  fun <- method(vec_slice, object = x)
-  if (is.null(indices)) {
-    indices <- seq_along(x)
-  }
-  purrr::map(indices, fun, x = x)
-}
+# vec_chop2 <- new_generic(
+#   "vec_chop2",
+#   dispatch_args = "x",
+#   function(x, ..., indices = NULL) {
+#     S7_dispatch()
+#   }
+# )
+#
+# method(vec_chop2, class_vctrs) <- function(
+#   x,
+#   ...,
+#   indices = NULL,
+#   sizes = NULL
+# ) {
+#   vctrs::vec_chop(x = x, ..., indices = indices, sizes = sizes)
+# }
+#
+# method(vec_chop2, class_s4_vctrs) <- function(x, ..., indices = NULL) {
+#   fun <- method(vec_slice, object = x)
+#   if (is.null(indices)) {
+#     indices <- seq_along(x)
+#   }
+#   purrr::map(indices, fun, x = x)
+# }
 
 # cgr_as_lst <- function(x) {
 #   n <- length(x)

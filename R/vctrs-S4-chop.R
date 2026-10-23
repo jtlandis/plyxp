@@ -13,7 +13,8 @@
 #'
 #' @export
 vec_chop <- new_generic(
-  "vec_chop", "x",
+  "vec_chop",
+  "x",
   function(x, ..., indices = NULL) S7_dispatch()
 )
 
@@ -21,14 +22,7 @@ vec_chop <- new_generic(
 method(
   vec_chop,
   class_vctrs
-) <-
-  function(x,
-           ...,
-           sizes = NULL,
-           indices = NULL) {
-    vctrs::vec_chop(x = x, ..., indices = indices, sizes = sizes)
-  }
-
+) <- vctrs::vec_chop
 
 
 # method(
@@ -42,21 +36,41 @@ method(
 #     vctrs::vec_chop(x = x, ..., indices = indices, sizes = sizes)
 #   }
 
+check_dots_chop <- function(..., indices = NULL, call = caller_env()) {
+  ndots <- ...length()
+  if (ndots > 0) {
+    if (!is.null(indices)) {
+      rlang::abort(
+        sprintf("%i dots arguments found and `indices` is not NULL", ndots),
+        call = call
+      )
+    }
+    if (ndots != 1L) {
+      rlang::abort(
+        sprintf(
+          "%i dots arguments found. Only 1 unnamed argument supporte for dots",
+          ndots
+        ),
+        call = call
+      )
+    }
+    return(...elt(1L))
+  }
+  indices
+}
 
 method(
   vec_chop,
   class_s4_vctrs
 ) <-
-  function(x,
-           ...,
-           indices = NULL) {
+  function(x, ..., indices = NULL) {
+    indices <- check_dots_chop(..., indices = indices)
     fun <- method(vec_slice, object = x)
     if (is.null(indices)) {
       indices <- seq_len(length(x))
     }
     lapply(indices, fun, x = x)
   }
-
 
 # cgr_as_lst <- function(x) {
 #   n <- length(x)

@@ -1,6 +1,6 @@
 Package: plyxp
 Title: Data masks for SummarizedExperiment enabling dplyr-like manipulation
-Version: 1.7.4
+Version: 1.7.5
 Authors@R: c(
     person("Justin", "Landis", email = "jtlandis314@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0001-5501-4934")),
@@ -26,7 +26,8 @@ Imports:
     S7,
     S4Vectors,
     utils,
-    methods
+    methods,
+    BiocGenerics
 Depends:
     R (>= 4.5.0)
 Suggests:
@@ -43,6 +44,7 @@ BugReports: https://www.github.com/jtlandis/plyxp/issues
 biocViews: Annotation, GenomeAnnotation, Transcriptomics
 Config/testthat/edition: 3
 Collate:
+    'utils.R'
     'as.data.frame.R'
     'connect_masks.R'
     'context-utils.R'
@@ -65,6 +67,7 @@ Collate:
     'mask_env_top.R'
     'plyxp-R6-manager.R'
     'plyxp-R6.R'
+    'reexports-biocgenerics.R'
     'plyxp-class.R'
     'plyxp-package.R'
     'plyxp-quos.R'
@@ -73,11 +76,12 @@ Collate:
     'print.R'
     'reexports-SummarizedExperiment.R'
     'reexports-dplyr.R'
-    'utils.R'
+    'vctrs-S4-init.R'
+    'vctrs-S4-cast.R'
     'vctrs-S4-group.R'
     'vctrs-S4-recycle.R'
     'vctrs-S4-size.R'
     'vctrs-S4-slice.R'
     'zzz-globals.R'
     'zzz.R'
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

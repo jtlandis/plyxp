@@ -57,7 +57,6 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   if (any(err <- ctxs %in% "assays")) {
     plyxp_assays_cannot(do = "arrange", review = err)
   }
-  nms <- names(quos)
   # to make this function consistent
   groups <- group_data_se_impl(.data)
   group_data_se_impl(.data) <- NULL
@@ -65,7 +64,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "arrange")
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   results <- mask$results()
   type <- ""
   ro <- co <- NULL
@@ -84,7 +83,8 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
     group_data_se_impl(.data) <- groups
   }
 
-  switch(type,
+  switch(
+    type,
     rowcol = plyxp_slice_se(.data, ro, co),
     row = plyxp_slice_se(.data, ro),
     col = plyxp_slice_se(.data, , co),

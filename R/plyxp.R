@@ -1,5 +1,7 @@
 # @seealso [plyxp::PlyxpMaskManager]
 
+#' @include utils.R
+
 #' @title New Plyxp mask
 #' @name new_plyxp_manager
 #' @description
@@ -11,13 +13,12 @@
 #' @noRd
 #' @examples
 #'
-#' manager <- new_plyxp_manager(se_simple)
+#' manager <- new_plyxp_manager(se(se_simple))
 #' manager$ctx
 #' q <- plyxp_quos(
 #'   counts_1 = counts + 1,
 #'   cols(is_drug = condition == "drug"),
-#'   .ctx_default = "assays",
-#'   .ctx_opt = c("rows", "cols")
+#'   .ctx = c("assays", "rows", "cols")
 #' )
 #' manager$eval(q[[1]])
 #' manager$results()
@@ -33,6 +34,11 @@ new_plyxp_manager <- function(obj, ...) {
 }
 
 #' @export
+new_plyxp_manager.PlySummarizedExperiment <- function(obj, ...) {
+  new_plyxp_manager(se(obj), ...)
+}
+
+#' @export
 new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   groups <- group_details(obj)
   expanded <- expand_groups2(groups$row_groups, groups$col_groups)
@@ -41,7 +47,7 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   shared_ctx_env <- prepare_shared_ctx_env(groups = groups, expanded = expanded)
 
   mask_assay <- plyxp_assay$new(
-    assays(obj),
+    assays_(obj),
     get_group_indices(groups, expanded, "assay"),
     .nrow = nr,
     .ncol = nc,
@@ -79,11 +85,10 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
   )
 }
 
-plyxp_evaluate <- function(mask, quos, ctxs, nams, env) {
+plyxp_evaluate <- function(mask, quos, ctxs = NULL, env = caller_env()) {
   .call <- caller_call()
-  # if (.matrix) {
-  #   quos <- enforce_matrix(quos, ctxs)
-  # }
+  ctxs <- ctxs %||%
+    vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
   n_quo <- length(quos)
   curr_quo <- NULL
   try_fetch(

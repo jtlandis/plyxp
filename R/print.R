@@ -147,6 +147,11 @@ show_tidy.default <- function(x, ...) {
 }
 
 #' @export
+show_tidy.PlySummarizedExperiment <- function(x, n = 10, ...) {
+  show_tidy(se(x), n = n, ...)
+}
+
+#' @export
 show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
   top_n <- ceiling(n / 2)
   bot_n <- floor(n / 2)
@@ -169,7 +174,7 @@ show_tidy.SummarizedExperiment <- function(x, n = 10, ...) {
   nc <- ncol(x_)
   .features <- rownames(x_) %||% seq_len(onr)[row_slice]
   .samples <- colnames(x_) %||% seq_len(onc)[col_slice]
-  assays_ <- map(assays(x_), as_vec)
+  assays_ <- map(assays_(x_), as_vec)
   row_ <- map(rowData(x_), vec_rep, times = nc) |> map(maybe_phantom)
   col_ <- map(colData(x_), vec_rep_each, times = nr) |> map(maybe_phantom)
   nn <- nc * nr

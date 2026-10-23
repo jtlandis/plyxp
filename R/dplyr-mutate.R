@@ -1,4 +1,5 @@
 #' @importFrom dplyr mutate
+#' @include utils.R
 
 #' @name mutate
 #' @title Mutate a PlySummarizedExperiment object
@@ -49,8 +50,7 @@ mutate_se_impl <- function(.data, ...) {
     )
   )
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  nms <- names(quos)
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   results <- mask$results()
 
   nms <- names(results$rows)
@@ -79,6 +79,7 @@ mutate_se_impl <- function(.data, ...) {
   # set assays last to reset dimnames
   nms <- names(results$assays)
   dim_nms <- dimnames(.data)
+  assays_ <- as.list(assays_(.data))
   for (i in seq_along(results$assays)) {
     new_assay <- results$assays[[i]]
     if (!is.null(new_assay)) {
@@ -86,8 +87,9 @@ mutate_se_impl <- function(.data, ...) {
       # this attrib
       dimnames(new_assay) <- dim_nms
     }
-    assay(.data, nms[i], withDimnames = FALSE) <- new_assay
+    assays_[[nms[i]]] <- new_assay
   }
+  assays_(.data) <- assays_
 
   .data
 }
@@ -98,6 +100,9 @@ enforce_2d_size <- function(
   .nrow,
   .ncol
 ) {
+  if (is.null(.data)) {
+    return(.data)
+  }
   dims <- dim(.data)
   ndim <- length(dims)
   if (ndim >= 2L) {

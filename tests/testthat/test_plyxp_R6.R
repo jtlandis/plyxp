@@ -24,3 +24,53 @@ test_that("evaluation works", {
   expect_identical(sum(res$rows$foo), 5L)
   expect_identical(sum(res$cols$foo), 4L)
 })
+
+test_that("R6 environments are accessible", {
+  bm <- plyxp:::new_plyxp_manager(se(se_simple))
+
+  assay_envs <- expect_no_error(bm$ctx_mask$environments)
+  chops <- expect_no_error(
+    assay_envs@env_data_chop
+  )
+  expect_identical(
+    chops$counts,
+    list(assays(se(se_simple))$counts)
+  )
+
+  expect_no_error(
+    assay_envs@env_data_chop$foo <- list("bar")
+  )
+
+  expect_identical(
+    chops$foo,
+    list("bar")
+  )
+})
+
+test_that("AtNames for plyxp_envs", {
+  bm <- plyxp:::new_plyxp_manager(se(se_simple))
+
+  assay_envs <- bm$ctx_mask$environments
+
+  expect_identical(
+    .AtNames.plyxp_envs(assay_envs, "env"),
+    c(
+      "env_mask_bind",
+      "env_data_chop",
+      "env_data_lazy",
+      "env_foreign_data",
+      "env_current_group_info"
+    )
+  )
+
+  expect_identical(
+    .AtNames.plyxp_envs(assay_envs, ""),
+    c(
+      "env_mask_bind",
+      "env_data_chop",
+      "env_data_lazy",
+      "env_foreign_data",
+      "env_current_group_info"
+    )
+  )
+})

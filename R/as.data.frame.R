@@ -1,3 +1,5 @@
+#' @include utils.R
+
 #' @name as.data.frame
 #' @title create data.frame
 #' @param x `SummarizedExperiment` object
@@ -19,11 +21,15 @@ as.data.frame.PlySummarizedExperiment <- function(x, ...) {
       .features = vec_rep(.features, times = nc),
       .samples = vec_rep_each(.samples, times = nr)
     ),
-    lapply(assays(x), as_vec),
+    lapply(assays_(x), as_vec),
     lapply(rowData(x), vec_rep, times = nc),
     lapply(colData(x), vec_rep_each, times = nr)
   )
-  attr(out, "row.names") <- c(NA_integer_, -nn)
-  class(out) <- "data.frame"
-  out
+  df0(out, nn)
+}
+
+df0 <- function(lst, nrows) {
+  attr(lst, "row.names") <- c(NA_integer_, -nrows)
+  class(lst) <- "data.frame"
+  lst
 }

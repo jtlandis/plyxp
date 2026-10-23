@@ -58,7 +58,7 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "slice")
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   # we may have empty values, thus we do not collect with
   # mask$results, instead we will get the values raw and
   # handle the correct index
@@ -72,15 +72,13 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   )
   chops <- flatten_slice_chops(chops, groups = group_data_se_impl(.data))
   which_ctx <- unique(ctxs)
-  switch(length(which_ctx),
+  switch(
+    length(which_ctx),
     `1` = {
-      switch(which_ctx,
-        rows = plyxp_slice_se(.data, chops$rows,
-          .preserve = .preserve
-        ),
-        cols = plyxp_slice_se(.data, , chops$cols,
-          .preserve = .preserve
-        )
+      switch(
+        which_ctx,
+        rows = plyxp_slice_se(.data, chops$rows, .preserve = .preserve),
+        cols = plyxp_slice_se(.data, , chops$cols, .preserve = .preserve)
       )
     },
     `2` = {
@@ -104,7 +102,8 @@ flatten_by_slice_expr <- function(ctx_chops, ctx_group) {
     # ctx_chops[[2]] --> expr2 ...
     #
     # ctx_chops[[1]][...] --> expr1[group1, ..., groupn]
-    chops <- lapply(ctx_chops,
+    chops <- lapply(
+      ctx_chops,
       function(chop, true_ind) {
         Map(`[`, true_ind, chop)
       },

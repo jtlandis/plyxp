@@ -31,6 +31,7 @@
 \alias{dimnames,PlySummarizedExperiment-method}
 \alias{dimnames<-,PlySummarizedExperiment,list-method}
 \alias{dimnames<-,PlySummarizedExperiment,NULL-method}
+\alias{names,PlySummarizedExperiment-method}
 \title{PlySummarizedExperiment Methods}
 \usage{
 se(x)
@@ -90,6 +91,8 @@ se(x) <- value
 \S4method{dimnames}{PlySummarizedExperiment,list}(x) <- value
 
 \S4method{dimnames}{PlySummarizedExperiment,NULL}(x) <- value
+
+\S4method{names}{PlySummarizedExperiment}(x)
 }
 \arguments{
 \item{x}{PlySummarizedExperiment object}

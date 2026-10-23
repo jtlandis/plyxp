@@ -87,3 +87,20 @@ test_that("mutate works - with groups", {
   expect_identical(rowData(res)[["foo"]], c(1L, 2L, 2L, 1L, 2L))
   expect_identical(colData(res)[["foo"]], c(1L, 1L, 2L, 2L))
 })
+
+test_that("rename rows and cols through mutate", {
+  xp <- expect_no_error(
+    se_simple |>
+      mutate(
+        rows(.features = sprintf("%s_", .features)),
+        cols(.samples = sprintf("%s_", .samples))
+      )
+  )
+  expect_identical(
+    dimnames(xp),
+    list(
+      sprintf("row_%i_", 1:5),
+      sprintf("col_%i_", 1:4)
+    )
+  )
+})

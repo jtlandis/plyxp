@@ -96,24 +96,23 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   if (any(err <- ctxs %in% "assays")) {
     plyxp_assays_cannot(do = "group_by", review = err)
   }
-  nms <- names(quos)
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   results <- mask$results()
   # nms <- names(results$assays)
   # for (i in seq_along(results$assays)) {
   #   assays(.data, withDimnames = FALSE)[[nms[i]]] <- results$assays[[i]]
   # }
 
-  if (.add && !is_empty(curr_groups <- group_data_se_impl(.data))) {
-    if (!is_empty(curr_groups$row_groups)) {
-      curr <- select(curr_groups$row_groups, -starts_with(".indices")) |>
+  if (.add && !is_empty(.groups)) {
+    if (!is_empty(.groups$row_groups)) {
+      curr <- select(.groups$row_groups, -starts_with(".indices")) |>
         names()
       curr <- rowData(.data)[curr]
       curr[names(results$rows)] <- results$rows
       results$rows <- curr
     }
-    if (!is_empty(curr_groups$col_groups)) {
-      curr <- select(curr_groups$col_groups, -starts_with(".indices")) |>
+    if (!is_empty(.groups$col_groups)) {
+      curr <- select(.groups$col_groups, -starts_with(".indices")) |>
         names()
       curr <- colData(.data)[curr]
       curr[names(results$cols)] <- results$cols
@@ -122,36 +121,55 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   }
 
   rnms <- names(results$rows)
-  if (".features" %in% rnms) {
-    rownames(.data) <- results$rows$.features
-    results$rows$.features <- NULL
-    rnms <- names(results$rows)
-  }
+  row_data <- NULL
   if (length(rnms)) {
+    has_nms <- FALSE
     row_data <- rowData(.data)
+    if (".features" %in% rnms) {
+      has_nms <- TRUE
+      rownames(.data) <- results$rows$.features
+      results$rows$.features <- NULL
+      rnms <- names(results$rows)
+    }
     row_data[rnms] <- results$rows
     # push nms to the front
     row_data <- row_data[c(rnms, setdiff(names(row_data), rnms))]
     rowData(.data) <- row_data
+    row_data <- row_data[rnms]
+    if (has_nms) {
+      row_data <- cbind(
+        .features = rownames(.data),
+        row_data
+      )
+    }
   }
-
 
   cnms <- names(results$cols)
-  if (".samples" %in% cnms) {
-    colnames(.data) <- results$cols$.samples
-    results$cols$.samples <- NULL
-    cnms <- names(results$cols)
-  }
+  col_data <- NULL
   if (length(cnms)) {
+    has_nms <- FALSE
     col_data <- colData(.data)
+    if (".samples" %in% cnms) {
+      has_nms <- TRUE
+      colnames(.data) <- results$cols$.samples
+      results$cols$.samples <- NULL
+      cnms <- names(results$cols)
+    }
     col_data[cnms] <- results$cols
     # push nms to the front
     col_data <- col_data[c(cnms, setdiff(names(col_data), cnms))]
     colData(.data) <- col_data
+    col_data <- col_data[cnms]
+    if (has_nms) {
+      col_data <- cbind(
+        .samples = colnames(.data),
+        col_data
+      )
+    }
   }
   groups <- plyxp_groups(
-    row_groups = rowData(.data)[rnms],
-    col_groups = colData(.data)[cnms]
+    row_groups = row_data,
+    col_groups = col_data
   )
   group_data_se_impl(.data) <- groups
   .data
@@ -163,6 +181,14 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
 #' class for `SummarizedExperiment` objects
 #' @param ... [contextual expressions][plyxp::plyxp-context] specifying
 #' which columns to ungroup. Omitting `...` ungroups the entire object.
+#'
+#' @examples
+#' gse <- group_by(se_simple, rows(direction, length), cols(condition))
+#' ungroup(gse)
+#' ungroup(gse, cols())
+#' ungroup(gse, rows())
+#' ungroup(gse, rows(length))
+#'
 #' @export
 ungroup.PlySummarizedExperiment <- function(x, ...) {
   plyxp(x, ungroup_se_impl, ...)
@@ -172,7 +198,8 @@ ungroup_se_impl <- function(x, ...) {
   quos <- plyxp_quos(
     ...,
     .named = FALSE,
-    .ctx = c("assays", "rows", "cols")
+    .ctx = c("assays", "rows", "cols"),
+    .exclude_empty = FALSE
   )
   curr_groups <- group_data_se_impl(x)
   if (is_empty(curr_groups)) {
@@ -190,13 +217,21 @@ ungroup_se_impl <- function(x, ...) {
   by_ctx <- split(quos, ctxs)
   update_cols <- update_rows <- NULL
   update_ <- ""
-  if (!is_empty(by_ctx$rows) || !is.null(curr_groups$row_groups)) {
+
+  if (!is_empty(rexprs <- by_ctx$rows) || !is.null(curr_groups$row_groups)) {
+    # some context was passed as an argument.
+    # it could be empty
     if (is.null(curr_groups$row_groups)) {
       abort("no row groups to ungroup")
     }
     old_groups <- select(curr_groups$row_groups, -starts_with(".indices")) |>
       names()
-    select_expr <- call2("c", splice(by_ctx$rows))
+    select_expr <- if (length(rexprs) == 1L && quo_is_missing(rexprs[[1]])) {
+      call2("c", splice(syms(old_groups)))
+    } else {
+      rexprs <- exclude_empty_quos(rexprs)
+      call2("c", splice(rexprs))
+    }
     to_remove <- eval_select(
       select_expr,
       data = as.list(rowData(x)),
@@ -207,13 +242,20 @@ ungroup_se_impl <- function(x, ...) {
     update_rows <- call2("rows", splice(syms(new_groups)))
     update_ <- "row"
   }
-  if (!is_empty(by_ctx$cols) || !is.null(curr_groups$col_groups)) {
+  if (!is_empty(cexprs <- by_ctx$cols) || !is.null(curr_groups$col_groups)) {
+    # some context was passed as an argument.
+    # it could be empty
     if (is.null(curr_groups$col_groups)) {
       abort("no col groups to ungroup")
     }
     old_groups <- select(curr_groups$col_groups, -starts_with(".indices")) |>
       names()
-    select_expr <- call2("c", splice(by_ctx$cols))
+    select_expr <- if (length(cexprs) == 1L && quo_is_missing(cexprs[[1]])) {
+      call2("c", splice(syms(old_groups)))
+    } else {
+      cexprs <- exclude_empty_quos(cexprs)
+      call2("c", splice(cexprs))
+    }
     to_remove <- eval_select(
       select_expr,
       data = as.list(colData(x)),
@@ -224,7 +266,8 @@ ungroup_se_impl <- function(x, ...) {
     update_cols <- call2("cols", splice(syms(new_groups)))
     update_ <- paste0(update_, "col")
   }
-  switch(update_,
+  switch(
+    update_,
     rowcol = group_by_se_impl(x, !!update_rows, !!update_cols),
     row = group_by_se_impl(x, !!update_rows),
     col = group_by_se_impl(x, !!update_cols)
@@ -298,7 +341,6 @@ group_split.PlySummarizedExperiment <- function(.tbl, ..., .keep = TRUE) {
   grouped_cols <- is_grouped_cols(group_vars)
   is_grouped <- grouped_rows || grouped_cols
 
-
   if (!.keep && is_grouped) {
     if (grouped_rows) {
       rowData(.tbl) <- rowData(.tbl)[,
@@ -323,7 +365,8 @@ group_split.PlySummarizedExperiment <- function(.tbl, ..., .keep = TRUE) {
     c("rows", "cols")[c(grouped_rows, grouped_cols)],
     collapse = ""
   )
-  switch(type,
+  switch(
+    type,
     rows = lapply(
       groups$row_groups$.indices,
       \(i, .data) new_plyxp(.data[i, ]),

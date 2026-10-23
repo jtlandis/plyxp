@@ -6,14 +6,22 @@ expand_groups2 <- function(.rows, .cols) {
   names(.cols) <- sprintf(".cols::%s", names(.cols))
   .nrow <- nrow(.rows)
   .ncol <- nrow(.cols)
+  n <- .nrow * .ncol
   .rows <- map(.rows, vec_rep, times = .ncol)
   .cols <- map(.cols, vec_rep_each, times = .nrow)
-  out <- c(.rows, .cols)
-  n <- .nrow * .ncol
-  out[[".nrows"]] <- map_int(out[[".rows::.indices"]], length)
-  out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
-  attr(out, "row.names") <- c(NA_integer_, -n)
-  class(out) <- c("tbl_df", "tbl", "data.frame")
+  out <- c(
+    .rows,
+    .cols,
+    list(
+      .nrows = base::lengths(.rows[[".rows::.indices"]]),
+      .ncols = base::lengths(.cols[[".cols::.indices"]]),
+      .group_id = seq_len(n)
+    )
+  )
+  out <- df0(
+    out,
+    n
+  )
   attr(out, "plyxp:::unique_row_ind") <- seq_len(.nrow)
   attr(out, "plyxp:::unique_col_ind") <- ((seq_len(.ncol) - 1L) * .nrow) + 1L
 
@@ -25,7 +33,6 @@ expand_groups2 <- function(.rows, .cols) {
   #   out[[".rows::.indices_group_id"]]
   # )
   # out <- out[o,]
-  out$.group_id <- seq_len(n)
   out
 }
 
@@ -186,31 +193,30 @@ chop_dims_outer <- function(obj, .dims) {
   out
 }
 
-vec_chop_assays <- function(.data, .indices) {
-  map2(
-    attr(.indices, "plyxp:::row_chop_ind"),
-    attr(.indices, "plyxp:::col_chop_ind"),
-    function(.x, .y, .data) .data[.x, .y, drop = FALSE],
-    .data = .data
-  )
-}
-
-vec_chop_assays_row <- function(.data, .indices) {
-  map(
-    attr(.indices, "plyxp:::row_chop_ind"),
-    function(.i, .data) .data[.i, , drop = FALSE],
-    .data = .data
-  )
-}
-
-vec_chop_assays_col <- function(.data, .indices) {
-  map(
-    attr(.indices, "plyxp:::col_chop_ind"),
-    function(.i, .data) .data[, .i, drop = FALSE],
-    .data = .data
-  )
-}
-
+# vec_chop_assays <- function(.data, .indices) {
+#   map2(
+#     attr(.indices, "plyxp:::row_chop_ind"),
+#     attr(.indices, "plyxp:::col_chop_ind"),
+#     function(.x, .y, .data) .data[.x, .y, drop = FALSE],
+#     .data = .data
+#   )
+# }
+#
+# vec_chop_assays_row <- function(.data, .indices) {
+#   map(
+#     attr(.indices, "plyxp:::row_chop_ind"),
+#     function(.i, .data) .data[.i, , drop = FALSE],
+#     .data = .data
+#   )
+# }
+#
+# vec_chop_assays_col <- function(.data, .indices) {
+#   map(
+#     attr(.indices, "plyxp:::col_chop_ind"),
+#     function(.i, .data) .data[, .i, drop = FALSE],
+#     .data = .data
+#   )
+# }
 
 create_groups <- function(.data, .rename = ".indices") {
   # check if length > 0
@@ -324,17 +330,23 @@ get_group_indices <- function(
 group_details <- function(obj) {
   group_data <- group_data_se_impl(obj)
   if (is.null(group_data$row_groups)) {
-    group_data$row_groups <- tibble(
-      .indices = list(seq_len(nrow(obj))),
-      .indices_group_id = 1L
+    group_data$row_groups <- df0(
+      list(
+        .indices = list(seq_len(nrow(obj))),
+        .indices_group_id = 1L
+      ),
+      1L
     )
     attr(group_data, "grouped_rows") <- FALSE
   }
 
   if (is.null(group_data$col_groups)) {
-    group_data$col_groups <- tibble(
-      .indices = list(seq_len(ncol(obj))),
-      .indices_group_id = 1L
+    group_data$col_groups <- df0(
+      list(
+        .indices = list(seq_len(ncol(obj))),
+        .indices_group_id = 1L
+      ),
+      1L
     )
 
     attr(group_data, "grouped_cols") <- FALSE

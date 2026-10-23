@@ -1,5 +1,6 @@
 abort_invalid_quo <- function() {
-  rlang::abort("`plyxp_manager$eval()` requires quosure from `plyxp_quosures()`",
+  rlang::abort(
+    "`plyxp_manager$eval()` requires quosure from `plyxp_quosures()`",
     class = "plyxp_invalid_quo"
   )
 }
@@ -104,12 +105,16 @@ plyxp_manager <- R6::R6Class(
     },
     #' @field ctx_mask get the current context plyxp
     ctx_mask = function(value) {
-      if (!missing(value)) stop("`$ctx_mask` is read only")
+      if (!missing(value)) {
+        stop("`$ctx_mask` is read only")
+      }
       private$.masks[[self$ctx]]
     },
     #' @field n_groups get the current context plyxp group size
     n_groups = function(value) {
-      if (!missing(value)) stop("`$n_groups` is read only")
+      if (!missing(value)) {
+        stop("`$n_groups` is read only")
+      }
       private$.ctx_env[["plyxp:::n_groups"]]
     },
     #' @field group_id get and set the current context plyxp group id
@@ -121,12 +126,16 @@ plyxp_manager <- R6::R6Class(
     },
     #' @field masks get the private list of masks
     masks = function(value) {
-      if (!missing(value)) stop("`$masks` is read only")
+      if (!missing(value)) {
+        stop("`$masks` is read only")
+      }
       private$.masks
     },
     #' @field extended other environments extended from a context mask.
     extended = function(value) {
-      if (!missing(value)) stop("`$exteded` is read only")
+      if (!missing(value)) {
+        stop("`$extended` is read only")
+      }
       private$.extended_env[[private$.ctx_env[["plyxp:::ctx"]]]]
     }
   ),
@@ -150,7 +159,9 @@ plyxp_manager_eval <- function(quo, env, n_groups, mask, private) {
     for (i in seq_len(n_groups)) {
       private$.ctx_env[["plyxp:::ctx:::group_id"]] <- i
       result <- mask$eval(quo, env = env)
-      chop_out[[i]] <- result
+      if (!is.null(result)) {
+        chop_out[[i]] <- result
+      }
     }
   }
   chop_out

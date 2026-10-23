@@ -1,6 +1,6 @@
 # Meant to be used to propagate NULL when a downstream
-# function could take NULLs
-`%|!|%` <- function(x, y) if (!is_empty(x)) y else NULL
+# function could take NULLs - Unused...
+# `%|!|%` <- function(x, y) if (!is_empty(x)) y else NULL
 
 #' @name filter
 #' @title filter PlySummarizedExperiment
@@ -61,8 +61,7 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
   if (any(err <- ctxs %in% "assays")) {
     plyxp_assays_cannot(do = "filter", review = err)
   }
-  nms <- names(quos)
-  mask <- plyxp_evaluate(mask, quos, ctxs, nms, .env)
+  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   results <- mask$results()
   filter_ <- ""
   if (!is_empty(results$rows)) {
@@ -85,7 +84,8 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
       reduce(`&`)
     filter_ <- paste0(filter_, "col")
   }
-  switch(filter_,
+  switch(
+    filter_,
     rowcol = plyxp_slice_se(.data, row_logic, col_logic, .preserve = .preserve),
     row = plyxp_slice_se(.data, row_logic, .preserve = .preserve),
     col = plyxp_slice_se(.data, , col_logic, .preserve = .preserve),
