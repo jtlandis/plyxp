@@ -137,6 +137,7 @@ All resulting text was reviewed, edited, and verified by the human authors, who 
 
 The authors thank Rachel Sharp, Beatriz Campillo Miñano, Stuart Lee, and Stefano Mangiola for comments on an earlier draft.
 This work is supported in part by an Essential Open Source Software (EOSS) grant from the Wellcome Trust [313919/Z/24/Z] and by the National Institutes of Health grant R01-HG009937.
+The funders had no role in the design or implementation of _plyxp_.
 The authors declare no competing interests.
 
 # References
