@@ -1,9 +1,11 @@
 ## plyxp 1.7.6
 
 * various `slice_*()` functions are now supported.
-  * `slice_min()` - slice either the `rows()` or `cols()` contexts.
+  * `slice_min()`/`slice_max` - slice the `rows()` or `cols()` contexts.
   * NOTE: due to how these functions are called, either the `rows()` or the
-    `cols()` context can be used. In other words the following does not work:
+    `cols()` context can be used independently. They may only be used together
+    if either `n` or `prop` args are named. In other words the following does
+    not work:
 
     ```r
     slice_min(xp, rows(foo), cols(bar))
@@ -13,8 +15,22 @@
 
     ```r
     xp |>
+      slice_min(rows(foo), cols(bar), n = 1)
+
+    # or the following
+    xp |>
       slice_min(rows(foo)) |>
       slice_min(cols(bar))
+    ```
+  * `slice_head()`/`slice_tail()` - slice the head or tail of a context.
+  * NOTE: for a data.frame, these S3 generics do not use the `...` argument.
+    For `PlySummarizedExperiment` objects, the `...` is used to specify the
+    `rows()` or `cols()` contexts, and requires these expressions to be empty.
+
+    ```r
+    slice_head(xp, rows())
+    slice_tail(xp, cols())
+    slice_head(xp, rows(), cols(), n = 2)
     ```
 
 
