@@ -37,8 +37,7 @@ slice_max.PlySummarizedExperiment <- function(
     n = n,
     prop = prop,
     with_ties = with_ties,
-    na_rm = na_rm,
-    .preserve = .preserve
+    na_rm = na_rm
   )
 }
 
@@ -48,8 +47,7 @@ slice_max_se_impl <- function(
   n = NULL,
   prop = NULL,
   with_ties = TRUE,
-  na_rm = FALSE,
-  .preserve = FALSE
+  na_rm = FALSE
 ) {
   slice_extreme_se_impl(
     .data,
@@ -58,7 +56,6 @@ slice_max_se_impl <- function(
     prop = prop,
     with_ties = with_ties,
     na_rm = na_rm,
-    .preserve = .preserve,
     extreme = "max"
   )
 }
@@ -71,8 +68,7 @@ slice_min.PlySummarizedExperiment <- function(
   n = NULL,
   prop = NULL,
   with_ties = TRUE,
-  na_rm = FALSE,
-  .preserve = FALSE
+  na_rm = FALSE
 ) {
   plyxp(
     .data,
@@ -81,8 +77,7 @@ slice_min.PlySummarizedExperiment <- function(
     n = n,
     prop = prop,
     with_ties = with_ties,
-    na_rm = na_rm,
-    .preserve = .preserve
+    na_rm = na_rm
   )
 }
 
@@ -92,8 +87,7 @@ slice_min_se_impl <- function(
   n = NULL,
   prop = NULL,
   with_ties = TRUE,
-  na_rm = FALSE,
-  .preserve = FALSE
+  na_rm = FALSE
 ) {
   slice_extreme_se_impl(
     .data,
@@ -102,7 +96,6 @@ slice_min_se_impl <- function(
     prop = prop,
     with_ties = with_ties,
     na_rm = na_rm,
-    .preserve = .preserve,
     extreme = "min"
   )
 }
@@ -115,7 +108,6 @@ slice_extreme_se_impl <- function(
   prop = NULL,
   with_ties = TRUE,
   na_rm = FALSE,
-  .preserve = FALSE,
   extreme = c("max", "min")
 ) {
   extreme <- match.arg(extreme, c("max", "min"))
@@ -168,7 +160,7 @@ slice_extreme_se_impl <- function(
       )
     }
   )
-  slice_se_impl(.data, !!!quos, .preserve = .preserve)
+  slice_se_impl(.data, !!!quos)
 }
 
 #' @rdname slice_extremes
@@ -284,7 +276,7 @@ slice_n_se_impl <- function(
       )
     }
   )
-  slice_se_impl(.data, !!!quos, .preserve = .preserve)
+  slice_se_impl(.data, !!!quos)
 }
 
 
