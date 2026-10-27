@@ -178,12 +178,18 @@ construct_plyxp_quos <- function(
         ctx_quos <- exclude_empty_quos(ctx_quos)
       } else if (is_empty(ctx_quos)) {
         # if we want to retain empty, and this context is empty...
+        if (length(ctx_nms) == 0) {
+          ctx_nms <- ""
+          ctx_is_named <- FALSE
+        }
         ctx_quos <- list(
-          .empty = plyxp_quo(
+          raw_plyxp_quosure(
             expr = expr(),
-            env = base::emptyenv(),
+            envir = base::emptyenv(),
             ctx = ctx,
-            trans = .trans[[ctx]]
+            trans = .trans[[ctx]],
+            name = ctx_nms,
+            is_named = ctx_is_named
           )
         )
       }

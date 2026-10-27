@@ -170,3 +170,152 @@ slice_extreme_se_impl <- function(
   )
   slice_se_impl(.data, !!!quos, .preserve = .preserve)
 }
+
+#' @rdname slice_extremes
+#' @export
+slice_head.PlySummarizedExperiment <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL
+) {
+  plyxp(
+    .data,
+    slice_head_se_impl,
+    ...,
+    n = n,
+    prop = prop
+  )
+}
+
+#' @rdname slice_extremes
+#' @export
+slice_tail.PlySummarizedExperiment <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL
+) {
+  plyxp(
+    .data,
+    slice_tail_se_impl,
+    ...,
+    n = n,
+    prop = prop
+  )
+}
+
+slice_head_se_impl <- function(.data, ..., n = NULL, prop = NULL) {
+  slice_n_se_impl(.data, ..., n = n, prop = prop, side = "head")
+}
+
+slice_tail_se_impl <- function(.data, ..., n = NULL, prop = NULL) {
+  slice_n_se_impl(.data, ..., n = n, prop = prop, side = "tail")
+}
+
+slice_n_se_impl <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  side = c("head", "tail")
+) {
+  side <- match.arg(side, c("head", "tail"))
+  func <- sprintf("slice_%s", side)
+
+  if (!is.null(n) && !is.null(prop)) {
+    rlang::abort(
+      sprintf("Cannot use both `n` and `prop` in `%s`.", func)
+    )
+  }
+  if (is.null(n) && is.null(prop)) {
+    n <- 1
+  }
+
+  size <- get_slice_size(n = n, prop = prop)
+
+  quos <- plyxp_enquos(
+    ...,
+    .ctx = c("assays", "rows", "cols"),
+    .exclude_empty = FALSE
+  )
+
+  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
+  if (any(err <- ctxs %in% "assays")) {
+    plyxp_assays_cannot(do = func, review = err)
+  }
+
+  if (
+    length(quos) == 0 ||
+      any(quos_is_named(quos)) ||
+      any(!vapply(quos, quo_is_missing, FALSE))
+  ) {
+    rlang::abort(
+      sprintf(
+        "All arguments to `%s` must be empty quosures, e.g. `rows()` or `cols()`.",
+        func
+      )
+    )
+  }
+
+  idx <- switch(
+    side,
+    head = function(n, .size) {
+      if (n < 1) {
+        return(integer())
+      }
+      seq.int(1L, n)
+    },
+    tail = function(n, .size) {
+      from <- .size - n + 1L
+      if (.size < from) {
+        return(integer())
+      }
+      seq.int(from, .size)
+    }
+  )
+
+  quos <- lapply(
+    quos,
+    \(q) {
+      plyxp_requo(
+        q,
+        expr = idx(size(`plyxp:::ctx:::n`), `plyxp:::ctx:::n`)
+      )
+    }
+  )
+  slice_se_impl(.data, !!!quos, .preserve = .preserve)
+}
+
+
+get_slice_size <- function(n, prop) {
+  .type <- if (is.null(prop)) {
+    "n"
+  } else {
+    "prop"
+  }
+  .size <- NULL
+  body <- switch(
+    .type,
+    n = {
+      input_n <- as.numeric(n)
+      stopifnot("n should be length 1" = length(input_n) == 1L)
+      if (input_n >= 0) {
+        expr(clamp(0, floor(input_n), .size))
+      } else {
+        expr(clamp(0, ceiling(input_n + .size), .size))
+      }
+    },
+    prop = {
+      input_prop <- as.numeric(prop)
+      stopifnot("prop should be length 1" = length(input_prop) == 1L)
+      if (input_prop >= 0) {
+        expr(clamp(0, floor(input_prop * .size), .size))
+      } else {
+        expr(clamp(0, ceiling(.size + (input_prop * .size)), .size))
+      }
+    }
+  )
+  on.exit(rm(body, .size, .type))
+  rlang::new_function(pairlist2(.size = ), body)
+}

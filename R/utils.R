@@ -121,6 +121,16 @@ map_if <- function(.x, .p, .f, ...) {
   .x
 }
 
+clamp <- function(min, x, max) {
+  if (x < min) {
+    return(min)
+  }
+  if (x > max) {
+    return(max)
+  }
+  x
+}
+
 # unreachable <- function(
 #   message,
 #   ...,
