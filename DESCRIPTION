@@ -57,6 +57,7 @@ Collate:
     'dplyr-pull.R'
     'dplyr-select.R'
     'dplyr-slice.R'
+    'dplyr-slice_min.R'
     'dplyr-summarise.R'
     'group_utils.R'
     'grouped_list.R'
