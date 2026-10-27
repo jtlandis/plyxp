@@ -34,14 +34,17 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
   rlang::check_dots_empty()
   .env <- caller_env()
   quos <- plyxp_quos({{ var }}, .ctx = c("assays", "rows", "cols"))
-  if (length(quos) > 1) rlang::abort("`var` can only pull one object")
+  if (length(quos) > 1) {
+    rlang::abort("`var` can only pull one object")
+  }
   if (!is.null(name)) {
     rlang::warn("arg `name` is not used in pull.SummarizedExperiment()")
   }
   var <- quos[[1]]
   ctxs <- attr(var, which = "plyxp:::ctx")
-  data_ctx <- switch(ctxs,
-    "assays" = assays(.data),
+  data_ctx <- switch(
+    ctxs,
+    "assays" = assays_(.data),
     "rows" = rowData(.data),
     "cols" = colData(.data)
   )
@@ -49,13 +52,17 @@ pull_se_impl <- function(.data, var = -1, name = NULL, ...) {
     tidyselect::vars_pull(names(data_ctx), !!var),
     error = function(cnd) {
       var <- rlang::as_label(var)
-      if ((var == ".features" && ctxs == "rows") ||
-        (var == ".samples" && ctxs == "cols")) {
+      if (
+        (var == ".features" && ctxs == "rows") ||
+          (var == ".samples" && ctxs == "cols")
+      ) {
         return(NULL)
       }
       # rethrow error
-      abort(sprintf("failed to pull '%s' from '%s' context", var, ctxs),
-        parent = cnd, call = .env
+      abort(
+        sprintf("failed to pull '%s' from '%s' context", var, ctxs),
+        parent = cnd,
+        call = .env
       )
     }
   )

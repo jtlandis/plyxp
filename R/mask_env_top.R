@@ -76,7 +76,7 @@ plyxp_group_ids2 <- function(
   switch(
     relative_to,
     assays = {
-      out <- expanded
+      out <- as.list(expanded)
       list(
         assays = as.list(out[[".group_id"]]),
         rows = as.list(out[[".rows::.indices_group_id"]]),
@@ -87,7 +87,7 @@ plyxp_group_ids2 <- function(
       )
     },
     rows = {
-      g_row <- groups$row_groups
+      g_row <- as.list(groups$row_groups)
       g_ind <- as.list(g_row[[".indices_group_id"]])
       c_ind <- groups$col_groups[[".indices_group_id"]]
       r_nrow <- vapply(g_row[[".indices"]], length, 1L)
@@ -104,7 +104,7 @@ plyxp_group_ids2 <- function(
       )
     },
     cols = {
-      g_col <- groups$col_groups
+      g_col <- as.list(groups$col_groups)
       g_ind <- as.list(g_col[[".indices_group_id"]])
       r_ind <- groups$row_groups[[".indices_group_id"]]
       c_ncol <- vapply(g_col[[".indices"]], length, 1L)

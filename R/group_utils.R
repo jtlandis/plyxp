@@ -6,18 +6,47 @@ expand_groups2 <- function(.rows, .cols) {
   names(.cols) <- sprintf(".cols::%s", names(.cols))
   .nrow <- nrow(.rows)
   .ncol <- nrow(.cols)
+  n <- .nrow * .ncol
   .rows <- map(.rows, vec_rep, times = .ncol)
   .cols <- map(.cols, vec_rep_each, times = .nrow)
-  out <- c(.rows, .cols)
+  # out <- c(.rows, .cols)
   n <- .nrow * .ncol
-  out[[".nrows"]] <- map_int(out[[".rows::.indices"]], length)
-  out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
-  out <- S4Vectors::new2("DFrame", listData = out, nrows = n, check = FALSE)
-  S4Vectors::metadata(out)[["plyxp:::unique_row_ind"]] <- seq_len(.nrow)
-  S4Vectors::metadata(out)[["plyxp:::unique_col_ind"]] <- ((seq_len(.ncol) -
-    1L) *
-    .nrow) +
-    1L
+  # out[[".nrows"]] <- map_int(out[[".rows::.indices"]], length)
+  # out[[".ncols"]] <- map_int(out[[".cols::.indices"]], length)
+  out <- c(
+    .rows,
+    .cols,
+    list(
+      .nrows = base::lengths(.rows[[".rows::.indices"]]),
+      .ncols = base::lengths(.cols[[".cols::.indices"]]),
+      .group_id = seq_len(n)
+    )
+  )
+  out <- S4Vectors::new2(
+    "DFrame",
+    listData = out,
+    nrows = n,
+    metadata = list(
+      `plyxp:::unique_row_ind` = seq_len(.nrow),
+      `plyxp:::unique_col_ind` = ((seq_len(.ncol) -
+        1L) *
+        .nrow) +
+        1L
+    ),
+    check = FALSE
+  )
+  # S4Vectors::metadata(out)[["plyxp:::unique_row_ind"]] <- seq_len(.nrow)
+  # S4Vectors::metadata(out)[["plyxp:::unique_col_ind"]] <- ((seq_len(.ncol) -
+  #   1L) *
+  #   .nrow) +
+  #   1L
+
+  # out <- df0(
+  #   out,
+  #   n
+  # )
+  # attr(out, "plyxp:::unique_row_ind") <- seq_len(.nrow)
+  # attr(out, "plyxp:::unique_col_ind") <- ((seq_len(.ncol) - 1L) * .nrow) + 1L
 
   # due to this ordering here, I had introduced an unexpected
   # column-wise ordering of assays. I have changed it and commented
@@ -27,7 +56,6 @@ expand_groups2 <- function(.rows, .cols) {
   #   out[[".rows::.indices_group_id"]]
   # )
   # out <- out[o,]
-  out$.group_id <- seq_len(n)
   out
 }
 
@@ -331,17 +359,23 @@ get_group_indices <- function(
 group_details <- function(obj) {
   group_data <- group_data_se_impl(obj)
   if (is.null(group_data$row_groups)) {
-    group_data$row_groups <- tibble(
-      .indices = list(seq_len(nrow(obj))),
-      .indices_group_id = 1L
+    group_data$row_groups <- df0(
+      list(
+        .indices = list(seq_len(nrow(obj))),
+        .indices_group_id = 1L
+      ),
+      1L
     )
     attr(group_data, "grouped_rows") <- FALSE
   }
 
   if (is.null(group_data$col_groups)) {
-    group_data$col_groups <- tibble(
-      .indices = list(seq_len(ncol(obj))),
-      .indices_group_id = 1L
+    group_data$col_groups <- df0(
+      list(
+        .indices = list(seq_len(ncol(obj))),
+        .indices_group_id = 1L
+      ),
+      1L
     )
 
     attr(group_data, "grouped_cols") <- FALSE
