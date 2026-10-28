@@ -124,14 +124,7 @@ slice_extreme_se_impl <- function(
     n <- 1
   }
 
-  size <- if (is.null(prop)) {
-    n
-  } else {
-    prop <- vctrs::vec_cast(prop, double())
-    vctrs::vec_assert(prop, double(), size = 1L, arg = "prop")
-    stopifnot(prop >= 0 && prop <= 1)
-    expr(.ctx(floor(!!prop * `plyxp:::ctx:::n`)))
-  }
+  size <- get_slice_size(n = n, prop = prop)
 
   quos <- plyxp_enquos(
     ...,
@@ -152,7 +145,7 @@ slice_extreme_se_impl <- function(
         q,
         expr = plyxp_slice_rank(
           !!q,
-          size = !!size,
+          size = size(`plyxp:::ctx:::n`),
           with_ties = !!with_ties,
           direction = !!direction,
           na_rm = !!na_rm
