@@ -60,6 +60,18 @@ dplyr::slice_min
 
 #' @noRd
 #' @export
+dplyr::slice_head
+
+#' @noRd
+#' @export
+dplyr::slice_tail
+
+#' @noRd
+#' @export
+dplyr::slice_sample
+
+#' @noRd
+#' @export
 dplyr::pull
 
 #' @noRd

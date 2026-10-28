@@ -262,3 +262,332 @@ test_that("slice_max matches dplyr::slice_min on rowData", {
     }
   }
 })
+
+# slice_head / slice_tail -------------------------------------------------
+
+test_that("slice_head/tail default to n = 1", {
+  res <- expect_no_error(slice_head(se_simple, rows(), cols()))
+  expect_identical(dimnames(res), list("row_1", "col_1"))
+
+  res <- expect_no_error(slice_tail(se_simple, rows(), cols()))
+  expect_identical(dimnames(res), list("row_5", "col_4"))
+
+  expect_error(slice_head(se_simple, foo), "must be explicitly named")
+})
+
+test_that("slice_head/tail works with n - rows", {
+  res <- slice_head(se_simple, rows(), n = 3)
+  expect_identical(
+    dimnames(res),
+    list(sprintf("row_%i", 1:3), sprintf("col_%i", 1:4))
+  )
+
+  res <- slice_tail(se_simple, rows(), n = 3)
+  expect_identical(
+    dimnames(res),
+    list(sprintf("row_%i", 3:5), sprintf("col_%i", 1:4))
+  )
+})
+
+test_that("slice_head/tail works n - cols", {
+  res <- slice_head(se_simple, cols(), n = 2)
+  expect_identical(
+    dimnames(res),
+    list(sprintf("row_%i", 1:5), sprintf("col_%i", 1:2))
+  )
+
+  res <- slice_tail(se_simple, cols(), n = 2)
+  expect_identical(
+    dimnames(res),
+    list(sprintf("row_%i", 1:5), sprintf("col_%i", 3:4))
+  )
+})
+
+test_that("slice_head/tail works in rows and cols contexts together", {
+  res <- slice_head(se_simple, rows(), cols(), n = 2)
+  expect_identical(
+    dimnames(res),
+    list(sprintf("row_%i", 1:2), sprintf("col_%i", 1:2))
+  )
+
+  res <- slice_tail(se_simple, rows(), cols(), n = 2)
+  expect_identical(
+    dimnames(res),
+    list(sprintf("row_%i", 4:5), sprintf("col_%i", 3:4))
+  )
+})
+
+test_that("slice_head/tail works with prop", {
+  res <- slice_head(se_simple, rows(), prop = 0.4)
+  expect_identical(rownames(res), c("row_1", "row_2"))
+  res <- slice_tail(se_simple, rows(), prop = 0.4)
+  expect_identical(rownames(res), c("row_4", "row_5"))
+
+  res <- slice_head(se_simple, cols(), prop = 0.5)
+  expect_identical(colnames(res), c("col_1", "col_2"))
+  res <- slice_tail(se_simple, cols(), prop = 0.5)
+  expect_identical(colnames(res), c("col_3", "col_4"))
+})
+
+test_that("slice_head/tail caps n at the context size and allows n = 0", {
+  res <- slice_head(se_simple, rows(), n = 10)
+  expect_identical(dim(res), c(5L, 4L))
+  res <- slice_tail(se_simple, cols(), prop = 2)
+  expect_identical(dim(res), c(5L, 4L))
+
+  res <- slice_head(se_simple, rows(), n = 0)
+  expect_identical(dim(res), c(0L, 4L))
+  res <- slice_tail(se_simple, cols(), n = 0)
+  expect_identical(dim(res), c(5L, 0L))
+})
+
+test_that("slice_head/tail accept negative n and prop like dplyr", {
+  # n = -2 drops 2 from the opposite end
+  res <- slice_head(se_simple, rows(), n = -2)
+  expect_identical(rownames(res), c("row_1", "row_2", "row_3"))
+  res <- slice_tail(se_simple, rows(), n = -2)
+  expect_identical(rownames(res), c("row_3", "row_4", "row_5"))
+
+  # ceiling(5 - 0.4 * 5) = 3
+  res <- slice_head(se_simple, rows(), prop = -0.4)
+  expect_identical(rownames(res), c("row_1", "row_2", "row_3"))
+
+  # dropping more than exists returns nothing
+  res <- slice_tail(se_simple, rows(), n = -10)
+  expect_identical(nrow(res), 0L)
+})
+
+test_that("slice_head/tail works per group", {
+  # "-": row_1, row_4; "+": row_2, row_3, row_5
+  gse <- group_by(se_simple, rows(direction))
+  res <- slice_head(gse, rows(), n = 1)
+  expect_setequal(rownames(res), c("row_1", "row_2"))
+  res <- slice_tail(gse, rows(), n = 1)
+  expect_setequal(rownames(res), c("row_4", "row_5"))
+
+  # n larger than a group is capped per group
+  res <- slice_head(gse, rows(), n = 2)
+  expect_setequal(rownames(res), c("row_1", "row_4", "row_2", "row_3"))
+
+  # cntrl: col_1, col_2; drug: col_3, col_4
+  gse <- group_by(se_simple, cols(condition))
+  res <- slice_head(gse, cols(), n = 1)
+  expect_setequal(colnames(res), c("col_1", "col_3"))
+  res <- slice_tail(gse, cols(), n = 1)
+  expect_setequal(colnames(res), c("col_2", "col_4"))
+
+  # groups are kept
+  expect_s3_class(group_data(res), "plyxp_groups")
+})
+
+test_that("slice_head/tail endomorphism", {
+  expect_identical(
+    slice_head(se_simple, rows(), cols(), n = 2),
+    se_simple[1:2, 1:2]
+  )
+  expect_identical(
+    slice_tail(se_simple, rows(), cols(), n = 2),
+    se_simple[4:5, 3:4]
+  )
+})
+
+test_that("slice_head/tail errors", {
+  for (f in list(slice_head, slice_tail)) {
+    expect_error(f(se_simple, rows(), n = 2, prop = 0.5), "Cannot use both")
+    # no context supplied
+    expect_error(f(se_simple), "must be empty quosures")
+    # contexts must be empty
+    expect_error(f(se_simple, rows(length), n = 1), "must be empty quosures")
+    expect_error(f(se_simple, cols(), rows(length)), "must be empty quosures")
+    # assays context
+    expect_error(f(se_simple, counts, n = 1), "in `assays` context")
+  }
+})
+
+test_that("slice_head/tail matches dplyr on rowData", {
+  rd <- as.data.frame(rowData(se(se_simple)))
+  rd$.id <- rownames(rd)
+  args <- list(
+    list(n = 1),
+    list(n = 3),
+    list(n = 10),
+    list(n = 0),
+    list(n = -1),
+    list(n = -10),
+    list(prop = 0.4),
+    list(prop = 0.99),
+    list(prop = -0.5)
+  )
+  for (f in c("slice_head", "slice_tail")) {
+    for (a in args) {
+      expected <- do.call(getExportedValue("dplyr", f), c(list(rd), a))$.id
+      actual <- rownames(do.call(f, c(list(se_simple, quote(rows())), a)))
+      expect_identical(actual, expected, label = paste(f, deparse(a)))
+    }
+  }
+})
+
+# slice_sample ------------------------------------------------------------
+
+test_that("slice_sample default n = 1", {
+  set.seed(1)
+  res <- expect_no_error(slice_sample(se_simple, rows(), cols()))
+  expect_identical(dim(res), c(1L, 1L))
+
+  # weight_by alone implies the context
+  res <- expect_no_error(slice_sample(se_simple, weight_by = rows(length)))
+  expect_identical(dim(res), c(1L, 4L))
+
+  # dplyr's generic rejects a single unnamed argument without `n`/`prop`
+  expect_error(slice_sample(se_simple, rows()), "must be explicitly named")
+})
+
+test_that("slice_sample samples rows like sample.int", {
+  set.seed(42)
+  expected <- rownames(se_simple)[sample.int(5, 3)]
+  set.seed(42)
+  res <- slice_sample(se_simple, rows(), n = 3)
+  expect_identical(dim(res), c(3L, 4L))
+  expect_identical(rownames(res), expected)
+})
+
+test_that("slice_sample works in cols and in both contexts", {
+  set.seed(1)
+  res <- slice_sample(se_simple, cols(), n = 2)
+  expect_identical(dim(res), c(5L, 2L))
+  expect_true(all(colnames(res) %in% colnames(se_simple)))
+  expect_false(anyDuplicated(colnames(res)) > 0)
+
+  res <- slice_sample(se_simple, rows(), cols(), n = 2)
+  expect_identical(dim(res), c(2L, 2L))
+})
+
+test_that("slice_sample works with prop", {
+  set.seed(1)
+  # floor(0.4 * 5) = 2; floor(0.5 * 4) = 2
+  res <- slice_sample(se_simple, rows(), prop = 0.4)
+  expect_identical(nrow(res), 2L)
+  res <- slice_sample(se_simple, cols(), prop = 0.5)
+  expect_identical(ncol(res), 2L)
+})
+
+test_that("slice_sample without replacement caps n at the context size", {
+  set.seed(1)
+  res <- slice_sample(se_simple, rows(), n = 10)
+  expect_identical(nrow(res), 5L)
+  expect_setequal(rownames(res), rownames(se_simple))
+})
+
+test_that("slice_sample with replacement can exceed the context size", {
+  set.seed(1)
+  res <- slice_sample(se_simple, rows(), n = 10, replace = TRUE)
+  expect_identical(dim(res), c(10L, 4L))
+  expect_true(all(rownames(res) %in% rownames(se_simple)))
+
+  res <- slice_sample(se_simple, cols(), prop = 2, replace = TRUE)
+  expect_identical(dim(res), c(5L, 8L))
+})
+
+test_that("slice_sample weights in dots and weight_by", {
+  # only rows with a non-zero weight can be drawn
+  plus <- c("row_2", "row_3", "row_5")
+  set.seed(1)
+  res <- slice_sample(se_simple, rows(as.numeric(direction == "+")), n = 3)
+  expect_setequal(rownames(res), plus)
+
+  res <- slice_sample(
+    se_simple,
+    n = 3,
+    weight_by = rows(as.numeric(direction == "+"))
+  )
+  expect_setequal(rownames(res), plus)
+
+  # an empty rows() merges with weight_by = rows(...)
+  res <- slice_sample(
+    se_simple,
+    rows(),
+    n = 3,
+    weight_by = rows(as.numeric(direction == "+"))
+  )
+  expect_setequal(rownames(res), plus)
+
+  # weight_by in one context, uniform in the other
+  res <- slice_sample(
+    se_simple,
+    cols(),
+    n = 2,
+    weight_by = rows(as.numeric(direction == "+"))
+  )
+  expect_identical(dim(res), c(2L, 2L))
+  expect_true(all(rownames(res) %in% plus))
+})
+
+test_that("slice_sample weights in dots and weight_by give identical draws", {
+  set.seed(7)
+  a <- slice_sample(se_simple, rows(length), n = 3)
+  set.seed(7)
+  b <- slice_sample(se_simple, n = 3, weight_by = rows(length))
+  expect_identical(a, b)
+
+  # and both match sample.int with prob
+  set.seed(7)
+  expected <- rownames(se_simple)[
+    sample.int(5, 3, prob = c(1, 24, 60, 39, 37))
+  ]
+  expect_identical(rownames(a), expected)
+})
+
+test_that("slice_sample works per group", {
+  set.seed(1)
+  # "-": 2 rows, "+": 3 rows -> n = 2 takes everything from "-"
+  gse <- group_by(se_simple, rows(direction))
+  res <- slice_sample(gse, rows(), n = 2)
+  expect_identical(nrow(res), 4L)
+  expect_identical(
+    as.vector(table(rowData(se(res))$direction)[c("-", "+")]),
+    c(2L, 2L)
+  )
+  expect_s3_class(group_data(res), "plyxp_groups")
+
+  # weights are evaluated per group
+  # "-": only row_4 has length > 30; "+": row_3 or row_5
+  res <- slice_sample(gse, rows(as.numeric(length > 30)), n = 1)
+  expect_identical(nrow(res), 2L)
+  expect_true("row_4" %in% rownames(res))
+  expect_true(any(c("row_3", "row_5") %in% rownames(res)))
+
+  # cntrl: col_1, col_2; drug: col_3, col_4
+  gse <- group_by(se_simple, cols(condition))
+  res <- slice_sample(gse, cols(), n = 1)
+  expect_identical(ncol(res), 2L)
+  expect_setequal(colData(se(res))$condition, c("cntrl", "drug"))
+})
+
+test_that("slice_sample errors", {
+  # no context supplied
+  expect_error(slice_sample(se_simple, n = 1))
+  # assays context, in dots or in a bare weight_by
+  expect_error(slice_sample(se_simple, counts, n = 1), "assays")
+  expect_error(slice_sample(se_simple, weight_by = length, n = 1), "assays")
+  # n and prop together
+  expect_error(
+    slice_sample(se_simple, rows(), n = 2, prop = 0.5),
+    "Cannot use both"
+  )
+  # more than one weight per context
+  expect_error(
+    slice_sample(se_simple, rows(length, length), n = 1),
+    "more than 1 weight per context"
+  )
+  expect_error(
+    slice_sample(se_simple, rows(length), weight_by = rows(length), n = 1),
+    "more than 1 weight per context"
+  )
+  # invalid weights
+  expect_error(slice_sample(se_simple, rows(-length), n = 1))
+  expect_error(slice_sample(se_simple, rows(c(1, NA, 1, 1, 1)), n = 1))
+  expect_error(
+    slice_sample(se_simple, rows(c(1, 2)), n = 1),
+    "weight must be size"
+  )
+})

@@ -8,6 +8,7 @@
 \alias{slice_min.PlySummarizedExperiment}
 \alias{slice_head.PlySummarizedExperiment}
 \alias{slice_tail.PlySummarizedExperiment}
+\alias{slice_sample.PlySummarizedExperiment}
 \title{Slice maximum rows or columns of a PlySummarizedExperiment}
 \usage{
 \method{slice_max}{PlySummarizedExperiment}(
@@ -20,19 +21,20 @@
   .preserve = FALSE
 )
 
-\method{slice_min}{PlySummarizedExperiment}(
-  .data,
-  ...,
-  n = NULL,
-  prop = NULL,
-  with_ties = TRUE,
-  na_rm = FALSE,
-  .preserve = FALSE
-)
+\method{slice_min}{PlySummarizedExperiment}(.data, ..., n = NULL, prop = NULL, with_ties = TRUE, na_rm = FALSE)
 
 \method{slice_head}{PlySummarizedExperiment}(.data, ..., n = NULL, prop = NULL)
 
 \method{slice_tail}{PlySummarizedExperiment}(.data, ..., n = NULL, prop = NULL)
+
+\method{slice_sample}{PlySummarizedExperiment}(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  weight_by = NULL,
+  replace = FALSE
+)
 }
 \arguments{
 \item{.data}{a PlySummarizedExperiment object}

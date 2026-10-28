@@ -280,34 +280,157 @@ slice_n_se_impl <- function(
 }
 
 
-get_slice_size <- function(n, prop) {
+get_slice_size <- function(n, prop, allow_outsize = FALSE) {
   .type <- if (is.null(prop)) {
     "n"
   } else {
     "prop"
   }
   .size <- NULL
-  body <- switch(
+  input <- switch(
     .type,
     n = {
-      input_n <- as.numeric(n)
-      stopifnot("n should be length 1" = length(input_n) == 1L)
-      if (input_n >= 0) {
-        expr(clamp(0, floor(input_n), .size))
-      } else {
-        expr(clamp(0, ceiling(input_n + .size), .size))
-      }
+      body <- quote(input)
+      as.numeric(n)
     },
     prop = {
-      input_prop <- as.numeric(prop)
-      stopifnot("prop should be length 1" = length(input_prop) == 1L)
-      if (input_prop >= 0) {
-        expr(clamp(0, floor(input_prop * .size), .size))
-      } else {
-        expr(clamp(0, ceiling(.size + (input_prop * .size)), .size))
-      }
+      body <- quote(input * .size)
+      as.numeric(prop)
     }
   )
+  if (length(input) != 1L) {
+    abort(sprintf("`%s` must be length 1", .type))
+  }
+  body <- if (input >= 0) {
+    if (allow_outsize) {
+      substitute(floor(body), list(body = body))
+    } else {
+      substitute(clamp(0, floor(body), .size), list(body = body))
+    }
+  } else {
+    substitute(clamp(0, ceiling(.size + (body)), .size), list(body = body))
+  }
   on.exit(rm(body, .size, .type))
   rlang::new_function(pairlist2(.size = ), body)
+}
+
+#' @rdname slice_extremes
+#' @export
+slice_sample.PlySummarizedExperiment <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  weight_by = NULL,
+  replace = FALSE
+) {
+  plyxp(
+    .data,
+    slice_sample_se_impl,
+    ...,
+    n = n,
+    prop = prop,
+    weight_by = enquo(weight_by),
+    replace = replace
+  )
+}
+
+slice_sample_se_impl <- function(
+  .data,
+  ...,
+  n = NULL,
+  prop = NULL,
+  weight_by = quo(NULL),
+  replace = FALSE
+) {
+  func <- "slice_sample"
+  # n/prop: same checks as slice_n_se_impl (both -> abort; neither -> n <- 1)
+  size <- get_slice_size(n = n, prop = prop, allow_outsize = TRUE)
+
+  ctx <- c("assays", "rows", "cols")
+  quos <- plyxp_enquos(..., .ctx = ctx, .exclude_empty = FALSE)
+
+  # weight_by sugar -> plyxp quos
+  wt_quos <- if (quo_is_null(weight_by)) {
+    list()
+  } else {
+    construct_plyxp_quos(list(weight_by), .ctx = ctx, .exclude_empty = TRUE)
+  }
+  # a bare `weight_by = w` lands in "assays" -> abort:
+  #   "`weight_by` must be wrapped in rows() or cols(), e.g. weight_by = rows(w)"
+  # more than one quo (rows(a, b)) -> abort
+
+  # shared validation, run on both quos and wt_quos
+  #   - any ctx == "assays"            -> plyxp_assays_cannot(do = func, ...)
+  #   - any(quos_is_named(..))         -> plyxp_should_not_named(func)
+  #   - duplicated ctx in quos         -> abort("only one rows()/cols() each")
+  #       (also catches rows(a, b), which expands to two "rows" quos)
+
+  # merge wt_quos into quos by context
+  quos <- c(quos, wt_quos)
+  ctxs <- vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
+  squos <- split(quos, ctxs)
+  quos <- Map(
+    quos = squos,
+    ctx = names(squos),
+    f = function(quos, ctx) {
+      switch(
+        match(length(quos), 1, nomatch = 2L),
+        set_missing_quo_null(quos[[1L]]),
+        {
+          # more than one quo...
+          not_empty <- !vapply(quos, quo_is_missing, FALSE)
+          n <- sum(not_empty)
+          switch(
+            match(n, c(0L, 1L), nomatch = 3L),
+            set_missing_quo_null(quos[[1]]),
+            quos[[which(not_empty)]],
+            abort(c(
+              "slice_sample cannot specify more than 1 weight per context",
+              i = sprintf(
+                "Detected %i variables within context `%s`",
+                n,
+                ctx
+              )
+            ))
+          )
+        }
+      )
+    }
+  ) |>
+    unlist(recursive = FALSE)
+
+  quos <- lapply(quos, \(q) {
+    plyxp_requo(
+      q,
+      expr = plyxp_slice_sample(
+        `plyxp:::ctx:::n`,
+        size(`plyxp:::ctx:::n`),
+        replace = !!replace,
+        weight = !!q
+      )
+    )
+  })
+  slice_se_impl(.data, !!!quos)
+}
+
+set_missing_quo_null <- function(quo) {
+  if (quo_is_missing(quo)) {
+    quo <- quo_set_expr(quo, expr(NULL))
+  }
+  quo
+}
+
+
+plyxp_slice_sample <- function(n, size, replace = FALSE, weight = NULL) {
+  if (size == 0) {
+    return(integer())
+  } # sample.int errors on all-zero prob even at size 0
+  if (!is.null(weight)) {
+    l <- vec_size(weight)
+    if (l != n) {
+      abort(sprintf("weight must be size %i, not %i", n, l))
+    }
+  }
+  sample.int(n, size, replace = replace, prob = weight)
 }

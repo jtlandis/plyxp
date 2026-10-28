@@ -38,6 +38,7 @@ S3method(slice,PlySummarizedExperiment)
 S3method(slice_head,PlySummarizedExperiment)
 S3method(slice_max,PlySummarizedExperiment)
 S3method(slice_min,PlySummarizedExperiment)
+S3method(slice_sample,PlySummarizedExperiment)
 S3method(slice_tail,PlySummarizedExperiment)
 S3method(summarise,PlySummarizedExperiment)
 S3method(summarize,PlySummarizedExperiment)
@@ -96,8 +97,11 @@ export(se)
 export(select)
 export(show_tidy)
 export(slice)
+export(slice_head)
 export(slice_max)
 export(slice_min)
+export(slice_sample)
+export(slice_tail)
 export(summarise)
 export(summarize)
 export(ungroup)
@@ -183,8 +187,11 @@ importFrom(dplyr,
   rows_update,
   select,
   slice,
+  slice_head,
   slice_max,
   slice_min,
+  slice_sample,
+  slice_tail,
   summarise,
   summarize,
   ungroup
