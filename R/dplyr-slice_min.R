@@ -344,8 +344,17 @@ slice_sample_se_impl <- function(
   replace = FALSE
 ) {
   func <- "slice_sample"
-  # n/prop: same checks as slice_n_se_impl (both -> abort; neither -> n <- 1)
-  size <- get_slice_size(n = n, prop = prop, allow_outsize = TRUE)
+
+  if (!is.null(n) && !is.null(prop)) {
+    rlang::abort(
+      sprintf("Cannot use both `n` and `prop` in `%s`.", func)
+    )
+  }
+  if (is.null(n) && is.null(prop)) {
+    n <- 1
+  }
+
+  size <- get_slice_size(n = n, prop = prop, allow_outsize = replace)
 
   ctx <- c("assays", "rows", "cols")
   quos <- plyxp_enquos(..., .ctx = ctx, .exclude_empty = FALSE)
@@ -356,15 +365,6 @@ slice_sample_se_impl <- function(
   } else {
     construct_plyxp_quos(list(weight_by), .ctx = ctx, .exclude_empty = TRUE)
   }
-  # a bare `weight_by = w` lands in "assays" -> abort:
-  #   "`weight_by` must be wrapped in rows() or cols(), e.g. weight_by = rows(w)"
-  # more than one quo (rows(a, b)) -> abort
-
-  # shared validation, run on both quos and wt_quos
-  #   - any ctx == "assays"            -> plyxp_assays_cannot(do = func, ...)
-  #   - any(quos_is_named(..))         -> plyxp_should_not_named(func)
-  #   - duplicated ctx in quos         -> abort("only one rows()/cols() each")
-  #       (also catches rows(a, b), which expands to two "rows" quos)
 
   # merge wt_quos into quos by context
   quos <- c(quos, wt_quos)
