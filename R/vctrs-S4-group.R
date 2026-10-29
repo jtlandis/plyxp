@@ -37,14 +37,17 @@ method(
   as(BiocGenerics::match(x, BiocGenerics::unique(x)), "integer")
 }
 
+df_vec_group_id <- function(df) {
+  lapply(df@listData, vec_group_id) |>
+    df0(nrows = df@nrows) |>
+    vctrs::vec_group_id()
+}
 
 method(
   vec_group_id,
   class_DF
 ) <- function(x, ...) {
-  lapply(x@listData, vec_group_id) |>
-    as.data.frame() |>
-    vctrs::vec_group_id()
+  df_vec_group_id(x)
 }
 
 
@@ -91,15 +94,12 @@ method(
   vec_group_loc,
   class_DF
 ) <- function(x, ...) {
-  out <- lapply(x@listData, vec_group_id) |>
-    as.data.frame() |>
-    vctrs::vec_group_loc()
+  out <- df_vec_group_id(x)
   S4Vectors::DataFrame(
     key = S4Vectors::I(vec_slice(x, vapply(out$loc, `[`, 1L, 1L))),
     loc = S4Vectors::I(out$loc)
   )
 }
-
 
 # #' create groups
 # #' @export
