@@ -28,18 +28,18 @@ list of groupings for an SummarizedExperiment
 ``` r
 group_by(se_simple, rows(direction), cols(condition)) |> group_data()
 #> $row_groups
-#> # A tibble: 2 × 3
-#>   direction .indices  .indices_group_id
-#>   <chr>     <list>                <int>
-#> 1 -         <int [2]>                 1
-#> 2 +         <int [3]>                 2
+#> DataFrame with 2 rows and 3 columns
+#>     direction .indices .indices_group_id
+#>   <character>   <list>         <integer>
+#> 1           -      1,4                 1
+#> 2           +    2,3,5                 2
 #> 
 #> $col_groups
-#> # A tibble: 2 × 3
-#>   condition .indices  .indices_group_id
-#>   <chr>     <list>                <int>
-#> 1 cntrl     <int [2]>                 1
-#> 2 drug      <int [2]>                 2
+#> DataFrame with 2 rows and 3 columns
+#>     condition .indices .indices_group_id
+#>   <character>   <list>         <integer>
+#> 1       cntrl      1,2                 1
+#> 2        drug      3,4                 2
 #> 
 #> attr(,"class")
 #> [1] "plyxp_groups"

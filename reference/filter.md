@@ -85,7 +85,7 @@ filter(
 #> Caused by error in `filter_se_impl()`:
 #> ! Cannot filter in `assays` context
 #> ✖ review expression: ..1
-#> ℹ consider wrapping expressions in rows(...) or cols(...)
+#> consider wrapping expressions in rows(...) or cols(...)
 
 # convert to `data.frame` first
 as.data.frame(se_simple) |>
