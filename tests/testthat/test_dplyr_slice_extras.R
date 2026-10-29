@@ -400,7 +400,7 @@ test_that("slice_head/tail errors", {
     expect_error(f(se_simple, rows(length), n = 1), "must be empty quosures")
     expect_error(f(se_simple, cols(), rows(length)), "must be empty quosures")
     # assays context
-    expect_error(f(se_simple, counts, n = 1), "in `assays` context")
+    expect_error(f(se_simple, ,, n = 1), "in `assays` context")
   }
 })
 
