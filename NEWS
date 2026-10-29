@@ -1,4 +1,4 @@
-## plyxp 1.7.6
+## plyxp 1.7.7
 
 * various `slice_*()` functions are now supported.
   * `slice_min()`/`slice_max` - slice the `rows()` or `cols()` contexts.
@@ -49,6 +49,12 @@
    slice_sample(xp, weight_by = rows(foo), n = 2)
    ```
 
+## plyxp 1.7.6
+
+* `group_by.PlySummarizedExperiment` now accepts S4Vector objects. As a
+  result, `plyxp_groups`, the structure returned by
+  `group_data.PlySummarizedExperiment` holds `S4Vectors::DataFrame` objects
+  instead of tibbles.
 
 ## plyxp 1.7.5
 
