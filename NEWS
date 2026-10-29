@@ -1,8 +1,12 @@
+## plyxp 1.7.6
+
+* `group_by.PlySummarizedExperiment` now accepts S4Vector objects. As a
+  result, `plyxp_groups`, the structure returned by
+  `group_data.PlySummarizedExperiment` holds `S4Vectors::DataFrame` objects
+  instead of tibbles.
+
 ## plyxp 1.7.5
 
-* plyxp can now be grouped by S4Vectors objects. As a result, `plyxp_groups`,
-  the structure returned by `group_data.PlySummarizedExperiment` holds
-  `S4Vectors::DataFrame` objects instead of tibbles.
 * `across()` switches to proper context if user specifies a context function.
 * `ungroup()` can now drop entire `rows()` or `cols()` contexts, without touching the other:
 
