@@ -143,8 +143,7 @@ plyxp_quos <- function(
 
     dots[[i]] <- plyxp_quo(
       if (is_missing) expr() else .expr,
-      envir = .env,
-
+      env = .env,
       ctx = .ctx_default,
       is_named = is_nms[i],
       name = nms[i],
@@ -226,4 +225,8 @@ quos_enforce_named <- function(quos, names) {
     attr(quos[[i]], "plyxp:::data") <- data
   }
   quos
+}
+
+plyxp_quos_ctxs <- function(quos) {
+  vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
 }
