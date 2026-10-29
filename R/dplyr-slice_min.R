@@ -131,13 +131,6 @@ slice_extreme_se_impl <- function(
     .ctx = c("assays", "rows", "cols"),
   )
 
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = func, review = err)
-  }
-  if (any(quos_is_named(quos))) {
-    plyxp_should_not_named(func)
-  }
   quos <- lapply(
     quos,
     \(q) {
@@ -153,7 +146,7 @@ slice_extreme_se_impl <- function(
       )
     }
   )
-  slice_se_impl(.data, !!!quos)
+  slice_se_impl(.data, !!!quos, .fun = func)
 }
 
 #' @rdname slice_extremes
@@ -225,14 +218,8 @@ slice_n_se_impl <- function(
     .exclude_empty = FALSE
   )
 
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = func, review = err)
-  }
-
   if (
     length(quos) == 0 ||
-      any(quos_is_named(quos)) ||
       any(!vapply(quos, quo_is_missing, FALSE))
   ) {
     rlang::abort(
@@ -269,7 +256,7 @@ slice_n_se_impl <- function(
       )
     }
   )
-  slice_se_impl(.data, !!!quos)
+  slice_se_impl(.data, !!!quos, .fun = func)
 }
 
 
