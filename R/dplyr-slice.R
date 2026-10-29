@@ -27,19 +27,14 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE, .fun = "slice") {
   .env <- caller_env()
   # slice in dplyr only keeps indices that are within the current group
   # we will add a post transfrom to filter each evaluated expression.
-  in_bounds <- function(x) {
-    n <- .ctx(`plyxp:::ctx:::n`)
-    lgl <- x <= n
-    x[which(lgl)]
-  }
-  # in_bounds <- quote(\(.x) base::Filter(x = .x, \(x) x <= `plyxp:::ctx:::n`))
-  quos <- plyxp_enquos(
+  in_bounds <- quote(\(.x) base::Filter(x = .x, \(x) x <= `plyxp:::ctx:::n`))
+  quos <- plyxp_quos(
     ...,
-    .ctx = c("assays", "rows", "cols")
-    # .trans = list(
-    #   rows = in_bounds,
-    #   cols = in_bounds
-    # )
+    .ctx = c("assays", "rows", "cols"),
+    .trans = list(
+      rows = in_bounds,
+      cols = in_bounds
+    )
   )
 
   check_quos_no_assays(quos, fun = .fun)
@@ -48,8 +43,7 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE, .fun = "slice") {
   # rename the quos so we can find them later
   names(quos) <- sprintf("..slice_%i", seq_along(quos))
   nms <- names(quos)
-  quos <- quos_enforce_named(quos, nms) |>
-    lapply(\(x) plyxp_requo(x, in_bounds(!!x)))
+  quos <- quos_enforce_named(quos, nms)
   # to make this function consistent
   # groups <- group_data_se_impl(.data)
   # metadata(.data)[["group_data"]] <- NULL

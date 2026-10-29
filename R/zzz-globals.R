@@ -27,4 +27,3 @@ key <- loc <- NULL
 `plyxp:::dim:::ncol` <- NULL
 `plyxp:::dim:::size` <- NULL
 `plyxp:::dim:::n` <- NULL
-`plyxp:::ctx:::n` <- NULL

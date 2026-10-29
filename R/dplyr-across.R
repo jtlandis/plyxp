@@ -75,10 +75,10 @@ expand_across <- function(
       fn <- fns[[j]]
       fn_call <- as_across_expr(fn, var)
       name <- names[[k]]
-      expressions[[k]] <- raw_plyxp_quosure(
+      expressions[[k]] <- plyxp_quo(
         fn_call,
         ctx = ctx,
-        envir = env,
+        env = env,
         name = name,
         is_named = TRUE,
         column = var,
