@@ -90,14 +90,25 @@ method(
 }
 
 
+split_df_id <- function(id) {
+  n <- attr(id, "n")
+  out <- vector("list", n)
+  seqs <- seq_along(id)
+  for (i in seq_len(n)) {
+    out[[i]] <- seqs[id == i]
+  }
+  out
+}
+
 method(
   vec_group_loc,
   class_DF
 ) <- function(x, ...) {
-  out <- df_vec_group_id(x)
+  out <- df_vec_group_id(x) |>
+    split_df_id()
   S4Vectors::DataFrame(
-    key = S4Vectors::I(vec_slice(x, vapply(out$loc, `[`, 1L, 1L))),
-    loc = S4Vectors::I(out$loc)
+    key = S4Vectors::I(vec_slice(x, vapply(out, `[`, 1L, 1L))),
+    loc = S4Vectors::I(out)
   )
 }
 
