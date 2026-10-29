@@ -106,7 +106,8 @@ plyxp_quos <- function(
     }
     .env <- quo_get_env(quo)
     .expr <- quo_get_expr(quo)
-    if (has_opt_ctx && is_call(.expr, .ctx_opt)) {
+    is_missing <- is_missing(.expr)
+    if (has_opt_ctx && !is_missing && is_call(.expr, .ctx_opt)) {
       ctx <- as_label(.expr[[1]])
       ctx_exprs <- as.list(.expr[-1])
       # recapture the inner arguments allowing for dynamic
@@ -141,7 +142,7 @@ plyxp_quos <- function(
     }
 
     dots[[i]] <- plyxp_quo(
-      if (is_missing(.expr)) expr() else .expr,
+      if (is_missing) expr() else .expr,
       env = .env,
       ctx = .ctx_default,
       is_named = is_nms[i],
