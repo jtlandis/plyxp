@@ -57,11 +57,8 @@ filter_se_impl <- function(.data, ..., .preserve = FALSE) {
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "filter")
   quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "filter", review = err)
-  }
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
+  check_quos_no_assays(quos, fun = "filter")
+  mask <- plyxp_evaluate(mask, quos, env = .env)
   results <- mask$results()
   filter_ <- ""
   if (!is_empty(results$rows)) {

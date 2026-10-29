@@ -1,3 +1,55 @@
+## plyxp 1.7.6
+
+* various `slice_*()` functions are now supported.
+  * `slice_min()`/`slice_max` - slice the `rows()` or `cols()` contexts.
+  * NOTE: due to how these functions are called, either the `rows()` or the
+    `cols()` context can be used independently. They may only be used together
+    if either `n` or `prop` args are named. In other words the following does
+    not work:
+
+    ```r
+    slice_min(xp, rows(foo), cols(bar))
+    ```
+
+    but the following does:
+
+    ```r
+    xp |>
+      slice_min(rows(foo), cols(bar), n = 1)
+
+    # or the following
+    xp |>
+      slice_min(rows(foo)) |>
+      slice_min(cols(bar))
+    ```
+  * `slice_head()`/`slice_tail()` - slice the head or tail of a context.
+  * NOTE: for a data.frame, these S3 generics do not use the `...` argument.
+    For `PlySummarizedExperiment` objects, the `...` is used to specify the
+    `rows()` or `cols()` contexts, and requires these expressions to be empty.
+
+    ```r
+    slice_head(xp, rows())
+    slice_tail(xp, cols())
+    slice_head(xp, rows(), cols(), n = 2)
+    ```
+ * `slice_sample()` - sample rows and/or columns.
+ * NOTE: similar to `slice_head()`/`slice_tail()`, empty context calls can be
+   used to indicate which contexts to sample. Additionally, if they are not
+   empty, then the value is implied to be the `weight_by` argument for that
+   context.
+
+   ```r
+   # uniform sample of both
+   slice_sample(xp, rows(), cols(), n = 2)
+   # sample by weighting rows by `foo`, and cols by `bar`
+   slice_sample(xp, rows(foo), cols(bar), n = 2)
+   # sample by weighting rows by `foo`, and uniform cols
+   slice_sample(xp, rows(foo), cols(), n = 2)
+   # sample by weighting rows by `foo`
+   slice_sample(xp, weight_by = rows(foo), n = 2)
+   ```
+
+
 ## plyxp 1.7.5
 
 * `across()` switches to proper context if user specifies a context function.
@@ -10,8 +62,7 @@
    ungroup(gse, rows())
    ungroup(gse, rows(length))
    ```
-   
-   
+
 * `group_by()` allows .features and .samples in the rows and cols contexts
   respectively.
 * `group_by()` .add parameter now works as expected

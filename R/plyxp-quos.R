@@ -83,8 +83,44 @@ plyxp_quos <- function(
   .exclude_empty = TRUE
 ) {
   #
-  dots <- quos(...) |>
+  dots <- enquos(...) |>
     as.list()
+  construct_plyxp_quos(
+    dots,
+    .named = .named,
+    .ctx = .ctx,
+    .trans = .trans,
+    .exclude_empty = .exclude_empty
+  )
+}
+
+plyxp_enquos <- function(
+  ...,
+  .named = TRUE,
+  .ctx = NULL,
+  .trans = list(),
+  .exclude_empty = TRUE
+) {
+  # browser()
+  # frame <- parent.frame()
+  # expr <- quote(enquos(...))
+  quosures <- enquos(...)
+  construct_plyxp_quos(
+    dots = as.list(quosures),
+    .named = .named,
+    .ctx = .ctx,
+    .trans = .trans,
+    .exclude_empty = .exclude_empty
+  )
+}
+
+construct_plyxp_quos <- function(
+  dots = list(),
+  .named = TRUE,
+  .ctx = NULL,
+  .trans = list(),
+  .exclude_empty = TRUE
+) {
   if (is.null(.ctx)) {
     rlang::abort("`.ctx` must be specified!")
   }
@@ -104,9 +140,25 @@ plyxp_quos <- function(
       # skip missing quosures
       next
     }
+    if (is_plyxp_quo(quo)) {
+      quo_ctx <- plyxp_quo_ctx(quo)
+      if (!quo_ctx %in% .ctx) {
+        rlang::abort(
+          c(
+            sprintf("plyxp_quo with '%s' context is not usable.", quo_ctx),
+            i = sprintf(
+              "available contexts are: %s",
+              paste(.ctx, collapse = ", ")
+            )
+          )
+        )
+      }
+      next
+    }
     .env <- quo_get_env(quo)
     .expr <- quo_get_expr(quo)
-    if (has_opt_ctx && is_call(.expr, .ctx_opt)) {
+    is_missing <- is_missing(.expr)
+    if (has_opt_ctx && !is_missing && is_call(.expr, .ctx_opt)) {
       ctx <- as_label(.expr[[1]])
       ctx_exprs <- as.list(.expr[-1])
       # recapture the inner arguments allowing for dynamic
@@ -116,7 +168,7 @@ plyxp_quos <- function(
       ctx_is_named <- ctx_nms != ""
       ctx_quos <- pmap(
         list(ctx_exprs, name = ctx_nms, is_named = ctx_is_named),
-        plyxp_quo,
+        raw_plyxp_quosure,
         env = .env,
         ctx = ctx,
         trans = .trans[[ctx]]
@@ -126,12 +178,18 @@ plyxp_quos <- function(
         ctx_quos <- exclude_empty_quos(ctx_quos)
       } else if (is_empty(ctx_quos)) {
         # if we want to retain empty, and this context is empty...
+        if (length(ctx_nms) == 0) {
+          ctx_nms <- ""
+          ctx_is_named <- FALSE
+        }
         ctx_quos <- list(
-          .empty = plyxp_quo(
+          raw_plyxp_quosure(
             expr = expr(),
-            env = base::emptyenv(),
+            envir = base::emptyenv(),
             ctx = ctx,
-            trans = .trans[[ctx]]
+            trans = .trans[[ctx]],
+            name = ctx_nms,
+            is_named = ctx_is_named
           )
         )
       }
@@ -140,9 +198,9 @@ plyxp_quos <- function(
       next
     }
 
-    dots[[i]] <- plyxp_quo(
-      if (is_missing(.expr)) expr() else .expr,
-      env = .env,
+    dots[[i]] <- raw_plyxp_quosure(
+      if (is_missing) expr() else .expr,
+      envir = .env,
       ctx = .ctx_default,
       is_named = is_nms[i],
       name = nms[i],
@@ -170,12 +228,27 @@ exclude_empty_quos <- function(quos) {
   Filter(Negate(is_empty_quo), quos)
 }
 
-plyxp_quo <- function(expr, env, ctx, trans, ...) {
-  quo <- new_quosure(expr = expr, env = env)
+raw_plyxp_quosure <- function(expr, envir, ctx, trans = NULL, ...) {
+  new_plyxp_quosure(new_quosure(expr, envir), ctx = ctx, trans = trans, ...)
+}
+
+new_plyxp_quosure <- function(quo, ctx, trans = NULL, ...) {
   attr(quo, "plyxp:::ctx") <- ctx
   attr(quo, "plyxp:::transform") <- trans
   attr(quo, "plyxp:::data") <- list2(...)
   quo
+}
+
+plyxp_quo <- function(quo, ctx, trans = NULL, ...) {
+  quosure <- enquo(quo)
+  new_plyxp_quosure(quosure, ctx = ctx, trans = trans, ...)
+}
+
+plyxp_enquo <- function(quo, ctx, trans = NULL, ...) {
+  frame <- parent.frame()
+  expr <- substitute(enquo(quo))
+  quosure <- eval(expr, frame)
+  new_plyxp_quosure(quosure, ctx = ctx, trans = trans, ...)
 }
 
 plyxp_quo_ctx <- function(quo) {
@@ -224,4 +297,30 @@ quos_enforce_named <- function(quos, names) {
     attr(quos[[i]], "plyxp:::data") <- data
   }
   quos
+}
+
+is_plyxp_quo <- function(quo) {
+  !is.null(attr(quo, "plyxp:::ctx"))
+}
+
+plyxp_requo <- function(quo, expr) {
+  new_quo <- enquo(expr)
+  plyxp_quo_ctx(new_quo) <- plyxp_quo_ctx(quo)
+  plyxp_quo_trans(new_quo) <- plyxp_quo_trans(quo)
+  plyxp_quo_data(new_quo) <- plyxp_quo_data(quo)
+  new_quo
+}
+
+accepts_cols <- function(...) {
+  plyxp_enquos(..., .ctx = c("foo", "cols"))
+}
+
+.ctx <- function(expr) {
+  expr <- enexpr(expr)
+  mask <- peek_ctx("plyxp:::manager")
+  mask$ctx_mask$eval(expr)
+}
+
+plyxp_quos_ctxs <- function(quos) {
+  vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
 }

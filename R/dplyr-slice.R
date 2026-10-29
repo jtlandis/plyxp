@@ -20,35 +20,36 @@ slice.PlySummarizedExperiment <- function(.data, ..., .preserve = FALSE) {
   plyxp(.data, slice_se_impl, ..., .preserve = .preserve)
 }
 
-slice_se_impl <- function(.data, ..., .preserve = FALSE) {
+slice_se_impl <- function(.data, ..., .preserve = FALSE, .fun = "slice") {
   # we will update .slice_data with some conviencence columns
   # then use that to slice the original data at the end
   # .slice_data <- .data
   .env <- caller_env()
   # slice in dplyr only keeps indices that are within the current group
   # we will add a post transfrom to filter each evaluated expression.
-  in_bounds <- quote(\(.x) base::Filter(x = .x, \(x) x <= `plyxp:::ctx:::n`))
-  quos <- plyxp_quos(
+  in_bounds <- function(x) {
+    n <- .ctx(`plyxp:::ctx:::n`)
+    lgl <- x <= n
+    x[which(lgl)]
+  }
+  # in_bounds <- quote(\(.x) base::Filter(x = .x, \(x) x <= `plyxp:::ctx:::n`))
+  quos <- plyxp_enquos(
     ...,
-    .ctx = c("assays", "rows", "cols"),
-    .trans = list(
-      rows = in_bounds,
-      cols = in_bounds
-    )
+    .ctx = c("assays", "rows", "cols")
+    # .trans = list(
+    #   rows = in_bounds,
+    #   cols = in_bounds
+    # )
   )
 
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "slice", review = err)
-  }
-  named_quos <- quos_is_named(quos = quos)
-  if (any(named_quos)) {
-    plyxp_should_not_named("slice")
-  }
+  check_quos_no_assays(quos, fun = .fun)
+  check_quos_not_named(quos, fun = .fun)
+
   # rename the quos so we can find them later
   names(quos) <- sprintf("..slice_%i", seq_along(quos))
   nms <- names(quos)
-  quos <- quos_enforce_named(quos, nms)
+  quos <- quos_enforce_named(quos, nms) |>
+    lapply(\(x) plyxp_requo(x, in_bounds(!!x)))
   # to make this function consistent
   # groups <- group_data_se_impl(.data)
   # metadata(.data)[["group_data"]] <- NULL
@@ -58,7 +59,8 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "slice")
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
+  ctxs <- plyxp_quos_ctxs(quos)
+  mask <- plyxp_evaluate(mask, quos, ctxs, env = .env)
   # we may have empty values, thus we do not collect with
   # mask$results, instead we will get the values raw and
   # handle the correct index

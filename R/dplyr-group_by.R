@@ -92,11 +92,8 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "group_by")
   quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "group_by", review = err)
-  }
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
+  check_quos_no_assays(quos, "group_by")
+  mask <- plyxp_evaluate(mask, quos, env = .env)
   results <- mask$results()
   # nms <- names(results$assays)
   # for (i in seq_along(results$assays)) {
@@ -210,10 +207,8 @@ ungroup_se_impl <- function(x, ...) {
     group_data_se_impl(x) <- NULL
     return(x)
   }
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "ungroup", review = err)
-  }
+  check_quos_no_assays(quos, "ungroup")
+  ctxs <- plyxp_quos_ctxs(quos)
   by_ctx <- split(quos, ctxs)
   update_cols <- update_rows <- NULL
   update_ <- ""
