@@ -225,3 +225,7 @@ quos_enforce_named <- function(quos, names) {
   }
   quos
 }
+
+plyxp_quos_ctxs <- function(quos) {
+  vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
+}

@@ -20,7 +20,7 @@ slice.PlySummarizedExperiment <- function(.data, ..., .preserve = FALSE) {
   plyxp(.data, slice_se_impl, ..., .preserve = .preserve)
 }
 
-slice_se_impl <- function(.data, ..., .preserve = FALSE) {
+slice_se_impl <- function(.data, ..., .preserve = FALSE, .fun = "slice") {
   # we will update .slice_data with some conviencence columns
   # then use that to slice the original data at the end
   # .slice_data <- .data
@@ -37,14 +37,9 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
     )
   )
 
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "slice", review = err)
-  }
-  named_quos <- quos_is_named(quos = quos)
-  if (any(named_quos)) {
-    plyxp_should_not_named("slice")
-  }
+  check_quos_no_assays(quos, fun = .fun)
+  check_quos_not_named(quos, fun = .fun)
+
   # rename the quos so we can find them later
   names(quos) <- sprintf("..slice_%i", seq_along(quos))
   nms <- names(quos)
@@ -58,7 +53,8 @@ slice_se_impl <- function(.data, ..., .preserve = FALSE) {
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "slice")
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
+  ctxs <- plyxp_quos_ctxs(quos)
+  mask <- plyxp_evaluate(mask, quos, ctxs, env = .env)
   # we may have empty values, thus we do not collect with
   # mask$results, instead we will get the values raw and
   # handle the correct index

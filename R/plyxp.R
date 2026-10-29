@@ -86,9 +86,8 @@ new_plyxp_manager.SummarizedExperiment <- function(obj, ...) {
 }
 
 plyxp_evaluate <- function(mask, quos, ctxs = NULL, env = caller_env()) {
-  .call <- caller_call()
-  ctxs <- ctxs %||%
-    vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
+  # .call <- caller_call()
+  ctxs <- ctxs %||% plyxp_quos_ctxs(quos)
   n_quo <- length(quos)
   curr_quo <- NULL
   try_fetch(
