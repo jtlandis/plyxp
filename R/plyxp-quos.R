@@ -320,3 +320,7 @@ accepts_cols <- function(...) {
   mask <- peek_ctx("plyxp:::manager")
   mask$ctx_mask$eval(expr)
 }
+
+plyxp_quos_ctxs <- function(quos) {
+  vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
+}
