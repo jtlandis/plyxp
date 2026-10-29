@@ -157,8 +157,8 @@ construct_plyxp_quos <- function(
     }
     .env <- quo_get_env(quo)
     .expr <- quo_get_expr(quo)
-
-    if (has_opt_ctx && is_call(.expr, .ctx_opt)) {
+    is_missing <- is_missing(.expr)
+    if (has_opt_ctx && !is_missing && is_call(.expr, .ctx_opt)) {
       ctx <- as_label(.expr[[1]])
       ctx_exprs <- as.list(.expr[-1])
       # recapture the inner arguments allowing for dynamic
@@ -193,8 +193,9 @@ construct_plyxp_quos <- function(
     }
 
     dots[[i]] <- raw_plyxp_quosure(
-      if (is_missing(.expr)) expr() else .expr,
+      if (is_missing) expr() else .expr,
       envir = .env,
+
       ctx = .ctx_default,
       is_named = is_nms[i],
       name = nms[i],
@@ -293,6 +294,7 @@ quos_enforce_named <- function(quos, names) {
   quos
 }
 
+
 is_plyxp_quo <- function(quo) {
   !is.null(attr(quo, "plyxp:::ctx"))
 }
@@ -313,4 +315,7 @@ accepts_cols <- function(...) {
   expr <- enexpr(expr)
   mask <- peek_ctx("plyxp:::manager")
   mask$ctx_mask$eval(expr)
+}
+plyxp_quos_ctxs <- function(quos) {
+  vapply(quos, plyxp_quo_ctx, FUN.VALUE = "", USE.NAMES = FALSE)
 }
