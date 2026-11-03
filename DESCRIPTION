@@ -57,6 +57,7 @@ Collate:
     'dplyr-pull.R'
     'dplyr-select.R'
     'dplyr-slice.R'
+    'dplyr-slice_extras.R'
     'dplyr-summarise.R'
     'group_utils.R'
     'grouped_list.R'
@@ -84,4 +85,4 @@ Collate:
     'vctrs-S4-slice.R'
     'zzz-globals.R'
     'zzz.R'
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
