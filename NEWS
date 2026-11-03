@@ -26,10 +26,11 @@
   * NOTE: for a data.frame, these S3 generics do not use the `...` argument.
     For `PlySummarizedExperiment` objects, the `...` is used to specify the
     `rows()` or `cols()` contexts, and requires these expressions to be empty.
+    You must also explicitly name the `n` or `prop` argument.
 
     ```r
-    slice_head(xp, rows())
-    slice_tail(xp, cols())
+    slice_head(xp, rows(), n = 1)
+    slice_tail(xp, cols(), n = 1)
     slice_head(xp, rows(), cols(), n = 2)
     ```
  * `slice_sample()` - sample rows and/or columns.

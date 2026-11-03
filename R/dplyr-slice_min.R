@@ -1,25 +1,142 @@
-#' @name slice_extremes
-#' @title Slice maximum rows or columns of a PlySummarizedExperiment
+#' @name slice_extras
+#' @title Extra slice functions for a PlySummarizedExperiment
 #' @description
-#' `slice_max()` selects rows or columns with the largest values of a variable.
-#' `slice_min()` selects rows or columns with the smallest values of a variable.
-#' @param .data a PlySummarizedExperiment object
-#' @param ... expressions wrapped in `rows()` or `cols()` giving the ordering
-#'   variable. Only the `rows()` and `cols()` contexts are available here.
-#' @param n Number of rows/columns to select per group. Cannot be combined
-#'   with `prop`.
-#' @param prop Fraction of rows/columns to select per group. Cannot be
-#'   combined with `n`.
-#' @param with_ties Should ties be kept together? Default `TRUE`.
-#' @param na_rm Should missing values be removed? Default `FALSE`.
-#' @param .preserve When `FALSE` (default), grouping structure is recomputed
-#'   based on the resulting data.
-#' @aliases slice_min slice_max
+#' Convenience wrappers around [slice()] that select rows and/or columns of a
+#' `PlySummarizedExperiment` object:
+#'
+#' * `slice_min()` and `slice_max()` select the rows or columns with the
+#'   smallest or largest values of a variable.
+#' * `slice_head()` and `slice_tail()` select the first or last rows or
+#'   columns.
+#' * `slice_sample()` randomly samples rows and/or columns, optionally
+#'   weighted by a variable.
+#'
+#' Unlike their data.frame counterparts, every one of these verbs uses the
+#' `rows()` and `cols()` context functions within `...` to declare which
+#' dimension(s) of the object are sliced. If an object is grouped, slicing
+#' happens within each group of the respective context.
+#'
+#' @param .data a `PlySummarizedExperiment` object.
+#' @param ... calls to the `rows()` and/or `cols()` context functions. The
+#'   `assays()` context is not available for slicing. The meaning of the
+#'   context contents depends on the verb:
+#'   * `slice_min()`/`slice_max()`: an expression giving the variable to order
+#'     by within that context, e.g. `rows(length)`.
+#'   * `slice_head()`/`slice_tail()`: must be **empty**, e.g. `rows()` or
+#'     `cols()`. They only indicate which context(s) to slice.
+#'   * `slice_sample()`: either empty, indicating a uniform sample of that
+#'     context, or an expression, which is used as the `weight_by` value for
+#'     that context.
+#' @param n,prop Provide either `n`, the number of rows/columns, or `prop`, the
+#'   proportion of rows/columns to select (per group). If neither is supplied,
+#'   `n = 1` is used. Supplying both is an error.
+#'
+#'   A negative value of `n` or `prop` is subtracted from the group size,
+#'   i.e. `n = -2` keeps all but 2 rows/columns. Positive values are rounded
+#'   down, negative values rounded up, and the result is truncated to the group
+#'   size (unless `slice_sample(replace = TRUE)`).
+#'
+#'   Always pass `n`/`prop` by name. Some calls error if they are left
+#'   unnamed or omitted; see the section "Naming `n` and `prop`" below.
+#' @param with_ties Should ties be kept together? The default, `TRUE`, may
+#'   return more rows/columns than requested. Use `FALSE` to return exactly
+#'   `n` rows/columns, with ties broken by position.
+#' @param na_rm Should missing values be removed? The default, `FALSE`,
+#'   ranks `NA` values last, so they are only kept when there are not enough
+#'   non-missing values to satisfy `n`/`prop`. If `TRUE`, missing values are
+#'   never selected.
+#' @param weight_by Sampling weights wrapped in a context function, such as
+#'   `rows(foo)` or `cols(bar)`. Each value must be non-negative. This is an
+#'   alternative to giving a non-empty context in `...`; only one weight may be
+#'   specified per context.
+#' @param replace Should sampling be performed with (`TRUE`) or without
+#'   (`FALSE`, the default) replacement? When `TRUE`, `n`/`prop` may exceed the
+#'   group size.
+#'
+#' @details
+#' ## Naming `n` and `prop`
+#'
+#' Before dispatching to the methods, the dplyr generics check that `n` was
+#' not passed by position. If neither `n` nor `prop` is supplied, they error
+#' when exactly one unnamed argument is left in `...`. For
+#' `slice_min()`/`slice_max()`, the first context fills the generic's
+#' `order_by` argument. As a result, either the `rows()` or the `cols()`
+#' context can be used on its own, but they can only be used together when
+#' `n` or `prop` is named. In other words, the following does **not** work:
+#'
+#' ```r
+#' slice_min(xp, rows(foo), cols(bar))
+#' ```
+#'
+#' but either of the following does:
+#'
+#' ```r
+#' slice_min(xp, rows(foo), cols(bar), n = 1)
+#'
+#' xp |>
+#'   slice_min(rows(foo)) |>
+#'   slice_min(cols(bar))
+#' ```
+#'
+#' Likewise, `slice_head()`, `slice_tail()` and `slice_sample()` need `n` or
+#' `prop` to be named when only a single context is supplied, e.g.
+#' `slice_head(xp, rows(), n = 1)` rather than `slice_head(xp, rows())`.
+#'
+#' ## `slice_head()`/`slice_tail()`
+#'
+#' For a data.frame, these generics do not use the `...` argument. For
+#' `PlySummarizedExperiment` objects, `...` specifies the `rows()` and/or
+#' `cols()` contexts to slice, and these expressions must be empty:
+#'
+#' ```r
+#' slice_head(xp, rows(), n = 1)
+#' slice_tail(xp, cols(), n = 1)
+#' slice_head(xp, rows(), cols(), n = 2)
+#' ```
+#'
+#' ## `slice_sample()`
+#'
+#' As with `slice_head()`/`slice_tail()`, empty context calls indicate which
+#' contexts to sample. A non-empty context is used as the `weight_by` argument
+#' for that context:
+#'
+#' ```r
+#' # uniform sample of both
+#' slice_sample(xp, rows(), cols(), n = 2)
+#' # weight rows by `foo`, and cols by `bar`
+#' slice_sample(xp, rows(foo), cols(bar), n = 2)
+#' # weight rows by `foo`, uniform cols
+#' slice_sample(xp, rows(foo), cols(), n = 2)
+#' # weight rows by `foo`, using the `weight_by` argument
+#' slice_sample(xp, weight_by = rows(foo), n = 2)
+#' ```
+#'
+#' @return a `PlySummarizedExperiment` object.
+#' @seealso [slice()], [dplyr::slice_min()], [dplyr::slice_head()],
+#'   [dplyr::slice_sample()]
+#' @aliases slice_min slice_max slice_head slice_tail slice_sample
 #' @examples
+#' # slice_min() / slice_max() ---------------------------------------
 #' slice_max(se_simple, rows(length), n = 2)
+#' slice_min(se_simple, cols(sample))
+#' # name `n` when using both contexts
+#' slice_min(se_simple, rows(length), cols(sample), n = 1)
 #'
 #' gse <- group_by(se_simple, rows(direction))
 #' slice_max(gse, rows(length), n = 1)
+#'
+#' # slice_head() / slice_tail() -------------------------------------
+#' slice_head(se_simple, rows(), n = 1)
+#' slice_tail(se_simple, cols(), n = 2)
+#' # negative `n` drops rows: all but the last 2
+#' slice_head(se_simple, rows(), n = -2)
+#' slice_head(se_simple, rows(), cols(), n = 2)
+#'
+#' # slice_sample() --------------------------------------------------
+#' set.seed(1)
+#' slice_sample(se_simple, rows(), cols(), n = 2)
+#' slice_sample(se_simple, rows(length), cols(), n = 2)
+#' slice_sample(se_simple, weight_by = rows(length), n = 2)
 #' @export
 slice_max.PlySummarizedExperiment <- function(
   .data,
@@ -27,8 +144,7 @@ slice_max.PlySummarizedExperiment <- function(
   n = NULL,
   prop = NULL,
   with_ties = TRUE,
-  na_rm = FALSE,
-  .preserve = FALSE
+  na_rm = FALSE
 ) {
   plyxp(
     .data,
@@ -60,7 +176,7 @@ slice_max_se_impl <- function(
   )
 }
 
-#' @rdname slice_extremes
+#' @rdname slice_extras
 #' @export
 slice_min.PlySummarizedExperiment <- function(
   .data,
@@ -149,7 +265,7 @@ slice_extreme_se_impl <- function(
   slice_se_impl(.data, !!!quos, .fun = func)
 }
 
-#' @rdname slice_extremes
+#' @rdname slice_extras
 #' @export
 slice_head.PlySummarizedExperiment <- function(
   .data,
@@ -166,7 +282,7 @@ slice_head.PlySummarizedExperiment <- function(
   )
 }
 
-#' @rdname slice_extremes
+#' @rdname slice_extras
 #' @export
 slice_tail.PlySummarizedExperiment <- function(
   .data,
@@ -294,7 +410,7 @@ get_slice_size <- function(n, prop, allow_outsize = FALSE) {
   rlang::new_function(pairlist2(.size = ), body)
 }
 
-#' @rdname slice_extremes
+#' @rdname slice_extras
 #' @export
 slice_sample.PlySummarizedExperiment <- function(
   .data,
