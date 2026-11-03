@@ -62,14 +62,14 @@ se_simple |>
 #> # Groups: rows(direction)
 #>   .features .samples | col_sums sample | direction | sample condition
 #>       <int> <chr>    |    <dbl>  <int> | <chr>     | <chr>  <chr>    
-#> 1         1 col_1    |       25     11 | -         | s1     cntrl    
-#> 2         2 col_1    |       53     11 | +         | s1     cntrl    
-#> 3         1 col_2    |       25     11 | -         | s2     cntrl    
-#> 4         2 col_2    |       21     11 | +         | s2     cntrl    
-#> 5         1 col_3    |       17     11 | -         | s3     drug     
-#> 6         2 col_3    |       28     11 | +         | s3     drug     
-#> 7         1 col_4    |       12     11 | -         | s4     drug     
-#> 8         2 col_4    |       29     11 | +         | s4     drug     
+#> 1         1 col_1    |       25     19 | -         | s1     cntrl    
+#> 2         2 col_1    |       53      1 | +         | s1     cntrl    
+#> 3         1 col_2    |       25     19 | -         | s2     cntrl    
+#> 4         2 col_2    |       21      1 | +         | s2     cntrl    
+#> 5         1 col_3    |       17     19 | -         | s3     drug     
+#> 6         2 col_3    |       28      1 | +         | s3     drug     
+#> 7         1 col_4    |       12     19 | -         | s4     drug     
+#> 8         2 col_4    |       29      1 | +         | s4     drug     
 
 # .retain = "none" will drop ungrouped dimensions and
 # outputs of assay context should be length 1.

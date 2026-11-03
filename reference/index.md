@@ -81,6 +81,12 @@
   : select assays, rowData, and colData names
 - [`slice(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice.md)
   : Slice a PlySummarizedExperiment
+- [`slice_max(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+  [`slice_min(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+  [`slice_head(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+  [`slice_tail(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+  [`slice_sample(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+  : Extra slice functions for a PlySummarizedExperiment
 - [`summarize(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/summarize.md)
   [`summarise(`*`<PlySummarizedExperiment>`*`)`](https://jtlandis.github.io/plyxp/reference/summarize.md)
   : Summarize PlySummarizedExperiment
