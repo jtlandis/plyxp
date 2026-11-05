@@ -1,3 +1,10 @@
+## plyxp 1.7.8
+
+* New "Slicing" section in the vignette demonstrating the `slice_*()`
+  functions on the airway dataset. Vignette section headings were
+  standardized to sentence case, and the `group_by()` section was renamed
+  "Grouping".
+
 ## plyxp 1.7.7
 
 * various `slice_*()` functions are now supported.
