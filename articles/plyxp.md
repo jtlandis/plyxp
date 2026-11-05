@@ -332,7 +332,7 @@ or `nrows(colData())` respectively.
 - `col_ctx(expr, asis = FALSE)` $`\to`$ shorthand to bind the colData
   context in front of the current context
 
-### Multiple expressions enabled via `plyxp`
+### Multiple equivalent expressions
 
 We can compare two ways of dividing out a vector from `colData` along
 the columns of `assay` data:
@@ -807,13 +807,11 @@ se_simple |>
     ## # ℹ n = 20
     ## # ℹ 1 more variable: condition <chr>
 
-## Troubleshooting and best practices
+## Best practices
 
-while `plyxp` takes inspiration from the data masks used in `dplyr`,
-they are unfortunately more complex. This means there is some overhead
-in creating the evaluation mask per dplyr verb. Try to reduce the number
-of `dplyr` verb calls and instead increase the content of each verb. For
-example instead of doing:
+There is some overhead in creating the evaluation mask per dplyr verb.
+It is recommended to try to reduce the number of `dplyr` verb calls and
+instead increase the content of each verb. For example instead of doing:
 
 ``` r
 
@@ -822,7 +820,7 @@ example instead of doing:
   mutate(baz = foo^2)
 ```
 
-do the following
+do the following:
 
 ``` r
 

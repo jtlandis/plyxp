@@ -418,7 +418,7 @@ context</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="multiple-expressions-enabled-via-plyxp">Multiple expressions enabled via <code>plyxp</code><a class="anchor" aria-label="anchor" href="#multiple-expressions-enabled-via-plyxp"></a>
+<h3 id="multiple-equivalent-expressions">Multiple equivalent expressions<a class="anchor" aria-label="anchor" href="#multiple-equivalent-expressions"></a>
 </h3>
 <p>We can compare two ways of dividing out a vector from
 <code>colData</code> along the columns of <code>assay</code> data:</p>
@@ -783,18 +783,17 @@ the rownames or colnames of the resulting object.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="troubleshooting-and-best-practices">Troubleshooting and best practices<a class="anchor" aria-label="anchor" href="#troubleshooting-and-best-practices"></a>
+<h2 id="best-practices">Best practices<a class="anchor" aria-label="anchor" href="#best-practices"></a>
 </h2>
-<p>while <code>plyxp</code> takes inspiration from the data masks used
-in <code>dplyr</code>, they are unfortunately more complex. This means
-there is some overhead in creating the evaluation mask per dplyr verb.
-Try to reduce the number of <code>dplyr</code> verb calls and instead
-increase the content of each verb. For example instead of doing:</p>
+<p>There is some overhead in creating the evaluation mask per dplyr
+verb. It is recommended to try to reduce the number of
+<code>dplyr</code> verb calls and instead increase the content of each
+verb. For example instead of doing:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>foo <span class="op">=</span> <span class="va">bar</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>baz <span class="op">=</span> <span class="va">foo</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p>do the following</p>
+<p>do the following:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
