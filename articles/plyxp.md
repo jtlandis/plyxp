@@ -25,6 +25,8 @@ It supports the following operations:
 - `pull`
 - `filter`
 - `arrange`
+- `group_by`
+- `slice` and `slice_*` variants
 
 ### Typical use case
 
@@ -232,7 +234,7 @@ avoiding code ambiguity through strictly defined behavior and scope, and
 same result, which may involve a trade-off between efficiency and
 verbosity.
 
-#### A Note on `tidySummarizedExperiment`
+#### A note on `tidySummarizedExperiment`
 
 Some of the optimized routines in `plyxp` for operating on objects are
 called by some of the functions implemented in
@@ -403,7 +405,7 @@ It is for this reason that
 do not allow operations in the default assay context, as this would
 likely break the assumed structure of a `SummarizedExperiment` object.
 
-### `group_by()`
+### Grouping
 
 `plyxp` also supports `group_by` operations allowing users to query
 information with
@@ -492,6 +494,198 @@ and similarly for the
 [`colData()`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
 context.
 
+### Slicing
+
+`plyxp` supports
+[`slice()`](https://jtlandis.github.io/plyxp/reference/slice.md) and its
+convenience variants
+[`slice_head()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md),
+[`slice_tail()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md),
+[`slice_min()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md),
+[`slice_max()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+and
+[`slice_sample()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md).
+Unlike their *data.frame* counterparts, these verbs use the
+[`rows()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+and
+[`cols()`](https://jtlandis.github.io/plyxp/reference/plyxp-context.md)
+context functions to declare which dimension(s) of the object to slice.
+The assay context is not available for slicing, as removing individual
+cells of an assay would break the structure of the object.
+
+[`slice()`](https://jtlandis.github.io/plyxp/reference/slice.md) takes
+integer positions:
+
+``` r
+
+xp |>
+  slice(rows(1:5), cols(c(1, 3)))
+```
+
+    ## # A RangedSummarizedExperiment-tibble Abstraction: 5 × 2
+    ##    .features     .samples | counts | gene_id gene_name gene_biotype | SampleName
+    ##    <chr>         <chr>    |  <int> | <chr>   <chr>     <chr>        | <fct>     
+    ##  1 ENSG00000000… SRR1039… |    679 | ENSG00… TSPAN6    protein_cod… | GSM1275862
+    ##  2 ENSG00000000… SRR1039… |      0 | ENSG00… TNMD      protein_cod… | GSM1275862
+    ##  3 ENSG00000000… SRR1039… |    467 | ENSG00… DPM1      protein_cod… | GSM1275862
+    ##  4 ENSG00000000… SRR1039… |    260 | ENSG00… SCYL3     protein_cod… | GSM1275862
+    ##  5 ENSG00000000… SRR1039… |     60 | ENSG00… C1orf112  protein_cod… | GSM1275862
+    ##  6 ENSG00000000… SRR1039… |    873 | ENSG00… TSPAN6    protein_cod… | GSM1275866
+    ##  7 ENSG00000000… SRR1039… |      0 | ENSG00… TNMD      protein_cod… | GSM1275866
+    ##  8 ENSG00000000… SRR1039… |    621 | ENSG00… DPM1      protein_cod… | GSM1275866
+    ##  9 ENSG00000000… SRR1039… |    263 | ENSG00… SCYL3     protein_cod… | GSM1275866
+    ## 10 ENSG00000000… SRR1039… |     40 | ENSG00… C1orf112  protein_cod… | GSM1275866
+    ## # ℹ 4 more variables: cell <fct>, dex <fct>, albut <fct>, sizeFactor <dbl>
+
+For
+[`slice_head()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+and
+[`slice_tail()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md),
+the contexts must be **empty**, and only indicate which dimension(s) to
+slice:
+
+``` r
+
+xp |>
+  slice_head(rows(), cols(), n = 3)
+```
+
+    ## # A RangedSummarizedExperiment-tibble Abstraction: 3 × 3
+    ##   .features      .samples | counts | gene_id gene_name gene_biotype | SampleName
+    ##   <chr>          <chr>    |  <int> | <chr>   <chr>     <chr>        | <fct>     
+    ## 1 ENSG000000000… SRR1039… |    679 | ENSG00… TSPAN6    protein_cod… | GSM1275862
+    ## 2 ENSG000000000… SRR1039… |      0 | ENSG00… TNMD      protein_cod… | GSM1275862
+    ## 3 ENSG000000004… SRR1039… |    467 | ENSG00… DPM1      protein_cod… | GSM1275862
+    ## 4 ENSG000000000… SRR1039… |    448 | ENSG00… TSPAN6    protein_cod… | GSM1275863
+    ## 5 ENSG000000000… SRR1039… |      0 | ENSG00… TNMD      protein_cod… | GSM1275863
+    ## 6 ENSG000000004… SRR1039… |    515 | ENSG00… DPM1      protein_cod… | GSM1275863
+    ## 7 ENSG000000000… SRR1039… |    873 | ENSG00… TSPAN6    protein_cod… | GSM1275866
+    ## 8 ENSG000000000… SRR1039… |      0 | ENSG00… TNMD      protein_cod… | GSM1275866
+    ## 9 ENSG000000004… SRR1039… |    621 | ENSG00… DPM1      protein_cod… | GSM1275866
+    ## # ℹ 4 more variables: cell <fct>, dex <fct>, albut <fct>, sizeFactor <dbl>
+
+``` r
+
+xp |>
+  slice_tail(cols(), n = 2) |>
+  colData()
+```
+
+    ## DataFrame with 2 rows and 5 columns
+    ##            SampleName     cell      dex    albut sizeFactor
+    ##              <factor> <factor> <factor> <factor>  <numeric>
+    ## SRR1039520 GSM1275874  N061011    untrt    untrt   0.999555
+    ## SRR1039521 GSM1275875  N061011    trt      untrt   0.957953
+
+[`slice_min()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+and
+[`slice_max()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+order by a variable within a context. Here we compute the average count
+per gene, and keep the five most highly expressed genes:
+
+``` r
+
+xp_ave <- xp |>
+  mutate(rows(ave_count = rowMeans(.assays_asis$counts)))
+
+xp_ave |>
+  slice_max(rows(ave_count), n = 5) |>
+  rowData()
+```
+
+    ## DataFrame with 5 rows and 4 columns
+    ##                         gene_id   gene_name   gene_biotype ave_count
+    ##                     <character> <character>    <character> <numeric>
+    ## ENSG00000115414 ENSG00000115414         FN1 protein_coding    328813
+    ## ENSG00000011465 ENSG00000011465         DCN protein_coding    300740
+    ## ENSG00000198804 ENSG00000198804      MT-CO1 protein_coding    267427
+    ## ENSG00000156508 ENSG00000156508      EEF1A1 protein_coding    260605
+    ## ENSG00000164692 ENSG00000164692      COL1A2 protein_coding    209321
+
+Slicing respects groupings within each context, so we can find the top
+genes per biotype, or the sample with the smallest library size per
+treatment:
+
+``` r
+
+xp_ave |>
+  filter(rows(gene_biotype %in% c("protein_coding", "lincRNA"))) |>
+  group_by(rows(gene_biotype)) |>
+  slice_max(rows(ave_count), n = 3) |>
+  rowData()
+```
+
+    ## DataFrame with 6 rows and 4 columns
+    ##                   gene_biotype         gene_id     gene_name ave_count
+    ##                    <character>     <character>   <character> <numeric>
+    ## ENSG00000115414 protein_coding ENSG00000115414           FN1 328812.62
+    ## ENSG00000011465 protein_coding ENSG00000011465           DCN 300740.00
+    ## ENSG00000198804 protein_coding ENSG00000198804        MT-CO1 267426.88
+    ## ENSG00000272761        lincRNA ENSG00000272761 RP11-572C15.6  35348.00
+    ## ENSG00000245532        lincRNA ENSG00000245532         NEAT1  25066.50
+    ## ENSG00000214548        lincRNA ENSG00000214548          MEG3   9949.38
+
+``` r
+
+xp |>
+  mutate(cols(lib_size = colSums(.assays_asis$counts))) |>
+  group_by(cols(dex)) |>
+  slice_min(cols(lib_size), n = 1) |>
+  colData()
+```
+
+    ## DataFrame with 2 rows and 6 columns
+    ##                 dex SampleName     cell    albut sizeFactor  lib_size
+    ##            <factor>   <factor> <factor> <factor>  <numeric> <numeric>
+    ## SRR1039520    untrt GSM1275874  N061011    untrt   0.999555  19126151
+    ## SRR1039513    trt   GSM1275867  N052611    untrt   0.931442  15163415
+
+[`slice_sample()`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+randomly samples rows and/or columns. An empty context indicates a
+uniform sample, while a non-empty context (or the `weight_by` argument)
+supplies sampling weights. Here we take two samples per treatment group,
+and separately, a sample of genes weighted by their average count:
+
+``` r
+
+set.seed(1)
+xp |>
+  group_by(cols(dex)) |>
+  slice_sample(cols(), n = 2) |>
+  colData()
+```
+
+    ## DataFrame with 4 rows and 5 columns
+    ##                 dex SampleName     cell    albut sizeFactor
+    ##            <factor>   <factor> <factor> <factor>  <numeric>
+    ## SRR1039508    untrt GSM1275862  N61311     untrt   0.916150
+    ## SRR1039516    untrt GSM1275870  N080611    untrt   0.901480
+    ## SRR1039509    trt   GSM1275863  N61311     untrt   1.066867
+    ## SRR1039513    trt   GSM1275867  N052611    untrt   0.931442
+
+``` r
+
+xp_ave |>
+  slice_sample(weight_by = rows(ave_count), n = 5) |>
+  rowData()
+```
+
+    ## DataFrame with 5 rows and 4 columns
+    ##                         gene_id   gene_name   gene_biotype  ave_count
+    ##                     <character> <character>    <character>  <numeric>
+    ## ENSG00000110697 ENSG00000110697     PITPNM1 protein_coding    699.250
+    ## ENSG00000100865 ENSG00000100865        CINP protein_coding    419.125
+    ## ENSG00000117394 ENSG00000117394      SLC2A1 protein_coding   2770.125
+    ## ENSG00000136448 ENSG00000136448        NMT1 protein_coding   3164.250
+    ## ENSG00000164692 ENSG00000164692      COL1A2 protein_coding 209320.625
+
+Note that `n` (or `prop`) should always be passed by name. Due to
+argument checks in the *dplyr* generics, some calls will error
+otherwise, e.g. `slice_head(xp, rows())` or
+`slice_min(xp, rows(foo), cols(bar))`. See
+[`?slice_extras`](https://jtlandis.github.io/plyxp/reference/slice_extras.md)
+for more details.
+
 ### Printing
 
 Motivated by the `show`/`print` function in *tidySummarizedExperiment*,
@@ -538,7 +732,7 @@ from
 if they like, as seen in
 [`` ?`plyxp-printing` ``](https://jtlandis.github.io/plyxp/reference/plyxp-printing.md)
 
-### renaming rows or columns
+### Renaming rows or columns
 
 Inspired by `tidySummarizedExperiment`, `plyxp` provides access to the
 rownames and colnames of a `SummarizedExperiment` object by installing
@@ -672,7 +866,7 @@ devtools::session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2026-11-03
+    ##  date     2026-11-05
     ##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.7.32 @ /usr/local/bin/quarto
     ## 
@@ -716,7 +910,7 @@ devtools::session_info()
     ##  pkgconfig              2.0.3   2019-09-22 [2] RSPM (R 4.5.0)
     ##  pkgdown                2.2.1   2026-07-07 [2] RSPM (R 4.5.0)
     ##  pkgload                1.5.3   2026-06-15 [2] RSPM (R 4.5.0)
-    ##  plyxp                * 1.7.6   2026-11-03 [1] Bioconductor
+    ##  plyxp                * 1.7.8   2026-11-05 [1] Bioconductor
     ##  purrr                  1.2.2   2026-04-10 [2] RSPM (R 4.5.0)
     ##  R6                     2.6.1   2025-02-15 [2] RSPM (R 4.5.0)
     ##  ragg                   1.5.2   2026-03-23 [2] RSPM (R 4.5.0)

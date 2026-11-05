@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">plyxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@ Landis</h4>
                                     <h4 data-toc-skip class="author">Michael
 Love</h4>
                         
-            <h4 data-toc-skip class="date">11/03/2026</h4>
+            <h4 data-toc-skip class="date">11/05/2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jtlandis/plyxp/blob/devel/vignettes/plyxp.Rmd" class="external-link"><code>vignettes/plyxp.Rmd</code></a></small>
       <div class="d-none name"><code>plyxp.Rmd</code></div>
@@ -89,6 +89,9 @@ well as most classes derived from this, including <em>DESeqDataSet</em>,
 <li><code>pull</code></li>
 <li><code>filter</code></li>
 <li><code>arrange</code></li>
+<li><code>group_by</code></li>
+<li>
+<code>slice</code> and <code>slice_*</code> variants</li>
 </ul>
 </div>
 <div class="section level3">
@@ -266,7 +269,7 @@ and scope, and (3) allowing the user the convenience of multiple
 expressions for the same result, which may involve a trade-off between
 efficiency and verbosity.</p>
 <div class="section level4">
-<h4 id="a-note-on-tidysummarizedexperiment">A Note on <code>tidySummarizedExperiment</code><a class="anchor" aria-label="anchor" href="#a-note-on-tidysummarizedexperiment"></a>
+<h4 id="a-note-on-tidysummarizedexperiment">A note on <code>tidySummarizedExperiment</code><a class="anchor" aria-label="anchor" href="#a-note-on-tidysummarizedexperiment"></a>
 </h4>
 <p>Some of the optimized routines in <code>plyxp</code> for operating on
 objects are called by some of the functions implemented in
@@ -482,8 +485,7 @@ operations in the default assay context, as this would likely break the
 assumed structure of a <code>SummarizedExperiment</code> object.</p>
 </div>
 <div class="section level3">
-<h3 id="group_by">
-<code>group_by()</code><a class="anchor" aria-label="anchor" href="#group_by"></a>
+<h3 id="grouping">Grouping<a class="anchor" aria-label="anchor" href="#grouping"></a>
 </h3>
 <p><code>plyxp</code> also supports <code>group_by</code> operations
 allowing users to query information with <code><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">dplyr::n()</a></code> or
@@ -541,13 +543,155 @@ context are the groupings in <code><a href="https://rdrr.io/pkg/SummarizedExperi
 the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> context.</p>
 </div>
 <div class="section level3">
+<h3 id="slicing">Slicing<a class="anchor" aria-label="anchor" href="#slicing"></a>
+</h3>
+<p><code>plyxp</code> supports <code><a href="../reference/slice.html">slice()</a></code> and its convenience
+variants <code><a href="../reference/slice_extras.html">slice_head()</a></code>, <code><a href="../reference/slice_extras.html">slice_tail()</a></code>,
+<code><a href="../reference/slice_extras.html">slice_min()</a></code>, <code><a href="../reference/slice_extras.html">slice_max()</a></code> and
+<code><a href="../reference/slice_extras.html">slice_sample()</a></code>. Unlike their <em>data.frame</em>
+counterparts, these verbs use the <code><a href="../reference/plyxp-context.html">rows()</a></code> and
+<code><a href="../reference/plyxp-context.html">cols()</a></code> context functions to declare which dimension(s) of
+the object to slice. The assay context is not available for slicing, as
+removing individual cells of an assay would break the structure of the
+object.</p>
+<p><code><a href="../reference/slice.html">slice()</a></code> takes integer positions:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice.html">slice</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 5 × 2</span></span></span>
+<span><span class="co">##    .features     .samples <span style="color: #949494;">|</span> counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype <span style="color: #949494;">|</span> SampleName</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>    679 <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>      0 <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>    467 <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>    260 <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>     60 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>    873 <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>      0 <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>    621 <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>    263 <span style="color: #949494;">|</span> ENSG00… SCYL3     protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> ENSG00000000… SRR1039… <span style="color: #949494;">|</span>     40 <span style="color: #949494;">|</span> ENSG00… C1orf112  protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: cell &lt;fct&gt;, dex &lt;fct&gt;, albut &lt;fct&gt;, sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
+<p>For <code><a href="../reference/slice_extras.html">slice_head()</a></code> and <code><a href="../reference/slice_extras.html">slice_tail()</a></code>, the
+contexts must be <strong>empty</strong>, and only indicate which
+dimension(s) to slice:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_head</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A RangedSummarizedExperiment-tibble Abstraction: 3 × 3</span></span></span>
+<span><span class="co">##   .features      .samples <span style="color: #949494;">|</span> counts <span style="color: #949494;">|</span> gene_id gene_name gene_biotype <span style="color: #949494;">|</span> SampleName</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494;">|</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494;">|</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>    679 <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>      0 <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> ENSG000000004… SRR1039… <span style="color: #949494;">|</span>    467 <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span> GSM1275862</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>    448 <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span> GSM1275863</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>      0 <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span> GSM1275863</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> ENSG000000004… SRR1039… <span style="color: #949494;">|</span>    515 <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span> GSM1275863</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>    873 <span style="color: #949494;">|</span> ENSG00… TSPAN6    protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> ENSG000000000… SRR1039… <span style="color: #949494;">|</span>      0 <span style="color: #949494;">|</span> ENSG00… TNMD      protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">9</span> ENSG000000004… SRR1039… <span style="color: #949494;">|</span>    621 <span style="color: #949494;">|</span> ENSG00… DPM1      protein_cod… <span style="color: #949494;">|</span> GSM1275866</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: cell &lt;fct&gt;, dex &lt;fct&gt;, albut &lt;fct&gt;, sizeFactor &lt;dbl&gt;</span></span></span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_tail</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 2 rows and 5 columns</span></span>
+<span><span class="co">##            SampleName     cell      dex    albut sizeFactor</span></span>
+<span><span class="co">##              &lt;factor&gt; &lt;factor&gt; &lt;factor&gt; &lt;factor&gt;  &lt;numeric&gt;</span></span>
+<span><span class="co">## SRR1039520 GSM1275874  N061011    untrt    untrt   0.999555</span></span>
+<span><span class="co">## SRR1039521 GSM1275875  N061011    trt      untrt   0.957953</span></span></code></pre>
+<p><code><a href="../reference/slice_extras.html">slice_min()</a></code> and <code><a href="../reference/slice_extras.html">slice_max()</a></code> order by a
+variable within a context. Here we compute the average count per gene,
+and keep the five most highly expressed genes:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp_ave</span> <span class="op">&lt;-</span> <span class="va">xp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span>ave_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">counts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">xp_ave</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_max</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">ave_count</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 5 rows and 4 columns</span></span>
+<span><span class="co">##                         gene_id   gene_name   gene_biotype ave_count</span></span>
+<span><span class="co">##                     &lt;character&gt; &lt;character&gt;    &lt;character&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## ENSG00000115414 ENSG00000115414         FN1 protein_coding    328813</span></span>
+<span><span class="co">## ENSG00000011465 ENSG00000011465         DCN protein_coding    300740</span></span>
+<span><span class="co">## ENSG00000198804 ENSG00000198804      MT-CO1 protein_coding    267427</span></span>
+<span><span class="co">## ENSG00000156508 ENSG00000156508      EEF1A1 protein_coding    260605</span></span>
+<span><span class="co">## ENSG00000164692 ENSG00000164692      COL1A2 protein_coding    209321</span></span></code></pre>
+<p>Slicing respects groupings within each context, so we can find the
+top genes per biotype, or the sample with the smallest library size per
+treatment:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp_ave</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">gene_biotype</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"protein_coding"</span>, <span class="st">"lincRNA"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">gene_biotype</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_max</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">ave_count</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 6 rows and 4 columns</span></span>
+<span><span class="co">##                   gene_biotype         gene_id     gene_name ave_count</span></span>
+<span><span class="co">##                    &lt;character&gt;     &lt;character&gt;   &lt;character&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## ENSG00000115414 protein_coding ENSG00000115414           FN1 328812.62</span></span>
+<span><span class="co">## ENSG00000011465 protein_coding ENSG00000011465           DCN 300740.00</span></span>
+<span><span class="co">## ENSG00000198804 protein_coding ENSG00000198804        MT-CO1 267426.88</span></span>
+<span><span class="co">## ENSG00000272761        lincRNA ENSG00000272761 RP11-572C15.6  35348.00</span></span>
+<span><span class="co">## ENSG00000245532        lincRNA ENSG00000245532         NEAT1  25066.50</span></span>
+<span><span class="co">## ENSG00000214548        lincRNA ENSG00000214548          MEG3   9949.38</span></span></code></pre>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span>lib_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">.assays_asis</span><span class="op">$</span><span class="va">counts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="va">dex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_min</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="va">lib_size</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 2 rows and 6 columns</span></span>
+<span><span class="co">##                 dex SampleName     cell    albut sizeFactor  lib_size</span></span>
+<span><span class="co">##            &lt;factor&gt;   &lt;factor&gt; &lt;factor&gt; &lt;factor&gt;  &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">## SRR1039520    untrt GSM1275874  N061011    untrt   0.999555  19126151</span></span>
+<span><span class="co">## SRR1039513    trt   GSM1275867  N052611    untrt   0.931442  15163415</span></span></code></pre>
+<p><code><a href="../reference/slice_extras.html">slice_sample()</a></code> randomly samples rows and/or columns. An
+empty context indicates a uniform sample, while a non-empty context (or
+the <code>weight_by</code> argument) supplies sampling weights. Here we
+take two samples per treatment group, and separately, a sample of genes
+weighted by their average count:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">xp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/group_by.html">group_by</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="va">dex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_sample</a></span><span class="op">(</span><span class="fu"><a href="../reference/plyxp-context.html">cols</a></span><span class="op">(</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 4 rows and 5 columns</span></span>
+<span><span class="co">##                 dex SampleName     cell    albut sizeFactor</span></span>
+<span><span class="co">##            &lt;factor&gt;   &lt;factor&gt; &lt;factor&gt; &lt;factor&gt;  &lt;numeric&gt;</span></span>
+<span><span class="co">## SRR1039508    untrt GSM1275862  N61311     untrt   0.916150</span></span>
+<span><span class="co">## SRR1039516    untrt GSM1275870  N080611    untrt   0.901480</span></span>
+<span><span class="co">## SRR1039509    trt   GSM1275863  N61311     untrt   1.066867</span></span>
+<span><span class="co">## SRR1039513    trt   GSM1275867  N052611    untrt   0.931442</span></span></code></pre>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">xp_ave</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/slice_extras.html">slice_sample</a></span><span class="op">(</span>weight_by <span class="op">=</span> <span class="fu"><a href="../reference/plyxp-context.html">rows</a></span><span class="op">(</span><span class="va">ave_count</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 5 rows and 4 columns</span></span>
+<span><span class="co">##                         gene_id   gene_name   gene_biotype  ave_count</span></span>
+<span><span class="co">##                     &lt;character&gt; &lt;character&gt;    &lt;character&gt;  &lt;numeric&gt;</span></span>
+<span><span class="co">## ENSG00000110697 ENSG00000110697     PITPNM1 protein_coding    699.250</span></span>
+<span><span class="co">## ENSG00000100865 ENSG00000100865        CINP protein_coding    419.125</span></span>
+<span><span class="co">## ENSG00000117394 ENSG00000117394      SLC2A1 protein_coding   2770.125</span></span>
+<span><span class="co">## ENSG00000136448 ENSG00000136448        NMT1 protein_coding   3164.250</span></span>
+<span><span class="co">## ENSG00000164692 ENSG00000164692      COL1A2 protein_coding 209320.625</span></span></code></pre>
+<p>Note that <code>n</code> (or <code>prop</code>) should always be
+passed by name. Due to argument checks in the <em>dplyr</em> generics,
+some calls will error otherwise, e.g.
+<code>slice_head(xp, rows())</code> or
+<code>slice_min(xp, rows(foo), cols(bar))</code>. See
+<code><a href="../reference/slice_extras.html">?slice_extras</a></code> for more details.</p>
+</div>
+<div class="section level3">
 <h3 id="printing">Printing<a class="anchor" aria-label="anchor" href="#printing"></a>
 </h3>
 <p>Motivated by the <code>show</code>/<code>print</code> function in
 <em>tidySummarizedExperiment</em>, we visualize the data as if it was
 tabular. <code>plyxp</code> offers the option to opt-in on this behavior
 by setting the associated global option:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"show_SummarizedExperiment_as_tibble_abstraction"</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, you may use helper functions
 <code><a href="../reference/plyxp-printing.html">use_show_tidy()</a></code> and <code><a href="../reference/plyxp-printing.html">use_show_default()</a></code> to
@@ -574,7 +718,7 @@ free to create their own methods for S4 vectors that differ from
 <code><a href="../reference/plyxp-printing.html">?`plyxp-printing`</a></code></p>
 </div>
 <div class="section level3">
-<h3 id="renaming-rows-or-columns">renaming rows or columns<a class="anchor" aria-label="anchor" href="#renaming-rows-or-columns"></a>
+<h3 id="renaming-rows-or-columns">Renaming rows or columns<a class="anchor" aria-label="anchor" href="#renaming-rows-or-columns"></a>
 </h3>
 <p>Inspired by <code>tidySummarizedExperiment</code>, <code>plyxp</code>
 provides access to the rownames and colnames of a
@@ -585,7 +729,7 @@ These are special in that assigning a value to <code>.features</code> in
 the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData()</a></code> context or <code>.samples</code> in the
 <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> context does not create a new column, but changes
 the rownames or colnames of the resulting object.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se_simple</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A SummarizedExperiment-tibble Abstraction: 5 × 4</span></span></span>
 <span><span class="co">##     .features .samples <span style="color: #949494;">|</span> counts logcounts <span style="color: #949494;">|</span> gene  length direction <span style="color: #949494;">|</span> sample</span></span>
@@ -603,7 +747,7 @@ the rownames or colnames of the resulting object.</p>
 <span><span class="co">## <span style="color: #949494;">n  </span> row_5     col_4    <span style="color: #949494;">|</span>      5      1.61 <span style="color: #949494;">|</span> g5        37 +         <span style="color: #949494;">|</span> s4    </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ n = 20</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: condition &lt;chr&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># moving data to rownames and colnames</span></span>
 <span><span class="va">se_simple</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
@@ -646,12 +790,12 @@ in <code>dplyr</code>, they are unfortunately more complex. This means
 there is some overhead in creating the evaluation mask per dplyr verb.
 Try to reduce the number of <code>dplyr</code> verb calls and instead
 increase the content of each verb. For example instead of doing:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>foo <span class="op">=</span> <span class="va">bar</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span>baz <span class="op">=</span> <span class="va">foo</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>do the following</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">.data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/mutate.html">mutate</a></span><span class="op">(</span></span>
 <span>    foo <span class="op">=</span> <span class="va">bar</span>,</span>
@@ -682,7 +826,7 @@ to the development team first through one of the above channels.</li>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://sessioninfo.r-lib.org/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">##  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
@@ -694,7 +838,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  collate  en_US.UTF-8</span></span>
 <span><span class="co">##  ctype    en_US.UTF-8</span></span>
 <span><span class="co">##  tz       UTC</span></span>
-<span><span class="co">##  date     2026-11-03</span></span>
+<span><span class="co">##  date     2026-11-05</span></span>
 <span><span class="co">##  pandoc   3.8.2.1 @ /usr/bin/ (via rmarkdown)</span></span>
 <span><span class="co">##  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">## </span></span>
@@ -738,7 +882,7 @@ to the development team first through one of the above channels.</li>
 <span><span class="co">##  pkgconfig              2.0.3   <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgdown                2.2.1   <span style="color: #555555;">2026-07-07</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgload                1.5.3   <span style="color: #555555;">2026-06-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
-<span><span class="co">##  plyxp                * 1.7.6   <span style="color: #555555;">2026-11-03</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  plyxp                * 1.7.8   <span style="color: #555555;">2026-11-05</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  purrr                  1.2.2   <span style="color: #555555;">2026-04-10</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  R6                     2.6.1   <span style="color: #555555;">2025-02-15</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  ragg                   1.5.2   <span style="color: #555555;">2026-03-23</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
