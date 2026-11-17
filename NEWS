@@ -1,3 +1,10 @@
+## plyxp 1.7.9
+
+* `vec_group_id()` and `vec_group_loc()` now have specialized methods for S4
+  "CompressedList" virtual classes.
+* The IRanges packed is now imported because SummarizedExperiment already
+  imports this package.
+
 ## plyxp 1.7.8
 
 * summarizing with a DFrame result should work as expected

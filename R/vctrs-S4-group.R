@@ -112,6 +112,41 @@ method(
   )
 }
 
+# proxies unlistData with vec_group_id and splits
+# this result into a list paritioned by each group.
+# key -> A list. Each element is a set of proxy vec_group_id of unlistData
+# loc -> which indices of cmp dictate this group.
+proxy_compress <- function(cmp) {
+  ids <- rep(seq_len(vec_size(cmp)), lengths(cmp))
+  uids <- vec_group_id(unlist(cmp))
+  res <- split(uids, ids) |> vec_group_loc()
+  res
+}
+
+method(
+  vec_group_loc,
+  class_CompressedList
+) <- function(x, ...) {
+  proxy <- proxy_compress(cmp = x)
+  S4Vectors::DataFrame(
+    key = S4Vectors::I(vec_slice(x, vapply(proxy$loc, `[`, 1L, 1L))),
+    loc = S4Vectors::I(proxy$loc)
+  )
+}
+
+method(
+  vec_group_id,
+  class_CompressedList
+) <- function(x, ...) {
+  proxy <- proxy_compress(cmp = x)
+  loc <- proxy$loc
+  ints <- structure(integer(length(x)), n = length(loc))
+  for (i in seq_along(loc)) {
+    ints[loc[[i]]] <- i
+  }
+  ints
+}
+
 # #' create groups
 # #' @export
 # create_groups <- function(.data, .rename = ".indices") {

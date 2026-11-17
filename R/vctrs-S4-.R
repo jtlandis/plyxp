@@ -13,9 +13,12 @@
 #' @return S7 class union or base class
 #' @export
 class_vctrs <- S7::new_union(
-  S7::class_atomic, S7::class_list,
-  S7::class_data.frame, S7::class_factor,
-  S7::class_Date, S7::class_POSIXct,
+  S7::class_atomic,
+  S7::class_list,
+  S7::class_data.frame,
+  S7::class_factor,
+  S7::class_Date,
+  S7::class_POSIXct,
   S7::new_S3_class("vctrs_vctr"),
   S7::new_S3_class("vctrs_partial"),
   S7::new_S3_class("vctrs_sclr")
@@ -28,3 +31,7 @@ class_s4_vctrs <- methods::getClass("Vector")
 #' @rdname vectors
 #' @export
 class_DF <- methods::getClass("DataFrame")
+
+#' @rdname vectors
+#' @export
+class_CompressedList <- methods::getClass("CompressedList")

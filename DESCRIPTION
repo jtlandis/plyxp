@@ -16,6 +16,7 @@ Imports:
     purrr,
     rlang,
     SummarizedExperiment,
+    IRanges,
     tidyr,
     tidyselect,
     vctrs,
@@ -36,7 +37,6 @@ Suggests:
     rmarkdown,
     testthat,
     airway,
-    IRanges,
     here
 LazyData: true
 URL: https://github.com/jtlandis/plyxp, https://jtlandis.github.io/plyxp
