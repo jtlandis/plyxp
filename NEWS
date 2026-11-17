@@ -1,3 +1,7 @@
+## plyxp 1.7.10
+
+* `vec_group_loc()` performance for DFrame objects has improved.
+
 ## plyxp 1.7.9
 
 * `vec_group_id()` and `vec_group_loc()` now have specialized methods for S4
