@@ -34,4 +34,4 @@ class_DF <- methods::getClass("DataFrame")
 
 #' @rdname vectors
 #' @export
-class_CompressedList <- methods::getClass("CompressedList")
+class_CompressedList <- IRanges::.__C__CompressedList
