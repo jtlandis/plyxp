@@ -53,10 +53,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
       quos
     )
   }
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "arrange", review = err)
-  }
+  check_quos_no_assays(quos, fun = "arrange")
   # to make this function consistent
   groups <- group_data_se_impl(.data)
   group_data_se_impl(.data) <- NULL
@@ -64,7 +61,7 @@ arrange_se_impl <- function(.data, ..., .by_group = FALSE) {
   poke_ctx_local("plyxp:::caller_env", .env)
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "arrange")
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
+  mask <- plyxp_evaluate(mask, quos, env = .env)
   results <- mask$results()
   type <- ""
   ro <- co <- NULL

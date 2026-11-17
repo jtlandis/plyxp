@@ -92,11 +92,8 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
   poke_ctx_local("plyxp:::manager", mask)
   poke_ctx_local("plyxp:::dplyr_verb", "group_by")
   quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "group_by", review = err)
-  }
-  mask <- plyxp_evaluate(mask, quos, ctxs, .env)
+  check_quos_no_assays(quos, "group_by")
+  mask <- plyxp_evaluate(mask, quos, env = .env)
   results <- mask$results()
   # nms <- names(results$assays)
   # for (i in seq_along(results$assays)) {
@@ -105,14 +102,14 @@ group_by_se_impl <- function(.data, ..., .add = FALSE) {
 
   if (.add && !is_empty(.groups)) {
     if (!is_empty(.groups$row_groups)) {
-      curr <- select(.groups$row_groups, -starts_with(".indices")) |>
+      curr <- deselect(.groups$row_groups, "^.indices") |>
         names()
       curr <- rowData(.data)[curr]
       curr[names(results$rows)] <- results$rows
       results$rows <- curr
     }
     if (!is_empty(.groups$col_groups)) {
-      curr <- select(.groups$col_groups, -starts_with(".indices")) |>
+      curr <- deselect(.groups$col_groups, "^.indices") |>
         names()
       curr <- colData(.data)[curr]
       curr[names(results$cols)] <- results$cols
@@ -210,10 +207,8 @@ ungroup_se_impl <- function(x, ...) {
     group_data_se_impl(x) <- NULL
     return(x)
   }
-  ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-  if (any(err <- ctxs %in% "assays")) {
-    plyxp_assays_cannot(do = "ungroup", review = err)
-  }
+  check_quos_no_assays(quos, "ungroup")
+  ctxs <- plyxp_quos_ctxs(quos)
   by_ctx <- split(quos, ctxs)
   update_cols <- update_rows <- NULL
   update_ <- ""
@@ -224,7 +219,7 @@ ungroup_se_impl <- function(x, ...) {
     if (is.null(curr_groups$row_groups)) {
       abort("no row groups to ungroup")
     }
-    old_groups <- select(curr_groups$row_groups, -starts_with(".indices")) |>
+    old_groups <- deselect(curr_groups$row_groups, "^.indices") |>
       names()
     select_expr <- if (length(rexprs) == 1L && quo_is_missing(rexprs[[1]])) {
       call2("c", splice(syms(old_groups)))
@@ -248,7 +243,7 @@ ungroup_se_impl <- function(x, ...) {
     if (is.null(curr_groups$col_groups)) {
       abort("no col groups to ungroup")
     }
-    old_groups <- select(curr_groups$col_groups, -starts_with(".indices")) |>
+    old_groups <- deselect(curr_groups$col_groups, "^.indices") |>
       names()
     select_expr <- if (length(cexprs) == 1L && quo_is_missing(cexprs[[1]])) {
       call2("c", splice(syms(old_groups)))
@@ -272,6 +267,12 @@ ungroup_se_impl <- function(x, ...) {
     row = group_by_se_impl(x, !!update_rows),
     col = group_by_se_impl(x, !!update_cols)
   )
+}
+
+deselect <- function(DF, ptrn) {
+  nms <- colnames(DF)
+  ind <- grep(ptrn, nms)
+  DF[-ind]
 }
 
 #' @export
