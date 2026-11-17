@@ -1,3 +1,8 @@
+## plyxp 1.7.8
+
+* summarizing with a DFrame result should work as expected
+
+
 ## plyxp 1.7.7
 
 * various `slice_*()` functions are now supported.
