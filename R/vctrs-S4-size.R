@@ -26,3 +26,21 @@ method(vec_size, class_s4_vctrs) <- function(x) {
 method(vec_size, class_DF) <- function(x) {
   x@nrows
 }
+
+
+
+list_sizes <- new_generic("list_sizes", dispatch_args = "x", function(x) {
+  S7_dispatch()
+})
+
+simple_list_sizes <- function(x) {
+  vapply(x, vec_size, 1L)
+}
+
+method(list_sizes, S7::class_list) <- function(x) {
+  vctrs::list_sizes(x)
+}
+
+method(list_sizes, class_CompressedList) <- function(x) {
+  lengths(x)
+}

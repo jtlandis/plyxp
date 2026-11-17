@@ -1,4 +1,5 @@
 #' @importFrom dplyr summarize summarise
+#' @include S4-CompressedVec.R
 NULL
 
 #' @name summarize
@@ -77,7 +78,6 @@ summarize_se_impl <- function(
   poke_ctx_local("plyxp:::dplyr_verb", "summarise")
   quos <- plyxp_quos(..., .ctx = c("assays", "rows", "cols"))
   ctxs <- vapply(quos, attr, FUN.VALUE = "", which = "plyxp:::ctx")
-
   mask <- plyxp_evaluate(mask, quos, ctxs, .env)
   chops <- mask$apply(\(m) lapply(m$added, m$get_chop))
   assay_chops <- chops$assays
@@ -115,9 +115,7 @@ summarize_se_impl <- function(
         # should provide correct size
         row_chops[group_vars_$row_groups] <- map(
           row_chops[group_vars_$row_groups],
-          function(group_vec) {
-            map(group_vec, identity)
-          }
+          compress
         )
       }
     }
@@ -157,9 +155,7 @@ summarize_se_impl <- function(
         # should provide correct size
         col_chops[group_vars_$col_groups] <- map(
           col_chops[group_vars_$col_groups],
-          function(group_vec) {
-            map(group_vec, identity)
-          }
+          compress
         )
       }
     }
@@ -252,8 +248,13 @@ assert_chops_size <- function(chops, size = 1L) {
     function(vec, name, size) {
       # get the underlying vec_recycle
       # method for this vec class
+      lens <- list_sizes(vec)
       fn <- method(vec_recycle, object = vec[[1]])
-      map(vec, fn, size = size, x_arg = name)
+      w <- which(lens != size)
+      if (length(w)) {
+        vec[w] <- map(vec[w], fn, size = size, x_arg = name)
+      }
+      vec
     },
     size = size
   )

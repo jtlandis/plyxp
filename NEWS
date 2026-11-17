@@ -1,6 +1,7 @@
 ## plyxp 1.7.10
 
 * `vec_group_loc()` performance for DFrame objects has improved.
+* summarize should now work with CompressedList objects
 
 ## plyxp 1.7.9
 

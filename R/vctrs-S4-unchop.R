@@ -30,6 +30,34 @@ method(
 
 method(
   list_unchop,
+  list(x = class_CompressedList, ptype = NULL)
+) <- function(x, ptype, ..., indices = NULL) {
+  ptype <- vec_slice(x@unlistData, 0L)
+  # prevent recusion case
+  if (is.null(ptype)) {
+    return(NULL)
+  }
+  list_unchop(
+    x,
+    ptype = ptype,
+    indices = indices
+  )
+}
+
+method(
+  list_unchop,
+  list(x = class_CompressedList, ptype = S7::class_any)
+) <- function(x, ptype, ..., indices = NULL) {
+  unlistData <- x@unlistData
+  if (!is.null(indices)) {
+    indices <- vctrs::list_unchop(indices)
+    unlistData <- vec_slice(unlistData, order(indices))
+  }
+  unlistData
+}
+
+method(
+  list_unchop,
   list(x = S7::class_list, ptype = NULL)
 ) <- function(x, ptype, ..., indices = NULL) {
   ptype <- vec_ptype_common_list(x, NULL)

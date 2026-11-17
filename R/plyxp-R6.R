@@ -290,6 +290,12 @@ plyxp_mask <- R6::R6Class(
     #' @field added newly added names to the mask
     added = function() {
       private$.added
+    },
+    #' @field reports if a binding was used in the mask
+    used = function() {
+      !rlang::env_binding_are_lazy(
+        private$env_data_lazy
+      )
     }
   ),
   private = list(
