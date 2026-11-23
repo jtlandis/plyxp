@@ -5,6 +5,7 @@
 \alias{class_vctrs}
 \alias{class_s4_vctrs}
 \alias{class_DF}
+\alias{class_CompressedList}
 \title{S7 classes for vctrs and S4 Vectors}
 \usage{
 class_vctrs
@@ -12,6 +13,8 @@ class_vctrs
 class_s4_vctrs
 
 class_DF
+
+class_CompressedList
 }
 \value{
 S7 class union or base class
