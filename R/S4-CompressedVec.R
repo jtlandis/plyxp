@@ -1,8 +1,24 @@
 
-#' @export
+#' @title Compressed Vectors
+#' @description
+#' Bioconductor's IRanges package supports a variaty of
+#' "Compressed*List" variants such as "CompressedIntegerList" or "CompressedCharacterList", etc.
+#' Instead of defining a specific class for all subclasses,
+#' the "CompressedVectorList" class is the non-Virtual version of
+#' "CompressedAtomicList".
+#'
+#' @keywords internal
 setClass("CompressedVectorList", contains = "CompressedAtomicList", prototype = list(elementType = "ANY"))
 
-#' @export
+# @title Compress a Vector
+# @description
+# The generic constructor of "CompressedVectorList". Behaves similar to vec_chop except that an
+# S4 CompressedList object is returned instead of a list.
+# @param x a vector
+# @param indices a list of integers specifying how to partition x
+#
+# @returns a CompressedVectorList where the "elementType" slot is class(x)[1]
+# @keywords internal
 compress <- function(x, indices = NULL) {
   if (is.null(indices)) {
     part <- IRanges::PartitioningByEnd(seq_len(vec_size(x)))
